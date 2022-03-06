@@ -1,0 +1,12 @@
+{
+	"name": "Custom",
+	"class": "core/text/CustomModule",
+	"description": "Custom HTML code.",
+	"settings": [
+		{
+			"type": "editor",
+			"name": "content",
+			"label": "Content"
+		}
+	]
+}

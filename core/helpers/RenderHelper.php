@@ -1,0 +1,214 @@
+<?php
+	/*
+		Crispage - A lightweight CMS for developers
+		core/helpers/RenderHelper.php - Render helper
+
+		Author: crispycat <the@crispy.cat> <https://crispy.cat>
+		Since: 0.0.1
+	*/
+
+	defined("CRISPAGE") or die("Application must be started from index.php!");
+
+	class RenderHelper {
+		public static function renderPagination(string $baseurl, int $npages, int $page) {
+?>
+			<nav>
+				<ul class="pagination">
+					<li class="page-item"><a class="page-link" href="<?php echo $baseurl; ?>1"><i class="bi bi-chevron-bar-left"></i></a></li>
+					<?php if ($page > 1) { ?>
+						<li class="page-item"><a class="page-link" href="<?php echo $baseurl . ($page - 1); ?>"><i class="bi bi-chevron-left"></i></a></li>
+					<?php } ?>
+					<?php if ($page > 2) { ?>
+						<li class="page-item"><a class="page-link" href="<?php echo $baseurl . ($page - 2); ?>"><?php echo $page - 2; ?></a></li>
+					<?php } ?>
+					<?php if ($page > 1) { ?>
+						<li class="page-item"><a class="page-link" href="<?php echo $baseurl . ($page - 1); ?>"><?php echo $page - 1; ?></a></li>
+					<?php } ?>
+					<li class="page-item active"><a class="page-link" href="#"><?php echo $page; ?></a></li>
+					<?php if ($page < $npages) { ?>
+						<li class="page-item"><a class="page-link" href="<?php echo $baseurl . ($page + 1); ?>"><?php echo $page + 1; ?></a></li>
+					<?php } ?>
+					<?php if ($page < $npages - 1) { ?>
+						<li class="page-item"><a class="page-link" href="<?php echo $baseurl . ($page + 2); ?>"><?php echo $page + 2; ?></a></li>
+					<?php } ?>
+					<?php if ($page < $npages) { ?>
+						<li class="page-item"><a class="page-link" href="<?php echo $baseurl . ($page + 1); ?>"><i class="bi bi-chevron-right"></i></a></li>
+					<?php } ?>
+					<li class="page-item"><a class="page-link" href="<?php echo $baseurl . $npages; ?>"><i class="bi bi-chevron-bar-right"></i></a></li>
+				</ul>
+			</nav>
+<?php
+		}
+
+		public static function renderArticlePicker(string $selname, string $selart = null, array $extra = null) {
+			global $app;
+?>
+			<select class="form-select" name="<?php echo $selname; ?>">
+				<?php if ($extra != null) { ?>
+					<option value="<?php echo $extra["value"]; ?>"><?php echo $extra["title"]; ?></option>
+				<?php } ?>
+				<?php
+					foreach ($app->content->getArticles() as $art) {
+						if ($selart) {
+				?>
+							<option value="<?php echo $art->id; ?>" <?php if ($art->id == $selart) echo "selected"; ?>><?php echo $art->title; ?></option>
+				<?php
+						} else {
+				?>
+							<option value="<?php echo $art->id; ?>"><?php echo $art->title; ?></option>
+				<?php
+						}
+					}
+				?>
+			</select>
+<?php
+		}
+
+		public static function renderCategoryPicker(string $selname, string $selcat = null, array $extra = null) {
+			global $app;
+			// TODO nest the categories
+?>
+			<select class="form-select" name="<?php echo $selname; ?>">
+				<?php if ($extra != null) { ?>
+					<option value="<?php echo $extra["value"]; ?>"><?php echo $extra["title"]; ?></option>
+				<?php } ?>
+				<?php
+					foreach ($app->content->getCategories() as $cat) {
+						if ($selcat) {
+				?>
+							<option value="<?php echo $cat->id; ?>" <?php if ($cat->id == $selcat) echo "selected"; ?>><?php echo $cat->title; ?></option>
+				<?php
+						} else {
+				?>
+							<option value="<?php echo $cat->id; ?>"><?php echo $cat->title; ?></option>
+				<?php
+						}
+					}
+				?>
+			</select>
+<?php
+		}
+
+		public static function renderMenuPicker(string $selname, string $selmenu = null, array $extra = null) {
+			global $app;
+?>
+			<select class="form-select" name="<?php echo $selname; ?>">
+				<?php if ($extra != null) { ?>
+					<option value="<?php echo $extra["value"]; ?>"><?php echo $extra["title"]; ?></option>
+				<?php } ?>
+				<?php
+					foreach ($app->menus->getMenus() as $menu) {
+						if ($selmenu) {
+				?>
+							<option value="<?php echo $menu->id; ?>" <?php if ($menu->id == $selmenu) echo "selected"; ?>><?php echo $menu->title; ?></option>
+				<?php
+						} else {
+				?>
+							<option value="<?php echo $menu->id; ?>"><?php echo $menu->title; ?></option>
+				<?php
+						}
+					}
+				?>
+			</select>
+<?php
+		}
+
+		public static function renderMenuItemPicker(string $selname, string $selitem = null, array $extra = null) {
+			global $app;
+			// TODO: Nest items
+?>
+			<select class="form-select" name="<?php echo $selname; ?>">
+				<?php if ($extra != null) { ?>
+					<option value="<?php echo $extra["value"]; ?>"><?php echo $extra["title"]; ?></option>
+				<?php } ?>
+				<?php
+					foreach ($app->menus->getMenuItems() as $item) {
+						if ($selitem) {
+				?>
+							<option value="<?php echo $item->id; ?>" <?php if ($item->id == $selitem) echo "selected"; ?>><?php echo $item->label; ?></option>
+				<?php
+						} else {
+				?>
+							<option value="<?php echo $item->id; ?>"><?php echo $item->label; ?></option>
+				<?php
+						}
+					}
+				?>
+			</select>
+<?php
+		}
+
+		public static function renderModulePicker(string $selname, string $selmod = null, array $extra = null) {
+			global $app;
+?>
+			<select class="form-select" name="<?php echo $selname; ?>">
+				<?php if ($extra != null) { ?>
+					<option value="<?php echo $extra["value"]; ?>"><?php echo $extra["title"]; ?></option>
+				<?php } ?>
+				<?php
+					foreach ($app->modules->getModule() as $mod) {
+						if ($selmod) {
+				?>
+							<option value="<?php echo $mod->id; ?>" <?php if ($mod->id == $selmod) echo "selected"; ?>><?php echo $mod->title; ?></option>
+				<?php
+						} else {
+				?>
+							<option value="<?php echo $mod->id; ?>"><?php echo $mod->label; ?></option>
+				<?php
+						}
+					}
+				?>
+			</select>
+<?php
+		}
+
+		public static function renderUserPicker(string $selname, string $seluser = null, array $extra = null) {
+			global $app;
+?>
+			<select class="form-select" name="<?php echo $selname; ?>">
+				<?php if ($extra != null) { ?>
+					<option value="<?php echo $extra["value"]; ?>"><?php echo $extra["title"]; ?></option>
+				<?php } ?>
+				<?php
+					foreach ($app->users->getUser() as $user) {
+						if ($seluser) {
+				?>
+							<option value="<?php echo $user->id; ?>" <?php if ($user->id == $seluser) echo "selected"; ?>><?php echo $user->name; ?></option>
+				<?php
+						} else {
+				?>
+							<option value="<?php echo $user->id; ?>"><?php echo $user->label; ?></option>
+				<?php
+						}
+					}
+				?>
+			</select>
+<?php
+		}
+
+		public static function renderUserGroupPicker(string $selname, string $selgroup = null, array $extra = null) {
+			global $app;
+			// TODO: Nest groups
+?>
+			<select class="form-select" name="<?php echo $selname; ?>">
+				<?php if ($extra != null) { ?>
+					<option value="<?php echo $extra["value"]; ?>"><?php echo $extra["title"]; ?></option>
+				<?php } ?>
+				<?php
+					foreach ($app->users->getUserGroups() as $group) {
+						if ($selgroup) {
+				?>
+							<option value="<?php echo $group->id; ?>" <?php if ($group->id == $selgroup) echo "selected"; ?>><?php echo $group->name; ?></option>
+				<?php
+						} else {
+				?>
+							<option value="<?php echo $group->id; ?>"><?php echo $group->name; ?></option>
+				<?php
+						}
+					}
+				?>
+			</select>
+<?php
+		}
+	}
+?>

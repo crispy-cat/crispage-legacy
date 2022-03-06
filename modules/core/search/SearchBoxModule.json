@@ -1,0 +1,12 @@
+{
+	"name": "Search Box",
+	"class": "core/search/SearchBoxModule",
+	"description": "A search box compatible with Bootstrap.",
+	"settings": [
+		{
+			"type": "string",
+			"name": "classes",
+			"label": "Module classes"
+		}
+	]
+}

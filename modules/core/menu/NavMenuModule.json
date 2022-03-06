@@ -1,0 +1,17 @@
+{
+	"name": "Nav Menu",
+	"class": "core/menu/NavMenuModule",
+	"description": "Menu navigation compatible with Bootstrap.",
+	"settings": [
+		{
+			"type": "string",
+			"name": "classes",
+			"label": "Module classes"
+		},
+		{
+			"type": "menu",
+			"name": "menu",
+			"label": "Menu"
+		}
+	]
+}
