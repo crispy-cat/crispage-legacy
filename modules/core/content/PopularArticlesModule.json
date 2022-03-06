@@ -1,0 +1,27 @@
+{
+	"name": "Popular Articles",
+	"class": "core/content/PopularArticlesModule",
+	"description": "Displays the most popular articles.",
+	"settings": [
+		{
+			"type": "string",
+			"name": "classes",
+			"label": "Module classes"
+		},
+		{
+			"type": "number",
+			"name": "numarticles",
+			"label": "Display articles"
+		},
+		{
+			"type": "boolean",
+			"name": "filter",
+			"label": "Filter by Category?"
+		},
+		{
+			"type": "category",
+			"name": "filtercat",
+			"label": "Filter Category"
+		}
+	]
+}

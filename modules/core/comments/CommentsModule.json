@@ -1,0 +1,17 @@
+{
+	"name": "Comments",
+	"class": "core/comments/CommentsModule",
+	"description": "Displays comments and allows users to post them.",
+	"settings": [
+		{
+			"type": "string",
+			"name": "classes",
+			"label": "Module classes"
+		},
+		{
+			"type": "number",
+			"name": "numcomments",
+			"label": "Display # of comments:"
+		}
+	]
+}
