@@ -1,0 +1,103 @@
+{
+	"TableName": "categories",
+	"Columns": [
+		"id",
+		"parent",
+		"state",
+		"created",
+		"modified",
+		"title",
+		"content",
+		"tags",
+		"meta_desc",
+		"meta_keys",
+		"meta_robots",
+		"options"
+	],
+	"ColumnTypes": {
+		"id": "string",
+		"parent": "string",
+		"state": "string",
+		"created": "integer",
+		"modified": "integer",
+		"title": "string",
+		"content": "string",
+		"tags": "string",
+		"meta_desc": "string",
+		"meta_keys": "string",
+		"meta_robots": "string",
+		"options": "array"
+	},
+	"TableData": [
+		{
+			"id": "uncategorized",
+			"parent": "",
+			"state": "published",
+			"created": 1645319127,
+			"modified": 1645319127,
+			"title": "Uncategorized",
+			"content": "uncategorized",
+			"tags": "",
+			"meta_desc": "CrispyCMS",
+			"meta_keys": "crispycms,crispycat",
+			"meta_robots": "index, follow",
+			"options": []
+		},
+		{
+			"id": "software",
+			"parent": "",
+			"state": "published",
+			"created": 1645365774,
+			"modified": 1645365774,
+			"title": "Software",
+			"content": "software projects",
+			"tags": "",
+			"meta_desc": "CrispyCMS",
+			"meta_keys": "crispycms,crispycat",
+			"meta_robots": "index, follow",
+			"options": []
+		},
+		{
+			"id": "projects",
+			"parent": "",
+			"state": "published",
+			"created": 1645365786,
+			"modified": 1645365786,
+			"title": "Other Projects",
+			"content": "other projects",
+			"tags": "",
+			"meta_desc": "CrispyCMS",
+			"meta_keys": "crispycms,crispycat",
+			"meta_robots": "index, follow",
+			"options": []
+		},
+		{
+			"id": "skyscrapersim",
+			"parent": "projects",
+			"state": "published",
+			"created": 1645365815,
+			"modified": 1645365815,
+			"title": "Skyscrapersim",
+			"content": "skyscrapersim projects",
+			"tags": "",
+			"meta_desc": "CrispyCMS",
+			"meta_keys": "crispycms,crispycat",
+			"meta_robots": "index, follow",
+			"options": []
+		},
+		{
+			"id": "photography",
+			"parent": "projects",
+			"state": "published",
+			"created": 1645365826,
+			"modified": 1645365830,
+			"title": "Photography",
+			"content": "photography",
+			"tags": "",
+			"meta_desc": "CrispyCMS",
+			"meta_keys": "crispycms,crispycat",
+			"meta_robots": "index, follow",
+			"options": []
+		}
+	]
+}

@@ -1,0 +1,103 @@
+{
+	"TableName": "sessions",
+	"Columns": [
+		"id",
+		"user",
+		"ip",
+		"started",
+		"lastactive"
+	],
+	"ColumnTypes": {
+		"id": "string",
+		"user": "string",
+		"ip": "string",
+		"started": "integer",
+		"lastactive": "integer"
+	},
+	"TableData": [
+		{
+			"id": "f076c1d2d348609fb3ec4a6de17587417ece43d1b451c06f199e945cdf3d91b4",
+			"user": "crispycat",
+			"ip": "127.0.0.1",
+			"started": 1645884398,
+			"lastactive": 1645884398
+		},
+		{
+			"id": "9dacfd5c7b84493b09c1da18220088e46e1fc8b584b3184311891628a9dc02b0",
+			"user": "crispycat",
+			"ip": "127.0.0.1",
+			"started": 1645884523,
+			"lastactive": 1645884523
+		},
+		{
+			"id": "1e3f504d3bf28bf001780fcebf12909dbbae70d5381dff4a716ff09787887b69",
+			"user": "crispycat",
+			"ip": "127.0.0.1",
+			"started": 1645885560,
+			"lastactive": 1645885560
+		},
+		{
+			"id": "1a8c553ea71997b1d8227b8a17c37e334432d95f49025c8e191479157e446735",
+			"user": "cornhole",
+			"ip": "127.0.0.1",
+			"started": 1645889075,
+			"lastactive": 1645889075
+		},
+		{
+			"id": "94bf0e8582c4dcfe82fcf35db6f4f12a9b37cb77ece66c9f2fc05f7ed72f9f7f",
+			"user": "crispycat",
+			"ip": "127.0.0.1",
+			"started": 1645890441,
+			"lastactive": 1645890441
+		},
+		{
+			"id": "813482922026f13a30fbe921310ada97776d15aa2e989103e5e296f134f0c543",
+			"user": "admin",
+			"ip": "127.0.0.1",
+			"started": 1645890999,
+			"lastactive": 1645890999
+		},
+		{
+			"id": "147e4a7d59a2374ef35c0d8d7968be3122065ccfafbfcd6b2633f7ad342a7b61",
+			"user": "moderator",
+			"ip": "127.0.0.1",
+			"started": 1645891529,
+			"lastactive": 1645895627
+		},
+		{
+			"id": "9aad6677f84d7b2c28d47f264f9564cc408e66e9ad02215d3d9fa841d71a8f4a",
+			"user": "moderator",
+			"ip": "127.0.0.1",
+			"started": 1645895627,
+			"lastactive": 1645906169
+		},
+		{
+			"id": "jYKqM7Wgxn6gVP6ZIXzsWBoYUKyd0AugjS0Hr72f0Q2DLWYweXFYVS9xl83hsEG7",
+			"user": "crispycat",
+			"ip": "127.0.0.1",
+			"started": 1645906169,
+			"lastactive": 1645906353
+		},
+		{
+			"id": "a90gCQ\/8wOhUS5ZOGcoypUeW5cBbaS7ImpVl.S4OcH6GK.I0TLuoFJmvr2ZMm2N.",
+			"user": "crispycat",
+			"ip": "127.0.0.1",
+			"started": 1646428422,
+			"lastactive": 1646428422
+		},
+		{
+			"id": "802uH3hGUbnJ\/5Nv9e.wvEVCEXAgCSEr.UnGXohoBLCNJMf7H8W6iQWfu9Q.8Ngt",
+			"user": "crispycat",
+			"ip": "127.0.0.1",
+			"started": 1646430538,
+			"lastactive": 1646519174
+		},
+		{
+			"id": "50GsOIFk5hbgCu326SO8G1ki3.Dm4D1vRWI8ea.VzvtPAM99VIaPS7PZz0n3Uw6O",
+			"user": "cat",
+			"ip": "127.0.0.1",
+			"started": 1646517813,
+			"lastactive": 1646518137
+		}
+	]
+}

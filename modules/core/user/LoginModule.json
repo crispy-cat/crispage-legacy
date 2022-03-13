@@ -1,0 +1,12 @@
+{
+	"name": "Login Form",
+	"class": "core/user/LoginModule",
+	"description": "A login form compatible with Bootstrap.",
+	"options": [
+		{
+			"type": "string",
+			"name": "classes",
+			"label": "Module classes"
+		}
+	]
+}

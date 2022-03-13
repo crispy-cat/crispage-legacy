@@ -1,0 +1,15 @@
+{
+	"name": "ExamplePlugin",
+	"class": "example/ExamplePlugin",
+	"description": "An example plugin.",
+	"version":		"1.0.0",
+	"author":		"crispycat",
+	"author_url":	"https://crispy.cat",
+	"options": [
+		{
+			"type": "string",
+			"name": "test_string",
+			"label": "Test string:"
+		}
+	]
+}

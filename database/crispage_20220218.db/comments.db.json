@@ -1,0 +1,29 @@
+{
+	"TableName": "comments",
+	"Columns": [
+		"id",
+		"article",
+		"created",
+		"modified",
+		"author",
+		"content"
+	],
+	"ColumnTypes": {
+		"id": "string",
+		"article": "string",
+		"created": "integer",
+		"modified": "integer",
+		"author": "string",
+		"content": "string"
+	},
+	"TableData": [
+		{
+			"id": "0hu0qakliW8y1u1F",
+			"article": "index",
+			"created": 1646601295,
+			"modified": 1646601295,
+			"author": "super-user",
+			"content": "A comment on Home"
+		}
+	]
+}

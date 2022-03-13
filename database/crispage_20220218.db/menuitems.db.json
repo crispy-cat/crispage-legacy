@@ -1,0 +1,137 @@
+{
+	"TableName": "menuitems",
+	"Columns": [
+		"id",
+		"label",
+		"type",
+		"menu",
+		"parent",
+		"ord",
+		"content",
+		"created",
+		"modified"
+	],
+	"ColumnTypes": {
+		"id": "string",
+		"label": "string",
+		"type": "string",
+		"menu": "string",
+		"parent": "string",
+		"ord": "integer",
+		"content": "string",
+		"created": "integer",
+		"modified": "integer"
+	},
+	"TableData": [
+		{
+			"id": "index",
+			"label": "Home",
+			"type": "url",
+			"menu": "main-menu",
+			"parent": "",
+			"ord": 0,
+			"content": "\/crispage",
+			"created": 1645360765,
+			"modified": 1646601188
+		},
+		{
+			"id": "an-article",
+			"label": "An Article",
+			"type": "article",
+			"menu": "main-menu",
+			"parent": "",
+			"ord": 1,
+			"content": "article-in-category-1",
+			"created": 1646600874,
+			"modified": 1646601191
+		},
+		{
+			"id": "a-category",
+			"label": "A category",
+			"type": "category",
+			"menu": "main-menu",
+			"parent": "",
+			"ord": 2,
+			"content": "category-1",
+			"created": 1646600898,
+			"modified": 1646601194
+		},
+		{
+			"id": "search",
+			"label": "Search",
+			"type": "search",
+			"menu": "main-menu",
+			"parent": "",
+			"ord": 3,
+			"content": "",
+			"created": 1646600910,
+			"modified": 1646601197
+		},
+		{
+			"id": "a-dropdown",
+			"label": "A dropdown",
+			"type": "url",
+			"menu": "main-menu",
+			"parent": "",
+			"ord": 4,
+			"content": "#",
+			"created": 1646600952,
+			"modified": 1646601200
+		},
+		{
+			"id": "login",
+			"label": "Login",
+			"type": "login",
+			"menu": "main-menu",
+			"parent": "a-dropdown",
+			"ord": 0,
+			"content": "",
+			"created": 1646600973,
+			"modified": 1646601203
+		},
+		{
+			"id": "logout",
+			"label": "Logout",
+			"type": "logout",
+			"menu": "main-menu",
+			"parent": "a-dropdown",
+			"ord": 1,
+			"content": "",
+			"created": 1646600988,
+			"modified": 1646601206
+		},
+		{
+			"id": "register",
+			"label": "Register",
+			"type": "register",
+			"menu": "main-menu",
+			"parent": "a-dropdown",
+			"ord": 2,
+			"content": "",
+			"created": 1646601002,
+			"modified": 1646601212
+		},
+		{
+			"id": "password-reset",
+			"label": "Password Reset",
+			"type": "reset_password",
+			"menu": "main-menu",
+			"parent": "a-dropdown",
+			"ord": 3,
+			"content": "",
+			"created": 1646601021,
+			"modified": 1646601215
+		},
+		{
+			"id": "user-profile",
+			"label": "User Profile",
+			"type": "user_profile",
+			"menu": "main-menu",
+			"parent": "a-dropdown",
+			"ord": 4,
+			"content": "",
+			"created": 1646601033,
+			"modified": 1646601219
+		}
+	]
+}

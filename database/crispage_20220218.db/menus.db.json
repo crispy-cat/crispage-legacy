@@ -1,0 +1,23 @@
+{
+	"TableName": "menus",
+	"Columns": [
+		"id",
+		"title",
+		"created",
+		"modified"
+	],
+	"ColumnTypes": {
+		"id": "string",
+		"title": "string",
+		"created": "integer",
+		"modified": "integer"
+	},
+	"TableData": [
+		{
+			"id": "main-menu",
+			"title": "Main Menu",
+			"created": 1645360651,
+			"modified": 1646601172
+		}
+	]
+}

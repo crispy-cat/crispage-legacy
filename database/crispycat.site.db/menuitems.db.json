@@ -1,0 +1,115 @@
+{
+	"TableName": "menuitems",
+	"Columns": [
+		"id",
+		"label",
+		"type",
+		"menu",
+		"parent",
+		"ord",
+		"content",
+		"created",
+		"modified"
+	],
+	"ColumnTypes": {
+		"id": "string",
+		"label": "string",
+		"type": "string",
+		"menu": "string",
+		"parent": "string",
+		"ord": "integer",
+		"content": "string",
+		"created": "integer",
+		"modified": "integer"
+	},
+	"TableData": [
+		{
+			"id": "index",
+			"label": "Home",
+			"type": "url",
+			"menu": "navbar-menu",
+			"parent": "",
+			"ord": 0,
+			"content": "\/crispage",
+			"created": 1645360765,
+			"modified": 1645360765
+		},
+		{
+			"id": "software",
+			"label": "Software",
+			"type": "category",
+			"menu": "navbar-menu",
+			"parent": "",
+			"ord": 1,
+			"content": "software",
+			"created": 1645365863,
+			"modified": 1645365866
+		},
+		{
+			"id": "projects-header",
+			"label": "Other Projects",
+			"type": "url",
+			"menu": "navbar-menu",
+			"parent": "",
+			"ord": 2,
+			"content": "#",
+			"created": 1645365884,
+			"modified": 1645365884
+		},
+		{
+			"id": "skyscrapersim",
+			"label": "Skyscrapersim",
+			"type": "category",
+			"menu": "navbar-menu",
+			"parent": "projects-header",
+			"ord": 0,
+			"content": "skyscrapersim",
+			"created": 1645365904,
+			"modified": 1645365904
+		},
+		{
+			"id": "photography",
+			"label": "Photography",
+			"type": "category",
+			"menu": "navbar-menu",
+			"parent": "projects-header",
+			"ord": 1,
+			"content": "photography",
+			"created": 1645365925,
+			"modified": 1645365925
+		},
+		{
+			"id": "login",
+			"label": "Login",
+			"type": "login",
+			"menu": "user-menu",
+			"parent": "",
+			"ord": 0,
+			"content": "",
+			"created": 1645367019,
+			"modified": 1645367019
+		},
+		{
+			"id": "logout",
+			"label": "Logout",
+			"type": "logout",
+			"menu": "user-menu",
+			"parent": "",
+			"ord": 1,
+			"content": "",
+			"created": 1645367037,
+			"modified": 1645367037
+		},
+		{
+			"id": "register",
+			"label": "Register",
+			"type": "register",
+			"menu": "user-menu",
+			"parent": "",
+			"ord": 2,
+			"content": "",
+			"created": 1645367061,
+			"modified": 1645367061
+		}
+	]
+}

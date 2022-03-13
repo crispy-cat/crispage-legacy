@@ -1,0 +1,20 @@
+{
+	"TableName": "sessions",
+	"Columns": [
+		"id",
+		"user",
+		"ip",
+		"started",
+		"lastactive"
+	],
+	"ColumnTypes": {
+		"id": "string",
+		"user": "string",
+		"ip": "string",
+		"started": "integer",
+		"lastactive": "integer"
+	},
+	"TableData": [
+		
+	]
+}

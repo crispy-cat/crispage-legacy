@@ -1,0 +1,29 @@
+{
+	"TableName": "bans",
+	"Columns": [
+		"id",
+		"user",
+		"created",
+		"modified",
+		"expires",
+		"reason"
+	],
+	"ColumnTypes": {
+		"id": "string",
+		"user": "string",
+		"created": "integer",
+		"modified": "integer",
+		"expires": "integer",
+		"reason": "string"
+	},
+	"TableData": [
+		{
+			"id": "3Bj3E8GtSPfn1KUE",
+			"user": "cat",
+			"created": 1646491517,
+			"modified": 1646493128,
+			"expires": 1646493128,
+			"reason": "GROSS PENIS PICTURES"
+		}
+	]
+}

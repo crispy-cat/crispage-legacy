@@ -1,0 +1,31 @@
+{
+	"TableName": "plugins",
+	"Columns": [
+		"id",
+		"class",
+		"priority",
+		"created",
+		"modified",
+		"options"
+	],
+	"ColumnTypes": {
+		"id": "string",
+		"class": "string",
+		"priority": "integer",
+		"created": "integer",
+		"modified": "integer",
+		"options": "array"
+	},
+	"TableData": [
+		{
+			"id": "ExamplePlugin",
+			"class": "example\/ExamplePlugin",
+			"priority": 0,
+			"created": 0,
+			"modified": 0,
+			"options": {
+				"test_string": "Hello world"
+			}
+		}
+	]
+}

@@ -1,0 +1,45 @@
+{
+	"TableName": "installation",
+	"Columns": [
+		"id",
+		"type",
+		"class"
+	],
+	"ColumnTypes": {
+		"id": "number",
+		"type": "string",
+		"class": "string"
+	},
+	"TableData": [
+		{
+			"id": "0",
+			"type": "module",
+			"class": "core\/content\/LatestArticlesModule"
+		},
+		{
+			"id": "1",
+			"type": "module",
+			"class": "core\/content\/PopularArticlesModule"
+		},
+		{
+			"id": "2",
+			"type": "module",
+			"class": "core\/menu\/NavMenuModule"
+		},
+		{
+			"id": "3",
+			"type": "module",
+			"class": "core\/search\/SearchBoxModule"
+		},
+		{
+			"id": "4",
+			"type": "module",
+			"class": "core\/text\/CustomModule"
+		},
+		{
+			"id": "5",
+			"type": "module",
+			"class": "core\/comments\/CommentsModule"
+		}
+	]
+}

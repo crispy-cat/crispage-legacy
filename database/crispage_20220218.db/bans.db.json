@@ -1,0 +1,21 @@
+{
+	"TableName": "bans",
+	"Columns": [
+		"id",
+		"user",
+		"created",
+		"modified",
+		"expires",
+		"reason"
+	],
+	"ColumnTypes": {
+		"id": "string",
+		"user": "string",
+		"created": "integer",
+		"modified": "integer",
+		"expires": "integer",
+		"reason": "string"
+	},
+	"TableData": [
+	]
+}

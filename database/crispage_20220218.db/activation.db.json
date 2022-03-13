@@ -1,0 +1,13 @@
+{
+	"TableName": "activation",
+	"Columns": [
+		"id",
+		"token"
+	],
+	"ColumnTypes": {
+		"id": "string",
+		"token": "string"
+	},
+	"TableData": [
+	]
+}

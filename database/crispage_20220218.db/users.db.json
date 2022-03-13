@@ -1,0 +1,65 @@
+{
+	"TableName": "users",
+	"Columns": [
+		"id",
+		"name",
+		"email",
+		"group",
+		"created",
+		"modified",
+		"loggedin",
+		"activated"
+	],
+	"ColumnTypes": {
+		"id": "string",
+		"name": "string",
+		"email": "string",
+		"group": "string",
+		"created": "integer",
+		"modified": "integer",
+		"loggedin": "integer",
+		"activated": "integer"
+	},
+	"TableData": [
+		{
+			"id": "admin",
+			"name": "admin",
+			"email": "admin@crispy.cat",
+			"group": "admin",
+			"created": 1645890939,
+			"modified": 1645890939,
+			"loggedin": 0,
+			"activated": 2
+		},
+		{
+			"id": "moderator",
+			"name": "moderator",
+			"email": "moderator@crispy.cat",
+			"group": "moderator",
+			"created": 1645890952,
+			"modified": 1645890952,
+			"loggedin": 0,
+			"activated": 2
+		},
+		{
+			"id": "member",
+			"name": "member",
+			"email": "member@crispy.cat",
+			"group": "member",
+			"created": 1645890961,
+			"modified": 1645890961,
+			"loggedin": 0,
+			"activated": 2
+		},
+		{
+			"id": "super-user",
+			"name": "Super User",
+			"email": "super-user@crispy.cat",
+			"group": "super-user",
+			"created": 1646600677,
+			"modified": 1646600677,
+			"loggedin": 1647184034,
+			"activated": 2
+		}
+	]
+}

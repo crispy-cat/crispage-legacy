@@ -1,0 +1,110 @@
+{
+	"TableName": "routes",
+	"Columns": [
+		"id",
+		"item_id",
+		"view"
+	],
+	"ColumnTypes": {
+		"id": "string",
+		"item_id": "string",
+		"view": "string"
+	},
+	"TableData": [
+		{
+			"id": "index",
+			"item_id": "index",
+			"view": "core\/article"
+		},
+		{
+			"id": "user_profile",
+			"item_id": "",
+			"view": "core\/user_profile"
+		},
+		{
+			"id": "login",
+			"item_id": "",
+			"view": "core\/login"
+		},
+		{
+			"id": "logout",
+			"item_id": "",
+			"view": "core\/logout"
+		},
+		{
+			"id": "register",
+			"item_id": "",
+			"view": "core\/register"
+		},
+		{
+			"id": "activate_account",
+			"item_id": "",
+			"view": "core\/activate_account"
+		},
+		{
+			"id": "reset_password",
+			"item_id": "",
+			"view": "core\/reset_password"
+		},
+		{
+			"id": "post_comment",
+			"item_id": "",
+			"view": "core\/post_comment"
+		},
+		{
+			"id": "search",
+			"item_id": "",
+			"view": "core\/search"
+		},
+		{
+			"id": "category-1",
+			"item_id": "category-1",
+			"view": "core\/category"
+		},
+		{
+			"id": "category-1-a",
+			"item_id": "category-1-a",
+			"view": "core\/category"
+		},
+		{
+			"id": "category-1-b",
+			"item_id": "category-1-b",
+			"view": "core\/category"
+		},
+		{
+			"id": "category-2",
+			"item_id": "category-2",
+			"view": "core\/category"
+		},
+		{
+			"id": "category-1\/category-1-a",
+			"item_id": "category-1-a",
+			"view": "core\/category"
+		},
+		{
+			"id": "category-1\/category-1-b",
+			"item_id": "category-1-b",
+			"view": "core\/category"
+		},
+		{
+			"id": "category-3",
+			"item_id": "category-3",
+			"view": "core\/category"
+		},
+		{
+			"id": "category-1\/index",
+			"item_id": "index",
+			"view": "core\/article"
+		},
+		{
+			"id": "category-1\/article-in-category-1",
+			"item_id": "article-in-category-1",
+			"view": "core\/article"
+		},
+		{
+			"id": "category-1\/category-1-a\/article-in-category-1-a",
+			"item_id": "article-in-category-1-a",
+			"view": "core\/article"
+		}
+	]
+}

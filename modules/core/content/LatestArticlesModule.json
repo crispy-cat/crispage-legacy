@@ -1,0 +1,27 @@
+{
+	"name": "Latest Articles",
+	"class": "core/content/LatestArticlesModule",
+	"description": "Displays the latest articles.",
+	"options": [
+		{
+			"type": "string",
+			"name": "classes",
+			"label": "Module classes"
+		},
+		{
+			"type": "number",
+			"name": "numarticles",
+			"label": "Display articles"
+		},
+		{
+			"type": "boolean",
+			"name": "filter",
+			"label": "Filter by Category?"
+		},
+		{
+			"type": "category",
+			"name": "filtercat",
+			"label": "Filter Category"
+		}
+	]
+}

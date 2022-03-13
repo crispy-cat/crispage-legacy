@@ -1,0 +1,96 @@
+{
+	"TableName": "articles",
+	"Columns": [
+		"id",
+		"category",
+		"state",
+		"created",
+		"modified",
+		"author",
+		"summary",
+		"tags",
+		"title",
+		"content",
+		"meta_desc",
+		"meta_keys",
+		"meta_robots",
+		"hits",
+		"options"
+	],
+	"ColumnTypes": {
+		"id": "string",
+		"category": "string",
+		"state": "string",
+		"created": "integer",
+		"modified": "integer",
+		"author": "string",
+		"summary": "string",
+		"tags": "string",
+		"title": "string",
+		"content": "string",
+		"meta_desc": "string",
+		"meta_keys": "string",
+		"meta_robots": "string",
+		"hits": "integer",
+		"options": "array"
+	},
+	"TableData": [
+		{
+			"id": "index",
+			"category": "category-1",
+			"state": "published",
+			"created": 1646600421,
+			"modified": 1646600421,
+			"author": "crispycat",
+			"summary": "A homepage",
+			"tags": "",
+			"title": "Home",
+			"content": "A homepage",
+			"meta_desc": "CrispyCMS",
+			"meta_keys": "crispycms,crispycat",
+			"meta_robots": "index, follow",
+			"hits": 50,
+			"options": {
+				"show_comments": "yes"
+			}
+		},
+		{
+			"id": "article-in-category-1",
+			"category": "category-1",
+			"state": "published",
+			"created": 1646600509,
+			"modified": 1646600509,
+			"author": "crispycat",
+			"summary": "Article in Category 1",
+			"tags": "",
+			"title": "Article in Category 1",
+			"content": "Article in Category 1",
+			"meta_desc": "CrispyCMS",
+			"meta_keys": "crispycms,crispycat",
+			"meta_robots": "index, follow",
+			"hits": 4,
+			"options": {
+				"show_comments": "yes"
+			}
+		},
+		{
+			"id": "article-in-category-1-a",
+			"category": "category-1-a",
+			"state": "published",
+			"created": 1646600523,
+			"modified": 1646600523,
+			"author": "crispycat",
+			"summary": "Article in Category 1.a",
+			"tags": "",
+			"title": "Article in Category 1.a",
+			"content": "Article in Category 1.a",
+			"meta_desc": "CrispyCMS",
+			"meta_keys": "crispycms,crispycat",
+			"meta_robots": "index, follow",
+			"hits": 3,
+			"options": {
+				"show_comments": "yes"
+			}
+		}
+	]
+}

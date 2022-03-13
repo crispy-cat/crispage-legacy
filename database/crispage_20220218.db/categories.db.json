@@ -1,0 +1,113 @@
+{
+	"TableName": "categories",
+	"Columns": [
+		"id",
+		"parent",
+		"state",
+		"created",
+		"modified",
+		"title",
+		"content",
+		"tags",
+		"meta_desc",
+		"meta_keys",
+		"meta_robots",
+		"options"
+	],
+	"ColumnTypes": {
+		"id": "string",
+		"parent": "string",
+		"state": "string",
+		"created": "integer",
+		"modified": "integer",
+		"title": "string",
+		"content": "string",
+		"tags": "string",
+		"meta_desc": "string",
+		"meta_keys": "string",
+		"meta_robots": "string",
+		"options": "array"
+	},
+	"TableData": [
+		{
+			"id": "category-1",
+			"parent": "",
+			"state": "published",
+			"created": 1646600262,
+			"modified": 1646600262,
+			"title": "Category 1",
+			"content": "Category 1",
+			"tags": "",
+			"meta_desc": "CrispyCMS",
+			"meta_keys": "crispycms,crispycat",
+			"meta_robots": "index, follow",
+			"options": [
+				""
+			]
+		},
+		{
+			"id": "category-1-a",
+			"parent": "category-1",
+			"state": "published",
+			"created": 1646600339,
+			"modified": 1646600366,
+			"title": "Category 1.a",
+			"content": "Category 1.a",
+			"tags": "",
+			"meta_desc": "CrispyCMS",
+			"meta_keys": "crispycms,crispycat",
+			"meta_robots": "index, follow",
+			"options": [
+				""
+			]
+		},
+		{
+			"id": "category-1-b",
+			"parent": "category-1",
+			"state": "published",
+			"created": 1646600349,
+			"modified": 1646600372,
+			"title": "Category 1.b",
+			"content": "Category 1.b",
+			"tags": "",
+			"meta_desc": "CrispyCMS",
+			"meta_keys": "crispycms,crispycat",
+			"meta_robots": "index, follow",
+			"options": [
+				""
+			]
+		},
+		{
+			"id": "category-2",
+			"parent": "",
+			"state": "published",
+			"created": 1646600360,
+			"modified": 1646600360,
+			"title": "Category 2",
+			"content": "Category 2",
+			"tags": "",
+			"meta_desc": "CrispyCMS",
+			"meta_keys": "crispycms,crispycat",
+			"meta_robots": "index, follow",
+			"options": [
+				""
+			]
+		},
+		{
+			"id": "category-3",
+			"parent": "",
+			"state": "published",
+			"created": 1646600389,
+			"modified": 1646600389,
+			"title": "Category 3",
+			"content": "Category 3",
+			"tags": "",
+			"meta_desc": "CrispyCMS",
+			"meta_keys": "crispycms,crispycat",
+			"meta_robots": "index, follow",
+			"options": [
+				""
+			]
+		}
+	]
+}

@@ -1,0 +1,12 @@
+{
+	"TableName": "authreset",
+	"Columns": [
+		"id",
+		"token"
+	],
+	"ColumnTypes": {
+		"id": "string",
+		"token": "string"
+	},
+	"TableData": []
+}
