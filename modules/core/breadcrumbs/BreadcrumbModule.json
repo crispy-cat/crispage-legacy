@@ -1,0 +1,17 @@
+{
+	"name": "Breadcrumbs",
+	"class": "core/breadcrumbs/BreadcrumbModule",
+	"description": "Displays breadcrumbs.",
+	"options": [
+		{
+			"type": "string",
+			"name": "classes",
+			"label": "Module classes"
+		},
+		{
+			"type": "string",
+			"name": "roottext",
+			"label": "Root Label"
+		}
+	]
+}

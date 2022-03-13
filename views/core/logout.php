@@ -14,10 +14,10 @@
 
 	$session = $app->session->getCurrentSession();
 	if (!$session)
-		$app->redirect(Config::WEBROOT . "/$ploc?me=There is no active session");
+		$app->redirect(preg_replace("/\\/\\//", "/", Config::WEBROOT . "/$ploc?me=There is no active session"));
 
 	$app->session->endCurrentSession();
 	$app->events->trigger("users.log_out", $session->user);
 
-	$app->redirect(Config::WEBROOT . "/$ploc?ms=Logged out.");
+	$app->redirect(preg_replace("/\\/\\//", "/", Config::WEBROOT . "/$ploc?ms=Logged out."));
 ?>

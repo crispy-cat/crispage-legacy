@@ -40,18 +40,19 @@
 			"category": "category-1",
 			"state": "published",
 			"created": 1646600421,
-			"modified": 1646600421,
+			"modified": 1647195936,
 			"author": "crispycat",
 			"summary": "A homepage",
 			"tags": "",
 			"title": "Home",
 			"content": "A homepage",
 			"meta_desc": "CrispyCMS",
-			"meta_keys": "crispycms,crispycat",
+			"meta_keys": "index, follow",
 			"meta_robots": "index, follow",
-			"hits": 50,
+			"hits": 66,
 			"options": {
-				"show_comments": "yes"
+				"show_comments": "yes",
+				"show_info": "yes"
 			}
 		},
 		{
@@ -68,7 +69,7 @@
 			"meta_desc": "CrispyCMS",
 			"meta_keys": "crispycms,crispycat",
 			"meta_robots": "index, follow",
-			"hits": 4,
+			"hits": 20,
 			"options": {
 				"show_comments": "yes"
 			}

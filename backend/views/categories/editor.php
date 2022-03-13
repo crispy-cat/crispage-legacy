@@ -162,13 +162,28 @@
 					<?php if (isset($app->request->query["edit_id"])) { ?>
 						<input type="hidden" name="edit_id" value="<?php echo $app->request->query["edit_id"]; ?>" />
 					<?php } ?>
-					<input type="hidden" name="category_options[]" value="" />
-					<div class="col col-lg-8 me-lg-2">
-						<label for="category_title">Category Title:</label>
-						<input type="text" class="form-control" name="category_title" value="<?php echo $app->vars["category_title"]; ?>" required />
 
-						<label for="category_content">Category Content:</label>
-						<textarea class="form-control" name="category_content" style="height: 300px; font-family: monospace;" required onkeydown="if(event.keyCode===9){var v=this.value,s=this.selectionStart,e=this.selectionEnd;this.value=v.substring(0, s)+'\t'+v.substring(e);this.selectionStart=this.selectionEnd=s+1;return false;}"><?php echo $app->vars["category_content"]; ?></textarea>
+					<div class="col col-lg-8 me-lg-2">
+						<ul class="nav nav-tabs" role="tablist">
+							<li class="nav-item" role="presentation">
+								<button type="button" class="nav-link active" role="tab" data-bs-toggle="tab" data-bs-target="#category_content">Content</button>
+							</li>
+							<!--<li class="nav-item" role="presentation">
+								<button type="button" class="nav-link" role="tab" data-bs-toggle="tab" data-bs-target="#category_options">Options</button>
+							</li>-->
+						</ul>
+						<div class="tab-content">
+							<div id="category_content" class="tab-pane show active" role="tabpanel">
+								<label for="category_title">Category Title:</label>
+								<input type="text" class="form-control" name="category_title" value="<?php echo $app->vars["category_title"]; ?>" required />
+
+								<label for="category_content">Category Content:</label>
+								<textarea class="form-control" name="category_content" style="height: 300px; font-family: monospace;" required onkeydown="if(event.keyCode===9){var v=this.value,s=this.selectionStart,e=this.selectionEnd;this.value=v.substring(0, s)+'\t'+v.substring(e);this.selectionStart=this.selectionEnd=s+1;return false;}"><?php echo $app->vars["category_content"]; ?></textarea>
+							</div>
+							<!--<div id="category_options" class="tab-pane" role="tabpanel">
+
+							</div>-->
+						</div>
 					</div>
 					<div class="col col-lg-4 ms-lg-2">
 						<label for="category_id">Category ID:</label>

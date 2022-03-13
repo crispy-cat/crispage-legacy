@@ -34,3 +34,12 @@
 		// Name of the folder where the database's files are stored
 		public const DB_JSON_NAME = "crispage_20220218.db";
 	}
+
+	// == Do not edit below this line ==
+
+	define("CRISPAGE", "0.2.1 alpha");
+
+	ini_set("display_errors", "1");
+	ini_set("display_startup_errors", "1");
+	error_reporting(Config::ERRORLVL);
+?>

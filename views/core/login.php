@@ -22,13 +22,13 @@
 
 		$user = $app->users->getUser($id);
 		if (!$user)
-			$app->redirect(Config::WEBROOT . "/login?ploc=$ploc&me=User does not exist");
+			$app->redirect(preg_replace("/\\/\\//", "/", Config::WEBROOT . "/login?ploc=$ploc&me=User does not exist"));
 
 		if (!$user->activated)
-			$app->redirect(Config::WEBROOT . "/login?ploc=$ploc&me=User is not activated");
+			$app->redirect(preg_replace("/\\/\\//", "/", Config::WEBROOT . "/login?ploc=$ploc&me=User is not activated"));
 
 		if (!$app->auth->authenticateUser($id, $password))
-			$app->redirect(Config::WEBROOT . "/login?ploc=$ploc&me=Invalid ID or password");
+			$app->redirect(preg_replace("/\\/\\//", "/", Config::WEBROOT . "/login?ploc=$ploc&me=Invalid ID or password"));
 
 		$app->vars["bans"] = $app->bans->getBans($id);
 		$app->vars["banned"] = false;
@@ -39,7 +39,7 @@
 			$user->loggedin = time();
 			$app->users->setUser($id, $user);
 			$app->events->trigger("users.log_in", $id);
-			$app->redirect(Config::WEBROOT . "/$ploc?ms=Welcome, $id");
+			$app->redirect(preg_replace("/\\/\\//", "/", Config::WEBROOT . "/$ploc?ms=Welcome, $id"));
 		}
 	}
 

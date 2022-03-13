@@ -124,6 +124,17 @@
 												<option value="no" selected>No</option>
 											<?php } ?>
 										</select>
+
+										<label for="settings[articles.show_info]">Show Info (Default):</label>
+										<select class="form-control" name="settings[articles.show_info]">
+											<?php if ($app->getSetting("articles.show_info", "yes") == "yes") { ?>
+												<option value="yes" selected>Yes</option>
+												<option value="no">No</option>
+											<?php } else { ?>
+												<option value="yes">Yes</option>
+												<option value="no" selected>No</option>
+											<?php } ?>
+										</select>
 									</div>
 								</div>
 							</div>

@@ -110,6 +110,11 @@
 			"id": "19",
 			"type": "view",
 			"class": "core\/user_profile"
+		},
+		{
+			"id": "20",
+			"type": "module",
+			"class": "core\/breadcrumbs\/BreadcrumbModule"
 		}
 	]
 }

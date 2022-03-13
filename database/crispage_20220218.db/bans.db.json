@@ -16,6 +16,5 @@
 		"expires": "integer",
 		"reason": "string"
 	},
-	"TableData": [
-	]
+	"TableData": []
 }

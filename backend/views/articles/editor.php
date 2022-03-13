@@ -179,12 +179,22 @@
 								<label for="article_options[show_comments]">Show Comments:</label>
 								<select class="form-control" name="article_options[show_comments]">
 									<?php if ($app->getSetting("articles.show_comments", "yes") == "yes") { ?>
-
 										<option value="yes" <?php if (($app->vars["article_options"]["show_comments"] ?? "yes") == "yes") echo "selected"; ?>>Yes (Default)</option>
 										<option value="no" <?php if (($app->vars["article_options"]["show_comments"] ?? "yes") == "no") echo "selected"; ?>>No</option>
 									<?php } else { ?>
 										<option value="yes" <?php if (($app->vars["article_options"]["show_comments"] ?? "yes") == "yes") echo "selected"; ?>>Yes</option>
 										<option value="no" <?php if (($app->vars["article_options"]["show_comments"] ?? "yes") == "no") echo "selected"; ?>>No (Default)</option>
+									<?php } ?>
+								</select>
+
+								<label for="article_options[show_info]">Show Article Info:</label>
+								<select class="form-control" name="article_options[show_info]">
+									<?php if ($app->getSetting("articles.show_info", "yes") == "yes") { ?>
+										<option value="yes" <?php if (($app->vars["article_options"]["show_info"] ?? "yes") == "yes") echo "selected"; ?>>Yes (Default)</option>
+										<option value="no" <?php if (($app->vars["article_options"]["show_info"] ?? "yes") == "no") echo "selected"; ?>>No</option>
+									<?php } else { ?>
+										<option value="yes" <?php if (($app->vars["article_options"]["show_info"] ?? "yes") == "yes") echo "selected"; ?>>Yes</option>
+										<option value="no" <?php if (($app->vars["article_options"]["show_info"] ?? "yes") == "no") echo "selected"; ?>>No (Default)</option>
 									<?php } ?>
 								</select>
 							</div>

@@ -28,7 +28,7 @@
 			"pos": "navbar",
 			"ord": 0,
 			"created": 1645360839,
-			"modified": 1646601246,
+			"modified": 1647187822,
 			"options": {
 				"classes": "navbar-nav",
 				"menu": "main-menu"
@@ -114,6 +114,19 @@
 				"name": "classes",
 				"label": "Module classes",
 				"classes": " "
+			}
+		},
+		{
+			"id": "breadcrumbs",
+			"title": "Breadcrumbs",
+			"class": "core\/breadcrumbs\/BreadcrumbModule",
+			"pos": "before-content",
+			"ord": 0,
+			"created": 1647200150,
+			"modified": 1647200278,
+			"options": {
+				"classes": " ",
+				"roottext": "Crispage"
 			}
 		}
 	]

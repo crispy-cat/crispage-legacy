@@ -32,15 +32,20 @@
 	$app->page->setContent(function($app) {
 ?>
 		<div id="main" class="page-content">
-			<?php echo $app->vars["article"]->content; ?>
-			<ul id="article_info" class="list-group page-meta">
-				<li class="list-group-item">Author: <?php echo $app->vars["article"]->author; ?></li>
-				<li class="list-group-item"><?php echo $app->vars["word"]; ?>: <?php echo $app->vars["date"]; ?></li>
-				<li class="list-group-item">Category: <?php echo htmlentities($app->content->getCategory($app->vars["article"]->category)->title); ?></li>
-				<?php if ($app->vars["article"]->tags != "") { ?>
-					<li class="list-group-item"><?php echo $app->vars["stags"]; ?></li>
-				<?php } ?>
-			</ul>
+			<?php
+				echo $app->vars["article"]->content;
+
+				if (($app->vars["article"]->options["show_info"] ?? $app->getSetting("articles.show_info", "yes")) == "yes") {
+			?>
+				<ul id="article_info" class="list-group page-meta">
+					<li class="list-group-item">Author: <?php echo $app->vars["article"]->author; ?></li>
+					<li class="list-group-item"><?php echo $app->vars["word"]; ?>: <?php echo $app->vars["date"]; ?></li>
+					<li class="list-group-item">Category: <?php echo htmlentities($app->content->getCategory($app->vars["article"]->category)->title); ?></li>
+					<?php if ($app->vars["article"]->tags != "") { ?>
+						<li class="list-group-item"><?php echo $app->vars["stags"]; ?></li>
+					<?php } ?>
+				</ul>
+			<?php } ?>
 		</div>
 <?php
 	});

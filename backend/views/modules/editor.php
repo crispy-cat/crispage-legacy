@@ -62,7 +62,7 @@
 			}
 
 			$options = array();
-			foreach ($app->vars["module_options"] as $opt)
+			foreach ($app->vars["module_class_options"] as $opt)
 				$options[$opt["name"]] = $app->request->query["module_options"][$opt["name"]];
 
 			$module->title		= $app->request->query["module_title"];
@@ -100,7 +100,7 @@
 			while ($app->modules->existsModule($id)) $id .= "_1";
 
 			$options = array();
-			foreach ($app->vars["module_options"] as $opt)
+			foreach ($app->vars["module_class_options"] as $opt)
 				$options[$opt["name"]] = $app->request->query["module_options"][$opt["name"]];
 
 			$module = new Module(array(
