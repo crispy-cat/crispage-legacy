@@ -16,12 +16,12 @@
 	$app->vars["show"] = $app->request->query["show"] ?? 15;
 	$app->vars["page"] = $app->request->query["page"] ?? 1;
 
-	$app->vars["items"] = $app->menus->getMenuItems($app->vars["menu"]);
+	$items = $app->menus->getMenuItems($app->vars["menu"]);
 
 	$app->vars["npages"] = Paginator::numPages($items, (is_numeric($app->vars["show"])) ? $app->vars["show"] : 0);
 
-	$app->vars["items"] = Paginator::sPaginate($items, $app->vars["show"], $app->vars["page"]));
-	
+	$app->vars["items"] = Paginator::sPaginate($items, $app->vars["show"], $app->vars["page"]);
+
 	$app->page->setContent(function($app) {
 ?>
 		<div id="main" class="page-content">

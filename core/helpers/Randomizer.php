@@ -17,7 +17,7 @@
 			if ($length < 1) $length = 64;
 			$str = "";
 			for ($i = 0; $i < $length; $i++)
-				$str .= Randomizer::RCHARS[random_int(0, $base - 1)];
+				$str .= self::RCHARS[random_int(0, $base - 1)];
 			return $str;
 		}
 	}

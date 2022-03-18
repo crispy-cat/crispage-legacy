@@ -142,7 +142,7 @@
 						<input type="text" class="form-control" name="module_title" value="<?php echo $app->vars["module_title"]; ?>" required />
 
 						<label for="module_name">Module type:</label>
-						<input type="text" class="form-control" name="module_name" value="<?php echo $app->vars["module_name"]; ?>" disabled />
+						<input type="text" class="form-control" value="<?php echo $app->vars["module_name"]; ?>" disabled />
 
 						<?php
 							foreach ($app->vars["module_class_options"] as $option) {

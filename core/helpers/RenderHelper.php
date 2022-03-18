@@ -233,29 +233,29 @@
 		public static function renderField(string $name, string $type = "string", string $value = null) {
 			switch ($type) {
 				case "article":
-					RenderHelper::renderArticlePicker($name, $value ?? null);
+					self::renderArticlePicker($name, $value ?? null);
 					break;
 				case "category":
-					RenderHelper::renderCategoryPicker($name, $value ?? null);
+					self::renderCategoryPicker($name, $value ?? null);
 					break;
 				case "menu":
-					RenderHelper::renderMenuPicker($name, $value ?? null);
+					self::renderMenuPicker($name, $value ?? null);
 					break;
 				case "user":
-					RenderHelper::renderUserPicker($name, $value ?? null);
+					self::renderUserPicker($name, $value ?? null);
 					break;
 				case "usergroup":
-					RenderHelper::renderUserGroupPicker($name, $value ?? null);
+					self::renderUserGroupPicker($name, $value ?? null);
 					break;
 				case "boolean":
-					RenderHelper::renderBooleanField($name, $value ?? false);
+					self::renderBooleanField($name, $value ?? false);
 					break;
 				case "number":
 					echo "<input type=\"number\" class=\"form-control\" name=\"$name\" value=\"" . ($value ?? 0) . "\" required />";
 					break;
 				case "longtext":
 				case "editor":
-					RenderHelper::renderEditor($name, $value);
+					self::renderEditor($name, $value);
 					break;
 				case "string":
 				default:

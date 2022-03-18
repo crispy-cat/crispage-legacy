@@ -14,9 +14,10 @@
 
 	$app->page->setContent(function($app) {
 ?>
+	<h1>Install</h1>
 	<p>Please select an installation option from below.</p>
 
-	<table cellpadding="10" border="1">
+	<table class="table">
 		<tbody>
 			<tr>
 				<td><a href="<?php echo Config::WEBROOT; ?>/installer/install/install"><h2>Install</h2></a></td>

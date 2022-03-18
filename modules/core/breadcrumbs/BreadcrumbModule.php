@@ -26,7 +26,7 @@
 					$crumb = array("url" => Config::WEBROOT);
 					for ($i = 0; $i <= $key; $i++)
 						$crumb["url"] .= "/" . $slug[$i];
-					if ($key == count($slug) - 1) {
+					if (isset($app->request->route["view"]) && $key == count($slug) - 1) {
 						if ($app->request->route["view"] == "article")
 							$crumb["label"] = $app->content->getArticle($part)->title;
 						elseif ($app->request->route["view"] == "category")

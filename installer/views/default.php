@@ -10,13 +10,14 @@
 	defined("CRISPAGE") or die("Application must be started from index.php!");
 	require_once Config::APPROOT . "/installer/header.php";
 
-	$app->page->setTitle("Start");
+	$app->page->setTitle("Install & Manage");
 
 	$app->page->setContent(function($app) {
 ?>
+	<h1>Install & Manage</h1>
 	<p>Welcome to the Crispage installer. Please select an option from the menu below.</p>
 
-	<table cellpadding="10" border="1">
+	<table class="table">
 		<tbody>
 			<tr>
 				<td><a href="<?php echo Config::WEBROOT; ?>/installer/install/default"><h2>Install</h2></a></td>

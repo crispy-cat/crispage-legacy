@@ -36,14 +36,7 @@
 		if (isset($app->request->query["delete_name"])) {
 			if ($app->users->userHasPermissions($app->session->getCurrentSession()->user, UserPermissions::MODIFY_MEDIA)) {
 				$dname = $path . preg_replace("/[\\/\\\\]/", "", basename($app->request->query["delete_name"]));
-				if (file_exists($dname)) {
-					if (is_dir($dname)) {
-						array_map("unlink", glob($dname . "/*"));
-						rmdir($dname);
-					} else {
-						unlink($dname);
-					}
-				}
+				if (file_exists($dname)) FileHelper::deleteRecurs($dname);
 				$app->page->alerts["delete_success"] = array("class" => "success", "content" => "File deleted.");
 			} else {
 				$app->page->alerts["user_permissions"] = array("class" => "danger", "content" => "You do not have permission to delete media");

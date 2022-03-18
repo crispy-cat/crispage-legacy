@@ -1,22 +1,22 @@
 <?php
 	defined("CRISPAGE") or die();
-	
+
 	$approot = $app->request->query["approot"] ?? Config::APPROOT;
 	$webroot = $app->request->query["webroot"] ?? Config::WEBROOT;
 	$dbloc = $app->request->query["db_json_loc"] ?? ($approot . "/database");
 	$dbname = $app->request->query["db_json_name"] ?? "database";
 	$passtable = $app->request->query["password_table"] ?? "auth";
-	
+
 	installer_message("Initializing database");
 	$app->initDatabase("JSONDatabase", array(
 		"location" => $dbloc,
 		"name" => $dbname,
 		"pretty" => false
 	));
-	
+
 	installer_message("Creating database");
 	mkdir($dbloc . "/" . $dbname);
-	
+
 	installer_message("Creating tables");
 	$app->database->createTable("activation", array(
 		"id" => "string",
@@ -78,7 +78,8 @@
 	$app->database->createTable("installation", array(
 		"id" => "string",
 		"type" => "string",
-		"class" => "string"
+		"class" => "string",
+		"scope" => "string"
 	));
 	$app->database->createTable("menuitems", array(
 		"id" => "string",
@@ -104,6 +105,7 @@
 		"class" => "string",
 		"pos" => "string",
 		"ord" => "integer",
+		"scope" => "string",
 		"created" => "integer",
 		"modified" => "integer",
 		"options" => "array"
@@ -112,6 +114,7 @@
 		"id" => "string",
 		"class" => "string",
 		"priority" => "integer",
+		"scope" => "string",
 		"created" => "integer",
 		"modified" => "integer",
 		"options" => "array"
@@ -158,7 +161,7 @@
 		"id" => "string",
 		"password" => "string"
 	));
-	
+
 	installer_message("Populating tables");
 	$app->database->writeRow("categories", "uncategorized", array(
 		"parent" => "",
@@ -203,30 +206,30 @@
 	$app->database->writeRow("settings", "date_format_long", array("value" => $app->request->query["date_format_long"] ?? "Y, F d"));
 	$app->database->writeRow("settings", "date_format_long", array("value" => $app->request->query["time_format_long"] ?? "H:i:s"));
 	$i = 0;
-	$app->database->writeRow("installation", $i++, array("type" => "view", "class" => "core/activate_account"));
-	$app->database->writeRow("installation", $i++, array("type" => "view", "class" => "core/article"));
-	$app->database->writeRow("installation", $i++, array("type" => "view", "class" => "core/category"));
-	$app->database->writeRow("installation", $i++, array("type" => "view", "class" => "core/login"));
-	$app->database->writeRow("installation", $i++, array("type" => "view", "class" => "core/logout"));
-	$app->database->writeRow("installation", $i++, array("type" => "view", "class" => "core/post_comment"));
-	$app->database->writeRow("installation", $i++, array("type" => "view", "class" => "core/register"));
-	$app->database->writeRow("installation", $i++, array("type" => "view", "class" => "core/reset_password"));
-	$app->database->writeRow("installation", $i++, array("type" => "view", "class" => "core/search"));
-	$app->database->writeRow("installation", $i++, array("type" => "view", "class" => "core/user_profile"));
-	$app->database->writeRow("installation", $i++, array("type" => "template", "class" => "installer/template"));
-	$app->database->writeRow("installation", $i++, array("type" => "template", "class" => "crispage/template"));
-	$app->database->writeRow("installation", $i++, array("type" => "template", "class" => "crispy/template"));
-	$app->database->writeRow("installation", $i++, array("type" => "module", "class" => "core/breadcrumbs/BreadcrumbModule"));
-	$app->database->writeRow("installation", $i++, array("type" => "module", "class" => "core/comments/CommentsModule"));
-	$app->database->writeRow("installation", $i++, array("type" => "module", "class" => "core/content/LatestArticlesModule"));
-	$app->database->writeRow("installation", $i++, array("type" => "module", "class" => "core/content/PopularArticlesModule"));
-	$app->database->writeRow("installation", $i++, array("type" => "module", "class" => "core/menu/NavMenuModule"));
-	$app->database->writeRow("installation", $i++, array("type" => "module", "class" => "core/search/SearchBoxModule"));
-	$app->database->writeRow("installation", $i++, array("type" => "module", "class" => "core/text/CustomModule"));
-	$app->database->writeRow("installation", $i++, array("type" => "module", "class" => "core/user/LoginModule"));
-	$app->database->writeRow("installation", $i++, array("type" => "plugin", "class" => "core/example/ExamplePlugin"));
-	
+	$app->database->writeRow("installation", $i++, array("scope" => "frontend", "type" => "view", "class" => "core/activate_account"));
+	$app->database->writeRow("installation", $i++, array("scope" => "frontend", "type" => "view", "class" => "core/article"));
+	$app->database->writeRow("installation", $i++, array("scope" => "frontend", "type" => "view", "class" => "core/category"));
+	$app->database->writeRow("installation", $i++, array("scope" => "frontend", "type" => "view", "class" => "core/login"));
+	$app->database->writeRow("installation", $i++, array("scope" => "frontend", "type" => "view", "class" => "core/logout"));
+	$app->database->writeRow("installation", $i++, array("scope" => "frontend", "type" => "view", "class" => "core/post_comment"));
+	$app->database->writeRow("installation", $i++, array("scope" => "frontend", "type" => "view", "class" => "core/register"));
+	$app->database->writeRow("installation", $i++, array("scope" => "frontend", "type" => "view", "class" => "core/reset_password"));
+	$app->database->writeRow("installation", $i++, array("scope" => "frontend", "type" => "view", "class" => "core/search"));
+	$app->database->writeRow("installation", $i++, array("scope" => "frontend", "type" => "view", "class" => "core/user_profile"));
+	$app->database->writeRow("installation", $i++, array("scope" => "frontend", "type" => "template", "class" => "installer/template"));
+	$app->database->writeRow("installation", $i++, array("scope" => "frontend", "type" => "template", "class" => "crispage/template"));
+	$app->database->writeRow("installation", $i++, array("scope" => "frontend", "type" => "template", "class" => "crispy/template"));
+	$app->database->writeRow("installation", $i++, array("scope" => "frontend", "type" => "module", "class" => "core/breadcrumbs/BreadcrumbModule"));
+	$app->database->writeRow("installation", $i++, array("scope" => "frontend", "type" => "module", "class" => "core/comments/CommentsModule"));
+	$app->database->writeRow("installation", $i++, array("scope" => "frontend", "type" => "module", "class" => "core/content/LatestArticlesModule"));
+	$app->database->writeRow("installation", $i++, array("scope" => "frontend", "type" => "module", "class" => "core/content/PopularArticlesModule"));
+	$app->database->writeRow("installation", $i++, array("scope" => "frontend", "type" => "module", "class" => "core/menu/NavMenuModule"));
+	$app->database->writeRow("installation", $i++, array("scope" => "frontend", "type" => "module", "class" => "core/search/SearchBoxModule"));
+	$app->database->writeRow("installation", $i++, array("scope" => "frontend", "type" => "module", "class" => "core/text/CustomModule"));
+	$app->database->writeRow("installation", $i++, array("scope" => "frontend", "type" => "module", "class" => "core/user/LoginModule"));
+	$app->database->writeRow("installation", $i++, array("scope" => "frontend", "type" => "plugin", "class" => "core/example/ExamplePlugin"));
+
 	$app->database->writeChanges();
-	
+
 	installer_message("Wrote database files")
 ?>

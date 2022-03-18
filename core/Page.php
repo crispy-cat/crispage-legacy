@@ -128,7 +128,7 @@
 		public function loadModules() {
 			global $app;
 			if (count($this->modules)) return;
-			foreach ($app->modules->getModules() as $module)
+			foreach ($app->modules->getModules("frontend") as $module)
 				$this->loadModule($module);
 			usort($this->modules[$module->pos], function($a, $b) {
 				if ($a->ord == $b->ord) return 0;

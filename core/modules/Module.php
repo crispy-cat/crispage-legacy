@@ -14,6 +14,7 @@
 		public string $class;
 		public string $pos;
 		public int $ord;
+		public string $scope;
 
 		public function __construct(array $data) {
 			parent::__construct("Module", $data);
@@ -22,6 +23,7 @@
 			$this->class = $data["class"] ?? "";
 			$this->pos = $data["pos"] ?? "";
 			$this->ord = $data["ord"] ?? 0;
+			$this->scope = $data["scope"] ?? "frontend";
 		}
 
 		public function render() {}

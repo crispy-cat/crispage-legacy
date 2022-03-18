@@ -156,7 +156,7 @@
 				foreach ($data["TableData"] as $irow => $row) {
 					$push = true;
 					foreach ($filters as $fcol => $fval)
-						$push &= ($row[$fcol] == $fval);
+						$push &= (($row[$fcol] ?? $fval) == $fval);
 					if ($push) array_push($rdata, $row);
 				}
 			} else {

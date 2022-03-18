@@ -10,10 +10,10 @@
 	defined("CRISPAGE") or die("Application must be started from index.php!");
 
 	require_once Config::APPROOT . "/core/ApplicationBase.php";
-	require_once Config::APPROOT . "/installer/core/ExtensionHelper.php";
+	require_once Config::APPROOT . "/installer/core/ExtensionManager.php";
 
 	class Installer extends ApplicationBase {
-		public ExtensionHelper $extensions;
+		public ExtensionManager $extensions;
 
 		public function __construct() {
 			$this->events = new EventManager();
@@ -29,7 +29,7 @@
 			$this->bans = new BanManager();
 
 			$this->template = new Template(array("backend" => true, "template_name" => "installer"));
-			$this->extensions = new ExtensionHelper();
+			$this->extensions = new ExtensionManager();
 		}
 
 		public function initDatabase(string $type, array $options) {

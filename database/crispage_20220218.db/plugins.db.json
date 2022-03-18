@@ -6,6 +6,7 @@
 		"priority",
 		"created",
 		"modified",
+		"scope",
 		"options"
 	],
 	"ColumnTypes": {
@@ -22,7 +23,7 @@
 			"class": "example\/ExamplePlugin",
 			"priority": 0,
 			"created": 0,
-			"modified": 0,
+			"modified": 1647635965,
 			"options": {
 				"test_string": "Hello world"
 			}

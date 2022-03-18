@@ -10,13 +10,13 @@
 	defined("CRISPAGE") or die("Application must be started from index.php!");
 	define("IS_INSTALL_PAGE", true);
 	require_once Config::APPROOT . "/installer/header.php";
-	
+
 	define("IMSG_SUCCESS", -2);
 	define("IMSG_INFO", -1);
 	define("IMSG_NORMAL", 0);
 	define("IMSG_WARNING", 1);
 	define("IMSG_ERROR", 2);
-	
+
 	function installer_message(string $msg, int $type = IMSG_NORMAL) {
 		switch ($type) {
 			case IMSG_SUCCESS:
@@ -42,11 +42,13 @@
 		echo "<$el style=\"color: $color;\">$msg</$el><br />";
 		if ($type == IMSG_ERROR) die();
 	}
-	
+
 	installer_message("Preparing to install...", IMSG_INFO);
 	try {
 		require_once Config::APPROOT . "/installer/files/installation_scripts/install.php";
 		installer_message("Installation complete!", IMSG_SUCCESS);
+		echo "<a href=\"" . Config::WEBROOT . "/\">View Site</a><br />";
+		echo "<a href=\"" . Config::WEBROOT . "/backend\">Backend</a>";
 	} catch (Throwable $e) {
 		installer_message("Installation could not be completed: $e", IMSG_ERROR);
 	}

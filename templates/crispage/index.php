@@ -32,7 +32,7 @@
 		<?php $app->page->renderScripts(); ?>
 	</head>
 	<body>
-		<nav class="navbar navbar-expand-lg navbar-dark bg-crispycat mb-3">
+		<nav class="navbar navbar-expand-xxl navbar-dark bg-crispycat mb-3">
 			<div class="container-fluid">
 				<a class="navbar-brand" href="<?php echo Config::WEBROOT; ?>/backend"><?php echo ($uselogo) ? "<img src=\"$logopath\" alt=\"$sitename\" height=\"30\" />" : $sitename; ?></a>
 				<button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar">
@@ -67,6 +67,9 @@
 						</li>
 						<li class="nav-item">
 							<a class="nav-link" href="<?php echo Config::WEBROOT; ?>/backend/modules/list"><i class="bi bi-grid-1x2"></i> Modules</a>
+						</li>
+						<li class="nav-item">
+							<a class="nav-link" href="<?php echo Config::WEBROOT; ?>/backend/plugins/list"><i class="bi bi-plug"></i> Plugins</a>
 						</li>
 						<li class="nav-item dropdown">
 							<a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown">

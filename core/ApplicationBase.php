@@ -29,6 +29,7 @@
 	require_once Config::APPROOT . "/core/helpers/RenderHelper.php";
 	require_once Config::APPROOT . "/core/helpers/Randomizer.php";
 	require_once Config::APPROOT . "/core/helpers/Mailer.php";
+	require_once Config::APPROOT . "/core/helpers/FileHelper.php";
 
 	abstract class ApplicationBase {
 		public Database $database;
@@ -94,10 +95,10 @@
 			}
 		}
 
-		public function loadPlugins() {
+		public function loadPlugins(string $scope = "frontend") {
 			global $app;
 			if (count($this->loadedPlugins)) return;
-			foreach ($app->plugins->getPlugins() as $plugin)
+			foreach ($app->plugins->getPlugins($scope) as $plugin)
 				$this->loadPlugin($plugin);
 			usort($this->loadedPlugins, function($a, $b) {
 				if ($a->priority == $b->priority) return 0;

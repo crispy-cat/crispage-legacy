@@ -3,118 +3,141 @@
 	"Columns": [
 		"id",
 		"type",
-		"class"
+		"class",
+		"scope"
 	],
 	"ColumnTypes": {
-		"id": "number",
+		"id": "string",
 		"type": "string",
-		"class": "string"
+		"class": "string",
+		"scope": "string"
 	},
 	"TableData": [
 		{
 			"id": "0",
 			"type": "module",
-			"class": "core\/content\/LatestArticlesModule"
+			"class": "core\/content\/LatestArticlesModule",
+			"scope": "frontend"
 		},
 		{
 			"id": "1",
 			"type": "module",
-			"class": "core\/content\/PopularArticlesModule"
+			"class": "core\/content\/PopularArticlesModule",
+			"scope": "frontend"
 		},
 		{
 			"id": "2",
 			"type": "module",
-			"class": "core\/menu\/NavMenuModule"
+			"class": "core\/menu\/NavMenuModule",
+			"scope": "frontend"
 		},
 		{
 			"id": "3",
 			"type": "module",
-			"class": "core\/search\/SearchBoxModule"
+			"class": "core\/search\/SearchBoxModule",
+			"scope": "frontend"
 		},
 		{
 			"id": "4",
 			"type": "module",
-			"class": "core\/text\/CustomModule"
+			"class": "core\/text\/CustomModule",
+			"scope": "frontend"
 		},
 		{
 			"id": "5",
 			"type": "module",
-			"class": "core\/comments\/CommentsModule"
+			"class": "core\/comments\/CommentsModule",
+			"scope": "frontend"
 		},
 		{
 			"id": "6",
 			"type": "module",
-			"class": "core\/user\/LoginModule"
+			"class": "core\/user\/LoginModule",
+			"scope": "frontend"
 		},
 		{
 			"id": "7",
 			"type": "plugin",
-			"class": "ExamplePlugin\/ExamplePlugin"
+			"class": "ExamplePlugin\/ExamplePlugin",
+			"scope": "frontend"
 		},
 		{
 			"id": "8",
 			"type": "template",
-			"class": "crispage\/template"
+			"class": "crispage\/template",
+			"scope": "frontend"
 		},
 		{
 			"id": "9",
 			"type": "template",
-			"class": "crispy\/template"
+			"class": "crispy\/template",
+			"scope": "frontend"
 		},
 		{
 			"id": "10",
 			"type": "view",
-			"class": "core\/activate_account"
+			"class": "core\/activate_account",
+			"scope": "frontend"
 		},
 		{
 			"id": "11",
 			"type": "view",
-			"class": "core\/article"
+			"class": "core\/article",
+			"scope": "frontend"
 		},
 		{
 			"id": "12",
 			"type": "view",
-			"class": "core\/category"
+			"class": "core\/category",
+			"scope": "frontend"
 		},
 		{
 			"id": "13",
 			"type": "view",
-			"class": "core\/login"
+			"class": "core\/login",
+			"scope": "frontend"
 		},
 		{
 			"id": "14",
 			"type": "view",
-			"class": "core\/logout"
+			"class": "core\/logout",
+			"scope": "frontend"
 		},
 		{
 			"id": "15",
 			"type": "view",
-			"class": "core\/post_comment"
+			"class": "core\/post_comment",
+			"scope": "frontend"
 		},
 		{
 			"id": "16",
 			"type": "view",
-			"class": "core\/register"
+			"class": "core\/register",
+			"scope": "frontend"
 		},
 		{
 			"id": "17",
 			"type": "view",
-			"class": "core\/reset_password"
+			"class": "core\/reset_password",
+			"scope": "frontend"
 		},
 		{
 			"id": "18",
 			"type": "view",
-			"class": "core\/search"
+			"class": "core\/search",
+			"scope": "frontend"
 		},
 		{
 			"id": "19",
 			"type": "view",
-			"class": "core\/user_profile"
+			"class": "core\/user_profile",
+			"scope": "frontend"
 		},
 		{
 			"id": "20",
 			"type": "module",
-			"class": "core\/breadcrumbs\/BreadcrumbModule"
+			"class": "core\/breadcrumbs\/BreadcrumbModule",
+			"scope": "frontend"
 		}
 	]
 }

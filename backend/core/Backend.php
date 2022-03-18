@@ -35,5 +35,9 @@
 				$this->error(500, "An error occurred", "A server error has occurred and the page you requested is not available. Please try again later.", $e);
 			}
 		}
+
+		public function loadPlugins(string $scope = "backend") {
+			parent::loadPlugins($scope);
+		}
 	}
 ?>

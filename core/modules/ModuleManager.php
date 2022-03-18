@@ -54,10 +54,11 @@
 			return $app->database->existsRow("modules", $id);
 		}
 
-		public function getModules() {
+		public function getModules(string $scope = null) {
 			global $app;
 
-			$dbmodules = $app->database->readRows("modules");
+			if ($scope) $dbmodules = $app->database->readRows("modules", array("scope" => $scope));
+			else $dbmodules = $app->database->readRows("modules");
 
 			$modules = array();
 
@@ -77,10 +78,14 @@
 			return ($fd !== false) ? json_decode($fd, true) : null;
 		}
 
-		public function getAvailableModules() : array {
+		public function getAvailableModules(string $scope = null) : array {
 			global $app;
 			$classes = array();
-			foreach ($app->database->readRows("installation", array("type" => "module")) as $class)
+			if ($scope)
+				$modules = $app->database->readRows("installation", array("type" => "module", "scope" => $scope));
+			else
+				$modules = $app->database->readRows("installation", array("type" => "module"));
+			foreach ($modules as $class)
 				array_push($classes, $this->getModuleInfo($class["class"]));
 			return $classes;
 		}

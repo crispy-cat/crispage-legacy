@@ -52,10 +52,11 @@
 			return $app->database->existsRow("plugins", $id);
 		}
 
-		public function getPlugins() {
+		public function getPlugins(string $scope = null) {
 			global $app;
 
-			$dbplugs = $app->database->readRows("plugins");
+			if ($scope) $dbplugs = $app->database->readRows("plugins", array("scope" => $scope));
+			else $dbplugs = $app->database->readRows("plugins");
 
 			$plugins = array();
 
@@ -75,10 +76,14 @@
 			return ($fd !== false) ? json_decode($fd, true) : null;
 		}
 
-		public function getInstalledPlugins() : array {
+		public function getInstalledPlugins(string $scope = null) : array {
 			global $app;
 			$classes = array();
-			foreach ($app->database->readRows("installation", array("type" => "plugins")) as $class)
+			if ($scope)
+				$plugins = $app->database->readRows("installation", array("type" => "plugin", "scope" => $scope));
+			else
+				$plugins = $app->database->readRows("installation", array("type" => "plugin"));
+			foreach ($plugins as $class)
 				array_push($classes, $this->getPluginInfo($class["class"]));
 			return $classes;
 		}

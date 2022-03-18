@@ -12,12 +12,14 @@
 	class Plugin extends Asset {
 		public string $class;
 		public int $priority;
+		public string $scope;
 
 		public function __construct(array $data) {
 			parent::__construct("Plugin", $data);
 			if (!is_array($data)) return;
 			$this->class = $data["class"] ?? "";
 			$this->priority = $data["priority"] ?? 0;
+			$this->scope = $data["scope"] ?? "frontend";
 		}
 
 		public function execute() {}
