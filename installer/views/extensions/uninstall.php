@@ -32,6 +32,7 @@
 		case "plugin":
 			FileHelper::deleteRecurs(Config::APPROOT . "/plugins/" . $ext["class"] . ".json");
 			FileHelper::deleteRecurs(Config::APPROOT . "/plugins/" . $ext["class"] . ".php");
+			foreach ($app->plugins->getPlugins() as $plugin) if ($plugin->class == $ext["class"]) $app->plugins->deletePlugin($plugin->id);
 			break;
 		default:
 	}

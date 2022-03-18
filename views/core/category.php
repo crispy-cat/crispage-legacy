@@ -41,7 +41,7 @@
 								<?php echo (($article->modified > $article->created) ? "Updated" : "Published") . ":" . date($app->getSetting("date_format_long", "Y, F j"), $article->modified); ?>
 							</li>
 							<?php if ($article->tags != "") { ?>
-								<li class="list-group->item"><?php echo $stags; ?></li>
+								<li class="list-group-item"><?php echo $stags; ?></li>
 							<?php } ?>
 						</ul>
 					</div>
