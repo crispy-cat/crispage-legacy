@@ -27,5 +27,11 @@
 			if ($nent == 0) return 1;
 			return ceil(count($items) / $nent);
 		}
+		
+		public static function sPaginate(array $in, $nent, $page) : array {
+			if (!is_numeric($nent)) return $in;
+			if (!is_numeric($page)) $page = 1;
+			return Paginator::paginate($in, $nent, $page);
+		}
 	}
 ?>

@@ -12,14 +12,12 @@
 	class Session extends Asset {
 		public string $user;
 		public string $ip;
-		public int $lastactive;
 
 		public function __construct(array $data) {
 			parent::__construct("Session", $data);
 			if (!is_array($data)) return;
 			$this->user = $data["user"] ?? "";
 			$this->ip = $data["ip"] ?? "0.0.0.0";
-			$this->lastactive = $data["lastactive"] ?? 0;
 		}
 	}
 ?>

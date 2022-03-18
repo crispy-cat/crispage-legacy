@@ -7,10 +7,21 @@
 		Since: 0.2.0
 	*/
 
-	require_once __DIR__ . "/../config.php";
+	if (file_exists(__DIR__ . "/../config.php")) {
+		define("IS_INSTALLED", true);
+		require_once __DIR__ . "/../config.php";
+	} else {
+		define("IS_INSTALLED", false);
+		require_once __DIR__ . "/installer_config.php";
+	}
 
 	require_once Config::APPROOT . "/installer/core/Installer.php";
 	include_once Config::APPROOT . "/core/Router.php";
 	$app = new Installer();
+	if (IS_INSTALLED) $app->initDatabase("JSONDatabase", array(
+		"location" => Config::DB_JSON_LOC,
+		"name" => Config::DB_JSON_NAME,
+		"pretty" => Config::DB_JSON_PRETTY
+	));
 	Router::routeRequest("/installer", "default");
 ?>

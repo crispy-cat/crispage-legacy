@@ -10,7 +10,8 @@
 	defined("CRISPAGE") or die("Application must be started from index.php!");
 
 	class JSONDatabase extends Database {
-		private string $dbfpre = Config::DB_JSON_LOC . "/" . Config::DB_JSON_NAME . "/";
+		private string $dbfpre;
+		private bool $pretty;
 		private array $inittypes = array(
 			"string" => "",
 			"integer" => 0,
@@ -23,22 +24,9 @@
 
 		private array $dbdata = array();
 
-		public function __destruct() {
-			global $app;
-			$app->events->trigger("database.close");
-			foreach ($this->dbdata as $table => $data) {
-				$file = "$this->dbfpre$table.db.json";
-				$fc = fopen($file, "w");
-				if (!$fc) throw new Exception("Could not open database file for writing $file");
-				if (!flock($fc, LOCK_EX)) throw new Exception("Could not get lock on database file $file");
-				if (Config::DB_JSON_PRETTY)
-					$json = preg_replace("/    /", "\t", json_encode($data, JSON_PRETTY_PRINT));
-				else
-					$json = json_encode($data);
-				if (!fwrite($fc, $json)) throw new Exception("Could not write database file $file");
-				if (!flock($fc, LOCK_UN)) throw new Exception("Could not release lock on database file $file");
-				fclose($fc);
-			}
+		public function __construct(string $loc, string $name, bool $pretty) {
+			$this->dbfpre = $loc . "/" . $name . "/";
+			$this->pretty = $pretty;
 		}
 
 		private function getData(string $table) : array {
@@ -182,5 +170,23 @@
 				});
 			}
 			return $rdata;
+		}
+
+		public function writeChanges() {
+			global $app;
+			$app->events->trigger("database.write_changes");
+			foreach ($this->dbdata as $table => $data) {
+				$file = "$this->dbfpre$table.db.json";
+				$fc = fopen($file, "w");
+				if (!$fc) throw new Exception("Could not open database file for writing $file");
+				if (!flock($fc, LOCK_EX)) throw new Exception("Could not get lock on database file $file");
+				if ($this->pretty)
+					$json = preg_replace("/    /", "\t", json_encode($data, JSON_PRETTY_PRINT));
+				else
+					$json = json_encode($data);
+				if (!fwrite($fc, $json)) throw new Exception("Could not write database file $file");
+				if (!flock($fc, LOCK_UN)) throw new Exception("Could not release lock on database file $file");
+				fclose($fc);
+			}
 		}
 	}

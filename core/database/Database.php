@@ -19,5 +19,7 @@
 		abstract protected function deleteRow(string $table, string $id) : bool;
 		abstract protected function existsRow(string $table, string $id) : bool;
 		abstract protected function readRows(string $table, array $coleq = array(), $ordby = null, $desc = false) : array;
+		
+		abstract protected function writeChanges();
 	}
 ?>

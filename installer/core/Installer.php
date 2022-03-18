@@ -16,10 +16,24 @@
 		public ExtensionHelper $extensions;
 
 		public function __construct() {
-			parent::__construct();
+			$this->events = new EventManager();
+			$this->page = new Page();
+			$this->plugins = new PluginManager();
+			$this->modules = new ModuleManager();
+			$this->content = new ContentManager();
+			$this->comments = new CommentManager();
+			$this->menus = new MenuManager();
+			$this->users = new UserManager();
+			$this->session = new SessionManager();
+			$this->auth = new Authenticator();
+			$this->bans = new BanManager();
 
 			$this->template = new Template(array("backend" => true, "template_name" => "installer"));
 			$this->extensions = new ExtensionHelper();
+		}
+
+		public function initDatabase(string $type, array $options) {
+			$this->database = new JSONDatabase($options["location"], $options["name"], $options["pretty"]);
 		}
 
 		public function request(Request $request) {
@@ -34,6 +48,10 @@
 			} catch (Throwable $e) {
 				$this->error(500, "An error occurred", "A server error has occurred and the page you requested is not available. Please try again later.", $e);
 			}
+		}
+
+		public function error(int $http, string $title, string $body, Throwable $e = null, $lp = false) {
+			parent::error($http, $title, $body, $e, false);
 		}
 	}
 ?>

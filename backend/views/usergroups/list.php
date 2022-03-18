@@ -19,16 +19,13 @@
 
 	$app->vars["npages"] = Paginator::numPages($groups, (is_numeric($app->vars["show"])) ? $app->vars["show"] : 0);
 
-	if (is_numeric($app->vars["show"]))
-		$app->vars["groups"] = Paginator::paginate($groups, $app->vars["show"], (is_numeric($app->vars["page"])) ? $app->vars["page"] : 1);
-	else
-		$app->vars["groups"] = $groups;
+	$app->vars["groups"] = Paginator::sPaginate($groups, $app->vars["show"], $app->vars["page"]);
 
 	$app->page->setContent(function($app) {
 ?>
 		<div id="main" class="page-content">
 			<div class="row">
-				<div class="col-12 col-md-2">
+				<div class="col-12 col-md-4 col-xxl-2">
 					<h1>Usergroups</h1>
 					<span>Show only:</span>
 					<form class="d-flex">
@@ -44,7 +41,7 @@
 						<button class="btn btn-primary ms-2" type="submit">Go</button>
 					</form>
 				</div>
-				<div class="col-12 col-md-10">
+				<div class="col-12 col-md-8 col-xxl-10">
 					<div style="float: right;">
 						<a class="btn btn-success mt-4 mb-2 d-block ms-auto" href="<?php echo Config::WEBROOT; ?>/backend/usergroups/editor" style="width: 130px;">New Usergroup</a>
 						<?php

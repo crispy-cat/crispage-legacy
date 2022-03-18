@@ -14,13 +14,13 @@
 	$app->page->links["android-chrome-icon"] = array("rel" => "icon", "type" => "image/png", "sizes" => "192x192", "href" => Config::WEBROOT . "/media/icons/android-chrome-192x192.png");
 	$app->page->links["shortcut-icon"] = array("rel" => "shortcut icon","href" => Config::WEBROOT . "/media/icons/favicon.ico");
 
-	$app->page->styles["bootstrap"] = array("content" => file_get_contents(__DIR__ . "/css/bootstrap.min.css"));
+	$app->page->styles["bootstrap"] = array("content" => file_get_contents(Config::APPROOT . "/media/system/css/bootstrap.min.css"));
 	$app->page->styles["fonts"] = array("content" => file_get_contents(__DIR__ . "/css/fonts.css"));
-	$app->page->styles["bs-icons"] = array("content" => file_get_contents(__DIR__ . "/css/bootstrap-icons.css"));
+	$app->page->styles["bs-icons"] = array("content" => file_get_contents(Config::APPROOT . "/media/system/css/bootstrap-icons.css"));
 	$app->page->styles["template"] = array("content" => file_get_contents(__DIR__ . "/css/template.css"));
 
-	$app->page->scripts["jquery"] = array("content" => file_get_contents(__DIR__ . "/js/jquery.min.js"), "defer" => "");
-	$app->page->scripts["bootstrap"] = array("content" => file_get_contents(__DIR__ . "/js/bootstrap.bundle.min.js"), "defer" => "");
+	$app->page->scripts["jquery"] = array("content" => file_get_contents(Config::APPROOT . "/media/system/js/jquery.min.js"), "defer" => "");
+	$app->page->scripts["bootstrap"] = array("content" => file_get_contents(Config::APPROOT . "/media/system/js/bootstrap.bundle.min.js"), "defer" => "");
 ?>
 <!DOCTYPE html>
 <html>

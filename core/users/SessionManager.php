@@ -19,7 +19,7 @@
 				"user" => $user,
 				"ip" => $_SERVER["REMOTE_ADDR"],
 				"created" => time(),
-				"lastactive" => time()
+				"modified" => time()
 			)));
 			setcookie("session_id", $sid);
 			$app->events->trigger("session.session_start", $sid);
@@ -29,7 +29,7 @@
 			global $app;
 			if (!isset($app->request->cookies["session_id"])) return null;
 			$session = $this->getSession($app->request->cookies["session_id"]);
-			if (!$session || (time() - $session->lastactive >= $app->getSetting("users.session_timeout", 3600))) return null;
+			if (!$session || (time() - $session->modified >= $app->getSetting("users.session_timeout", 3600))) return null;
 			return $session;
 		}
 
@@ -38,7 +38,7 @@
 			if (!isset($app->request->cookies["session_id"])) return;
 			$session = $this->getSession($app->request->cookies["session_id"]);
 			if (!$session) return;
-			if (time() - $session->lastactive >= $app->getSetting("users.session_timeout", 3600)) return;
+			if (time() - $session->modified >= $app->getSetting("users.session_timeout", 3600)) return;
 			$session->lastactive = time();
 			$this->setSession($session->id, $session);
 			$app->events->trigger("session.session_refresh", $session->id);
@@ -70,7 +70,7 @@
 				"user" => $data->user,
 				"ip" => $data->ip,
 				"created" => $data->created,
-				"lastactive" => $data->lastactive
+				"modified" => $data->modified
 			));
 
 			$app->events->trigger("session.session_set", $id);

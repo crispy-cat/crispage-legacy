@@ -11,27 +11,26 @@
 	require_once Config::APPROOT . "/backend/header.php";
 
 	$app->page->setTitle("Users");
-
+	
+	$app->vars["group"] = $app->request->query["group"] ?? null;
 	$app->vars["show"] = $app->request->query["show"] ?? 15;
 	$app->vars["page"] = $app->request->query["page"] ?? 1;
 
-	$users = $app->users->getUsers();
+	$users = $app->users->getUsers($app->vars["group"]);
 
 	$app->vars["npages"] = Paginator::numPages($users, (is_numeric($app->vars["show"])) ? $app->vars["show"] : 0);
 
-	if (is_numeric($app->vars["show"]))
-		$app->vars["users"] = Paginator::paginate($users, $app->vars["show"], (is_numeric($app->vars["page"])) ? $app->vars["page"] : 1);
-	else
-		$app->vars["users"] = $users;
+	$app->vars["users"] = Paginator::sPaginate($users, $app->vars["show"], $app->vars["page"]);
 
 	$app->page->setContent(function($app) {
 ?>
 		<div id="main" class="page-content">
 			<div class="row">
-				<div class="col-12 col-md-2">
+				<div class="col-12 col-md-4 col-xxl-2">
 					<h1>Users</h1>
 					<span>Show only:</span>
 					<form class="d-flex">
+						<?php RenderHelper::renderUserGroupPicker("group", null, array("title" => "All Categories", "value" => "null")); ?>
 						<select class="form-select ms-2" name="show">
 							<option value="15">15</option>
 							<option value="30">30</option>
@@ -44,7 +43,7 @@
 						<button class="btn btn-primary ms-2" type="submit">Go</button>
 					</form>
 				</div>
-				<div class="col-12 col-md-10">
+				<div class="col-12 col-md-8 col-xxl-10">
 					<div style="float: right;">
 						<a class="btn btn-success mt-4 mb-2 d-block ms-auto" href="<?php echo Config::WEBROOT; ?>/backend/users/editor" style="width: 120px;">New User</a>
 						<?php

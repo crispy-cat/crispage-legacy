@@ -182,8 +182,8 @@
 										<option value="yes" <?php if (($app->vars["article_options"]["show_comments"] ?? "yes") == "yes") echo "selected"; ?>>Yes (Default)</option>
 										<option value="no" <?php if (($app->vars["article_options"]["show_comments"] ?? "yes") == "no") echo "selected"; ?>>No</option>
 									<?php } else { ?>
-										<option value="yes" <?php if (($app->vars["article_options"]["show_comments"] ?? "yes") == "yes") echo "selected"; ?>>Yes</option>
-										<option value="no" <?php if (($app->vars["article_options"]["show_comments"] ?? "yes") == "no") echo "selected"; ?>>No (Default)</option>
+										<option value="yes" <?php if (($app->vars["article_options"]["show_comments"] ?? "no") == "yes") echo "selected"; ?>>Yes</option>
+										<option value="no" <?php if (($app->vars["article_options"]["show_comments"] ?? "no") == "no") echo "selected"; ?>>No (Default)</option>
 									<?php } ?>
 								</select>
 
@@ -193,8 +193,8 @@
 										<option value="yes" <?php if (($app->vars["article_options"]["show_info"] ?? "yes") == "yes") echo "selected"; ?>>Yes (Default)</option>
 										<option value="no" <?php if (($app->vars["article_options"]["show_info"] ?? "yes") == "no") echo "selected"; ?>>No</option>
 									<?php } else { ?>
-										<option value="yes" <?php if (($app->vars["article_options"]["show_info"] ?? "yes") == "yes") echo "selected"; ?>>Yes</option>
-										<option value="no" <?php if (($app->vars["article_options"]["show_info"] ?? "yes") == "no") echo "selected"; ?>>No (Default)</option>
+										<option value="yes" <?php if (($app->vars["article_options"]["show_info"] ?? "no") == "yes") echo "selected"; ?>>Yes</option>
+										<option value="no" <?php if (($app->vars["article_options"]["show_info"] ?? "no") == "no") echo "selected"; ?>>No (Default)</option>
 									<?php } ?>
 								</select>
 							</div>

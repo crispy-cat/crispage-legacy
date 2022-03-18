@@ -4,28 +4,66 @@
 		"id",
 		"user",
 		"ip",
-		"started",
-		"lastactive"
+		"created",
+		"modified"
 	],
 	"ColumnTypes": {
 		"id": "string",
 		"user": "string",
 		"ip": "string",
-		"started": "integer",
-		"lastactive": "integer"
+		"created": "integer",
+		"modified": "integer"
 	},
 	"TableData": [
 		{
 			"id": "h\/DcpgH8OizRMY1aDcBgaRA7FRd8ivPOqxgKj2gAB7B3vM.4a7s\/7MnhF1EWzE7T",
 			"user": "super-user",
 			"ip": "127.0.0.1",
-			"lastactive": 1647187831
+			"modified": 1647187831
 		},
 		{
 			"id": "8HqgecgIbkDF5j4PsFOnaTjP5OASPEYtyX8U2CIQ7emD06UHmW1PSzxLAa6LVuVr",
 			"user": "super-user",
 			"ip": "127.0.0.1",
-			"lastactive": 1647200805
+			"modified": 1647200805
+		},
+		{
+			"id": "wENeOXZM3fFx89L7h2ExxZG2r8idKDlsqrfCZN8i4fwrGK\/d5dGQCdpfhbSLM5TJ",
+			"user": "super-user",
+			"ip": "127.0.0.1",
+			"modified": 1647612479
+		},
+		{
+			"id": "9Zhsus9rovEV2lQ4e3q421g2\/x2ej.QdovpmwzXJ3GZJ3fIgdSOdcqmAlAMLB1gO",
+			"user": "super-user",
+			"ip": "127.0.0.1"
+		},
+		{
+			"id": "DR6KlWqxLLqP\/rOr9QlYH3fRNBHX6po\/TLeQj3L14TBfX1p.tpoH\/DtWVLWhIdak",
+			"user": "super-user",
+			"ip": "127.0.0.1"
+		},
+		{
+			"id": "weym8ax5mcHOry5oEN7o9KNNT5M8BJRD9MlLzDDKubJVU0jthy8z3VixWwloM1TV",
+			"user": "super-user",
+			"ip": "127.0.0.1"
+		},
+		{
+			"id": "NjmGJrlHgTUYrqPAIYYcEWYDVYX5QLDz87OzHaS3rPGCHnJMYZRp6z0\/8No44gXS",
+			"user": "super-user",
+			"ip": "127.0.0.1"
+		},
+		{
+			"id": "K9Qn8DShOnvaylIUa95n2W9GRkvBOXTiundTDBSHEUfjIoig4vvr7r25hw1NseeH",
+			"user": "super-user",
+			"ip": "127.0.0.1"
+		},
+		{
+			"id": "ZhwXZkkA\/RRYWEpq.0utjmatKLgAqulgxvA2Lcg7s\/u4qjA26tcXoI9ikzUyL\/am",
+			"user": "super-user",
+			"ip": "127.0.0.1",
+			"created": 1647614085,
+			"modified": 1647614085
 		}
 	]
 }

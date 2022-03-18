@@ -12,24 +12,21 @@
 
 	$app->page->setTitle("Menu Items");
 
-	$app->vars["menu"] = $app->request->query["menu"] ?? "";
+	$app->vars["menu"] = $app->request->query["menu"] ?? null;
 	$app->vars["show"] = $app->request->query["show"] ?? 15;
 	$app->vars["page"] = $app->request->query["page"] ?? 1;
 
-	$items = ($app->vars["menu"] != "") ? $app->menus->getMenuItems($app->vars["menu"]) : $app->menus->getMenuItems();
+	$app->vars["items"] = $app->menus->getMenuItems($app->vars["menu"]);
 
 	$app->vars["npages"] = Paginator::numPages($items, (is_numeric($app->vars["show"])) ? $app->vars["show"] : 0);
 
-	if (is_numeric($app->vars["show"]))
-		$app->vars["items"] = Paginator::paginate($items, $app->vars["show"], (is_numeric($app->vars["page"])) ? $app->vars["page"] : 1);
-	else
-		$app->vars["items"] = $items;
-
+	$app->vars["items"] = Paginator::sPaginate($items, $app->vars["show"], $app->vars["page"]));
+	
 	$app->page->setContent(function($app) {
 ?>
 		<div id="main" class="page-content">
 			<div class="row">
-				<div class="col-12 col-md-4">
+				<div class="col-12 col-md-4 col-xxl-2">
 					<h1>Menu Items</h1>
 					<span>Show only:</span>
 					<form class="d-flex">
@@ -46,7 +43,7 @@
 						<button class="btn btn-primary ms-2" type="submit">Go</button>
 					</form>
 				</div>
-				<div class="col-12 col-md-8">
+				<div class="col-12 col-md-8 col-xxl-10">
 					<div style="float: right;">
 						<a class="btn btn-success mt-4 mb-2 d-block ms-auto" href="<?php echo Config::WEBROOT; ?>/backend/menu_items/editor" style="width: 130px;">New Menu Item</a>
 						<?php

@@ -51,7 +51,7 @@
 		public function __construct() {
 			try {
 				$dbtype = Config::DB_TYPE;
-				$this->database = new $dbtype();
+				$this->database = new $dbtype(Config::DB_JSON_LOC, Config::DB_JSON_NAME, Config::DB_JSON_PRETTY);
 			} catch (Throwable $e) {
 				die("Invalid database type; please check config\n$e");
 			}
@@ -66,7 +66,10 @@
 			$this->session = new SessionManager();
 			$this->auth = new Authenticator();
 			$this->bans = new BanManager();
+		}
 
+		public function __destruct() {
+			if (isset($this->database)) $this->database->writeChanges();
 		}
 
 		public function loadPlugin(Plugin $plugin) {
@@ -159,16 +162,18 @@
 			$this->events->trigger("app.page.post_render");
 		}
 
-		public function getSetting(string $key, string $default = null) {
+		public function getSetting(string $key, string $default = null) : ?string {
+			if (!isset($this->database)) return $default;
 			return $this->database->readRow("settings", $key)["value"] ?? $default;
 		}
 
 		public function setSetting(string $key, string $value) {
+			if (!isset($this->database)) return;
 			$this->database->writeRow("settings", $key, array("value" => $value));
 			$this->events->trigger("app.settings.set", $key, $value);
 		}
 
-		public function nameToId(string $name = null) {
+		public function nameToId(string $name = null) : string {
 			if ($name == null) return null;
 			$name = strtolower($name);
 			$name = preg_replace("/[^a-z0-9_]/", "-", $name);

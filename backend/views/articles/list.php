@@ -12,24 +12,20 @@
 
 	$app->page->setTitle("Articles");
 
-	$app->vars["cat"] = $app->request->query["cat"] ?? "";
+	$app->vars["cat"] = $app->request->query["cat"] ?? null;
 	$app->vars["show"] = $app->request->query["show"] ?? 15;
 	$app->vars["page"] = $app->request->query["page"] ?? 1;
 
-	$articles = ($app->vars["cat"] != "") ? $app->content->getArticles($app->vars["cat"]) : $app->content->getArticles();
+	$articles = $app->content->getArticles($app->vars["cat"]);
 
 	$app->vars["npages"] = Paginator::numPages($articles, (is_numeric($app->vars["show"])) ? $app->vars["show"] : 0);
-
-	if (is_numeric($app->vars["show"]))
-		$app->vars["articles"] = Paginator::paginate($articles, $app->vars["show"], (is_numeric($app->vars["page"])) ? $app->vars["page"] : 1);
-	else
-		$app->vars["articles"] = $articles;
-
+	$app->vars["articles"] = Paginator::sPaginate($articles, $app->vars["show"], $app->vars["page"]);
+	
 	$app->page->setContent(function($app) {
 ?>
 		<div id="main" class="page-content">
 			<div class="row">
-				<div class="col-12 col-md-4">
+				<div class="col-12 col-md-4 col-xxl-2">
 					<h1>Articles</h1>
 					<span>Show only:</span>
 					<form class="d-flex">
@@ -46,7 +42,7 @@
 						<button class="btn btn-primary ms-2" type="submit">Go</button>
 					</form>
 				</div>
-				<div class="col-12 col-md-8">
+				<div class="col-12 col-md-8 col-xxl-10">
 					<div style="float: right;">
 						<a class="btn btn-success mt-4 mb-2 d-block ms-auto" href="<?php echo Config::WEBROOT; ?>/backend/articles/editor" style="width: 110px;">New Article</a>
 						<?php

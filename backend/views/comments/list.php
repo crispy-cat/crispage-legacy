@@ -12,24 +12,21 @@
 
 	$app->page->setTitle("Comments");
 
-	$app->vars["art"] = $app->request->query["art"] ?? "";
+	$app->vars["art"] = $app->request->query["art"] ?? null;
 	$app->vars["show"] = $app->request->query["show"] ?? 15;
 	$app->vars["page"] = $app->request->query["page"] ?? 1;
 
-	$comments = ($app->vars["art"] != "") ? $app->comments->getComments($app->vars["art"]) : $app->comments->getComments();
+	$comments = $app->comments->getComments($app->vars["art"]);
 
 	$app->vars["npages"] = Paginator::numPages($comments, (is_numeric($app->vars["show"])) ? $app->vars["show"] : 0);
 
-	if (is_numeric($app->vars["show"]))
-		$app->vars["comments"] = Paginator::paginate($comments, $app->vars["show"], (is_numeric($app->vars["page"])) ? $app->vars["page"] : 1);
-	else
-		$app->vars["comments"] = $comments;
-
+	$app->vars["comments"] = Paginator::paginate($comments, $app->vars["show"], $app->vars["page"]);
+	
 	$app->page->setContent(function($app) {
 ?>
 		<div id="main" class="page-content">
 			<div class="row">
-				<div class="col-12 col-md-4">
+				<div class="col-12 col-md-4 col-xxl-2">
 					<h1>Comments</h1>
 					<span>Show only:</span>
 					<form class="d-flex">
@@ -46,7 +43,7 @@
 						<button class="btn btn-primary ms-2" type="submit">Go</button>
 					</form>
 				</div>
-				<div class="col-12 col-md-8">
+				<div class="col-12 col-md-8 col-xxl-10">
 					<div style="float: right;">
 						<?php
 							$baseurl = Config::WEBROOT . "/backend/comments/list?show=" . (($app->vars["show"]) ? $app->vars["show"] : "all") . "&page=";

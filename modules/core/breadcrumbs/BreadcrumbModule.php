@@ -25,7 +25,7 @@
 				foreach ($slug as $key => $part) {
 					$crumb = array("url" => Config::WEBROOT);
 					for ($i = 0; $i <= $key; $i++)
-						$crumb["url"] .= "/" . $part;
+						$crumb["url"] .= "/" . $slug[$i];
 					if ($key == count($slug) - 1) {
 						if ($app->request->route["view"] == "article")
 							$crumb["label"] = $app->content->getArticle($part)->title;
