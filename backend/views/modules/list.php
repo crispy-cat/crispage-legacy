@@ -20,7 +20,7 @@
 	$app->vars["npages"] = Paginator::numPages($modules, (is_numeric($app->vars["show"])) ? $app->vars["show"] : 0);
 
 	$app->vars["modules"] = Paginator::sPaginate($modules, $app->vars["show"], $app->vars["page"]);
-	
+
 	$app->page->setContent(function($app) {
 ?>
 		<div id="main" class="page-content">
@@ -80,7 +80,7 @@
 							</tbody>
 						</table>
 					<?php } else { ?>
-						<p>No menus match your criteria!</p>
+						<p>No modules match your criteria!</p>
 					<?php } ?>
 				</div>
 			</div>

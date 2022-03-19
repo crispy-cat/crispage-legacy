@@ -90,7 +90,7 @@
 							</tbody>
 						</table>
 					<?php } else { ?>
-						<p>No articles match your criteria!</p>
+						<p>No items match your criteria!</p>
 					<?php } ?>
 				</div>
 			</div>

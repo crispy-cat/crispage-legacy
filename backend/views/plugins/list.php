@@ -81,7 +81,7 @@
 							</tbody>
 						</table>
 					<?php } else { ?>
-						<p>No menus match your criteria!</p>
+						<p>No plugins match your criteria!</p>
 					<?php } ?>
 				</div>
 			</div>
