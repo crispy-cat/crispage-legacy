@@ -118,9 +118,9 @@
 					<h1><?php echo $app->vars["title"]; ?></h1>
 				</div>
 			</div>
-			<div class="row">
-				<form method="post" class="d-flex">
-					<div class="col col-lg-8 me-lg-2">
+			<form method="post">
+				<div class="row">
+					<div class="col-12 col-lg-8 pe-lg-2">
 						<?php if (isset($app->request->query["edit_id"])) { ?>
 							<input type="hidden" name="edit_id" value="<?php echo $app->request->query["edit_id"]; ?>" />
 						<?php } ?>
@@ -130,18 +130,18 @@
 						<label for="user_email">User Email:</label>
 						<input type="email" class="form-control" name="user_email" value="<?php echo $app->vars["user_email"]; ?>" required />
 					</div>
-					<div class="col col-lg-4 ms-lg-2">
+					<div class="col-12 col-lg-4 ps-lg-2">
 						<label for="user_id">User ID:</label>
 						<input type="text" class="form-control" name="user_id" placeholder="auto-generate" value="<?php echo $app->vars["user_id"]; ?>" />
 
 						<label for="user_group">User Group:</label>
 						<?php RenderHelper::renderUserGroupPicker("user_group", $app->vars["user_group"]); ?>
 
-						<a class="btn btn-secondary btn-lg mt-3 me-2" href="<?php echo Config::WEBROOT; ?>/backend/users/list" style="width: calc(50% - 0.375rem);">Back</a>
+						<a class="btn btn-secondary btn-lg mt-3 pe-2" href="<?php echo Config::WEBROOT; ?>/backend/users/list" style="width: calc(50% - 0.375rem);">Back</a>
 						<button class="btn btn-success btn-lg mt-3" type="submit" style="width: calc(50% - 0.375rem);">Save</button>
 					</div>
-				</form>
-			</div>
+				</div>
+			</form>
 		</div>
 <?php
 	});

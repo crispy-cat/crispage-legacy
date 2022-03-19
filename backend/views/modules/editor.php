@@ -131,9 +131,9 @@
 					<h1><?php echo $app->vars["title"]; ?></h1>
 				</div>
 			</div>
-			<div class="row">
-				<form method="post" class="d-flex">
-					<div class="col col-lg-8 me-lg-2">
+			<form method="post">
+				<div class="row">
+					<div class="col-12 col-lg-8 pe-lg-2">
 						<input type="hidden" name="class" value="<?php echo $app->request->query["class"]; ?>" />
 						<?php if (isset($app->request->query["edit_id"])) { ?>
 							<input type="hidden" name="edit_id" value="<?php echo $app->request->query["edit_id"]; ?>" />
@@ -151,7 +151,7 @@
 							}
 						?>
 					</div>
-					<div class="col col-lg-4 ms-lg-2">
+					<div class="col-12 col-lg-4 ps-lg-2">
 						<label for="module_id">Module ID:</label>
 						<input type="text" class="form-control" name="module_id" placeholder="auto-generate" value="<?php echo $app->vars["module_id"]; ?>" />
 
@@ -161,11 +161,11 @@
 						<label for="module_ord">Module Order:</label>
 						<input type="number" class="form-control" name="module_ord" value="<?php echo $app->vars["module_ord"]; ?>" />
 
-						<a class="btn btn-secondary btn-lg mt-3 me-2" href="<?php echo Config::WEBROOT; ?>/backend/modules/list" style="width: calc(50% - 0.375rem);">Back</a>
+						<a class="btn btn-secondary btn-lg mt-3 pe-2" href="<?php echo Config::WEBROOT; ?>/backend/modules/list" style="width: calc(50% - 0.375rem);">Back</a>
 						<button class="btn btn-success btn-lg mt-3" type="submit" style="width: calc(50% - 0.375rem);">Save</button>
 					</div>
-				</form>
-			</div>
+				</div>
+			</form>
 		</div>
 <?php
 	});

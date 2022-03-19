@@ -150,12 +150,12 @@
 					<h1><?php echo $app->vars["title"]; ?></h1>
 				</div>
 			</div>
-			<div class="row">
-				<form method="post" class="d-flex">
+			<form method="post">
+				<div class="row">
 					<?php if (isset($app->request->query["edit_id"])) { ?>
 						<input type="hidden" name="edit_id" value="<?php echo $app->request->query["edit_id"]; ?>" />
 					<?php } ?>
-					<div class="col col-lg-8 me-lg-2">
+					<div class="col-12 col-lg-8 pe-lg-2">
 						<ul class="nav nav-tabs" role="tablist">
 							<li class="nav-item" role="presentation">
 								<button type="button" class="nav-link active" role="tab" data-bs-toggle="tab" data-bs-target="#article_content">Content</button>
@@ -200,7 +200,7 @@
 							</div>
 						</div>
 					</div>
-					<div class="col col-lg-4 ms-lg-2">
+					<div class="col-12 col-lg-4 ps-lg-2">
 						<label for="article_id">Article ID:</label>
 						<input type="text" class="form-control" name="article_id" placeholder="auto-generate" value="<?php echo $app->vars["article_id"]; ?>" />
 
@@ -228,8 +228,8 @@
 						<a class="btn btn-secondary btn-lg mt-3 me-2" href="<?php echo Config::WEBROOT; ?>/backend/articles/list" style="width: calc(50% - 0.375rem);">Back</a>
 						<button class="btn btn-success btn-lg mt-3" type="submit" style="width: calc(50% - 0.375rem);">Save</button>
 					</div>
-				</form>
-			</div>
+				</div>
+			</form>
 		</div>
 <?php
 	});

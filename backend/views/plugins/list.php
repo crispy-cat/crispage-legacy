@@ -43,7 +43,6 @@
 				</div>
 				<div class="col-12 col-md-8 col-xxl-10">
 					<div style="float: right;">
-						<a class="btn btn-success mt-4 mb-2 d-block ms-auto" href="<?php echo Config::WEBROOT; ?>/backend/plugins/select" style="width: 120px;">New Module</a>
 						<?php
 							$baseurl = Config::WEBROOT . "/backend/plugins/list?show=" . (($app->vars["show"]) ? $app->vars["show"] : "all") . "&page=";
 							RenderHelper::renderPagination($baseurl, $app->vars["npages"], $app->vars["page"] ?? 1);
