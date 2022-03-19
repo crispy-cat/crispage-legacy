@@ -255,7 +255,7 @@
 					break;
 				case "longtext":
 				case "editor":
-					self::renderEditor($name, $value);
+					self::renderEditor($name, $value ?? "");
 					break;
 				case "string":
 				default:

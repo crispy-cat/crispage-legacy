@@ -2,6 +2,7 @@
 	"name": "ExamplePlugin",
 	"class": "example/ExamplePlugin",
 	"description": "An example plugin.",
+	"scope": "frontend",
 	"version":		"1.0.0",
 	"author":		"crispycat",
 	"author_url":	"https://crispy.cat",
