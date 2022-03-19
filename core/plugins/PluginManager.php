@@ -31,6 +31,7 @@
 			$app->database->writeRow("plugins", $id, array(
 				"class"	=> $data->class,
 				"priority"	=> $data->priority,
+				"scope" => $data->scope,
 				"created" => $data->created,
 				"modified" => $data->modified,
 				"options" => $data->options

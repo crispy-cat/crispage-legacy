@@ -24,6 +24,7 @@
 			"priority": 0,
 			"created": 0,
 			"modified": 1647635965,
+			"scope": "frontend",
 			"options": {
 				"test_string": "Hello world"
 			}
