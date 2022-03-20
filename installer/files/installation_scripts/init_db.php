@@ -205,6 +205,8 @@
 	$app->database->writeRow("settings", "time_format", array("value" => $app->request->query["time_format"] ?? "H:i"));
 	$app->database->writeRow("settings", "date_format_long", array("value" => $app->request->query["date_format_long"] ?? "Y, F d"));
 	$app->database->writeRow("settings", "date_format_long", array("value" => $app->request->query["time_format_long"] ?? "H:i:s"));
+	$app->database->writeRow("settings", "template", array("value" => "crispy"));
+	$app->database->writeRow("settings", "backend_tempate", array("value" => "crispage"));
 	$i = 0;
 	$app->database->writeRow("installation", $i++, array("scope" => "frontend", "type" => "view", "class" => "core/activate_account"));
 	$app->database->writeRow("installation", $i++, array("scope" => "frontend", "type" => "view", "class" => "core/article"));

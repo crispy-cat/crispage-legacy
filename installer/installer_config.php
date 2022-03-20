@@ -10,7 +10,7 @@
 		public const SMTP_DEBUG = 2;
 	}
 
-	define("CRISPAGE", "0.4.9 alpha");
+	define("CRISPAGE", "0.4.10 alpha");
 
 	ini_set("display_errors", "1");
 	ini_set("display_startup_errors", "1");
