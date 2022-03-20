@@ -78,7 +78,7 @@
 			$article->tags		= $app->request->query["article_tags"];
 			$article->meta_desc	= ($app->request->query["article_meta_desc"] != "") ? $app->request->query["article_meta_desc"] : $app->getSetting("meta_desc", "");
 			$article->meta_keys	= ($app->request->query["article_meta_keys"] != "") ? $app->request->query["article_meta_keys"] : $app->getSetting("meta_keys", "");
-			$article->meta_keys	= ($app->request->query["article_meta_robots"] != "") ? $app->request->query["article_meta_robots"] : $app->getSetting("meta_robots", "");
+			$article->meta_robots	= ($app->request->query["article_meta_robots"] != "") ? $app->request->query["article_meta_robots"] : $app->getSetting("meta_robots", "");
 			$article->options	= $app->request->query["article_options"];
 
 			$app->content->setArticle($id, $article);
