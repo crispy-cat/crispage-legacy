@@ -27,7 +27,7 @@
 
 	if (isset($app->request->query["edit_id"])) {
 		if (!$app->users->existsUser($app->request->query["edit_id"]))
-			$app->redirect(Config::WEBROOT . "/backend/menu_users/list?me=Menu user does not exist");
+			$app->redirect(Config::WEBROOT . "/backend/users/list?me=Menu user does not exist");
 
 		$user = $app->users->getUser($app->request->query["edit_id"]);
 
@@ -60,7 +60,7 @@
 			$user->group	= $app->request->query["user_group"];
 			$user->modified	= time();
 
-			$app->menus->setUser($id, $user);
+			$app->users->setUser($id, $user);
 
 			if ($app->request->query["user_id"] == "")
 				$app->redirect(Config::WEBROOT . "/backend/users/editor?edit_id=$id&ms=Changes saved.");

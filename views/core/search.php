@@ -49,7 +49,7 @@
 			$app->vars["results"][] = array(
 				"nkeys" => $nkeys,
 				"type" => "Category",
-				"route" => Router::getArticleRoute($category->id),
+				"route" => Router::getCategoryRoute($category->id),
 				"title" => htmlentities($category->title),
 				"body" => htmlentities($category->content)
 			);
