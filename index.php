@@ -10,10 +10,10 @@
 	if (file_exists(__DIR__ . "/config.php")) {
 		require_once __DIR__ . "/config.php";
 	} else {
-		header("Location: " . ($_SERVER["REQUEST_URI"] . "/installer"));
+		header("Location: http://" . $_SERVER["SERVER_NAME"] . $_SERVER["REQUEST_URI"] . "/installer");
 		die();
 	}
-	
+
 	require_once Config::APPROOT . "/core/Application.php";
 	include_once Config::APPROOT . "/core/Router.php";
 	$app = new Application();
