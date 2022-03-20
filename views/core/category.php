@@ -27,7 +27,7 @@
 				foreach ($app->vars["articles"] as $article) {
 					if ($article->tags != "") {
 						$stags = "Tags: ";
-						foreach (explode(",", $article->tags, 3) as $tag)
+						foreach (explode(",", $article->tags) as $tag)
 							$stags .= "<span class=\"badge bg-primary me-1\">" . htmlentities($tag) . "</span>";
 					}
 			?>

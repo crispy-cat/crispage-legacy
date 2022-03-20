@@ -229,6 +229,16 @@
 	$app->database->writeRow("installation", $i++, array("scope" => "frontend", "type" => "module", "class" => "core/user/LoginModule"));
 	$app->database->writeRow("installation", $i++, array("scope" => "frontend", "type" => "plugin", "class" => "core/example/ExamplePlugin"));
 
+	$app->database->writeRow("routes", "index", array("view" => "article", "item_id" => "index"));
+	$app->database->writeRow("routes", "search", array("view" => "article", "item_id" => ""));
+	$app->database->writeRow("routes", "login", array("view" => "article", "item_id" => ""));
+	$app->database->writeRow("routes", "logout", array("view" => "article", "item_id" => ""));
+	$app->database->writeRow("routes", "register", array("view" => "article", "item_id" => ""));
+	$app->database->writeRow("routes", "user_profile", array("view" => "article", "item_id" => ""));
+	$app->database->writeRow("routes", "acivate_account", array("view" => "article", "item_id" => ""));
+	$app->database->writeRow("routes", "reset_password", array("view" => "article", "item_id" => ""));
+	$app->database->writeRow("routes", "post_comment", array("view" => "article", "item_id" => ""));
+
 	$app->database->writeChanges();
 
 	installer_message("Wrote database files")

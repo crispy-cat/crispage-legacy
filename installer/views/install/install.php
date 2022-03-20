@@ -53,7 +53,7 @@
 		<input type="text" class="form-control" name="approot" value="<?php echo Config::APPROOT; ?>" required />
 
 		<label for="webroot">URL Root:</label>
-		<input type="text" class="form-control" name="webroot" value="<?php echo Config::WEBROOT; ?>" required />
+		<input type="text" class="form-control" name="webroot" value="<?php echo Config::WEBROOT; ?>" />
 
 		<hr />
 

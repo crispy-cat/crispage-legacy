@@ -25,7 +25,7 @@
 	$app->vars["word"] = ($app->vars["article"]->modified > $app->vars["article"]->created) ? "Updated" : "Published";
 	if ($app->vars["article"]->tags != "") {
 		$app->vars["stags"] = "Tags: ";
-		foreach (explode(",", $app->vars["article"]->tags, 3) as $tag)
+		foreach (explode(",", $app->vars["article"]->tags) as $tag)
 			$app->vars["stags"] .= "<span class=\"badge bg-primary me-1\">". htmlentities($tag) . "</span>";
 	}
 
