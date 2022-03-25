@@ -15,7 +15,7 @@
 			$app->redirect(Config::WEBROOT . "/login?ploc=/installer");
 
 		if (!$app->users->userHasPermissions($session->user, UserPermissions::USE_INSTALLER))
-			$app->redirect(Config::WEBROOT . "/?me=You do not have permission to use the installer");
+			$app->redirectWithMessages("/", array("type" => "error", "content" => "You do not have permission to use the installer"));
 	}
 
 	if (defined("IS_INSTALL_PAGE") && IS_INSTALL_PAGE) {
