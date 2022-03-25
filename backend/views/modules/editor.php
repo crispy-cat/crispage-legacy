@@ -30,7 +30,7 @@
 	$app->vars["module_ord"]	= 0;
 
 	if (!isset($app->request->query["class"]))
-		$app->redirectWithMessages("/backend/modules/select?info=Please select a module type first"));
+		$app->redirectWithMessages("/backend/modules/select", array("type" => "info", "content" => "Please select a module type first"));
 
 	$moduleinfo = $app->modules->getModuleInfo($app->request->query["class"]);
 
