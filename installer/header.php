@@ -20,7 +20,7 @@
 
 	if (defined("IS_INSTALL_PAGE") && IS_INSTALL_PAGE) {
 		if (file_exists(Config::APPROOT . "/config.php"))
-			$app->redirect(Config::WEBROOT . "/installer/install/default?me=Crispage is already installed.");
+			$app->redirectWithMessages("/installer/install/default", array("type" => "error", "content" => "Crispage is already installed."));
 	} else {
 		if ((!defined("IS_INSTALL_PAGE")) && !file_exists(Config::APPROOT . "/config.php"))
 			$app->redirect(Config::WEBROOT . "/installer/install/install");
@@ -31,8 +31,13 @@
 	$app->page->metas["charset"] = array("charset" => $this->getSetting("charset", "UTF-8"));
 	$app->page->metas["robots"] = array("name" => "robots", "content" => "noindex, follow");
 
-	if (isset($app->request->query["ms"]))	$app->page->alerts["success"] =	array("class" => "success", "content" => $app->request->query["ms"]);
-	if (isset($app->request->query["mi"]))	$app->page->alerts["info"] =	array("class" => "info", "content" => $app->request->query["mi"]);
-	if (isset($app->request->query["mw"]))	$app->page->alerts["warning"] =	array("class" => "warning", "content" => $app->request->query["mw"]);
-	if (isset($app->request->query["me"]))	$app->page->alerts["error"] =	array("class" => "danger", "content" => $app->request->query["me"]);
+	if (isset($app->request->cookies["msg_success"]))	$app->page->alerts["success"] =	array("class" => "success", "content" => $app->request->cookies["msg_success"]);
+	if (isset($app->request->cookies["msg_info"]))		$app->page->alerts["info"] =	array("class" => "info", "content" => $app->request->cookies["msg_info"]);
+	if (isset($app->request->cookies["msg_warning"]))	$app->page->alerts["warning"] =	array("class" => "warning", "content" => $app->request->cookies["msg_warning"]);
+	if (isset($app->request->cookies["msg_error"]))		$app->page->alerts["error"] =	array("class" => "danger", "content" => $app->request->cookies["msg_error"]);
+
+	$app->page->deleteCookie("msg_success");
+	$app->page->deleteCookie("msg_info");
+	$app->page->deleteCookie("msg_warning");
+	$app->page->deleteCookie("msg_error");
 ?>

@@ -11,22 +11,22 @@
 	require_once Config::APPROOT . "/backend/header.php";
 
 	if (!isset($app->request->query["reset_id"]))
-		$app->redirect(Config::WEBROOT . "/backend/users/list?me=No ID Specified");
+		$app->redirectWithMessages("/backend/users/list", array("type" => "error", "content" => "No ID Specified"));
 
 	if (!$app->users->existsUser($app->request->query["reset_id"]))
-		$app->redirect(Config::WEBROOT . "/backend/users/list?me=User does not exist");
+		$app->redirectWithMessages("/backend/users/list", array("type" => "error", "content" => "User does not exist"));
 
 	if ($app->request->query["reset_id"] == $app->session->getCurrentSession()->user) {
 		if (!$app->users->userHasPermissions($app->session->getCurrentSession()->user, UserPermissions::MODIFY_SELF))
-			$app->redirect(Config::WEBROOT . "/backend/users/list?me=You do not have permission to modify yourself");
+			$app->redirectWithMessages("/backend/users/list", array("type" => "error", "content" => "You do not have permission to modify yourself"));
 	} else {
 		if (!$app->users->userHasPermissions($app->session->getCurrentSession()->user, UserPermissions::MODIFY_USERS))
-			$app->redirect(Config::WEBROOT . "/backend/users/list?me=You do not have permission to modify other users");
+			$app->redirectWithMessages("/backend/users/list", array("type" => "error", "content" => "You do not have permission to modify other users"));
 	}
 
 	if (isset($app->request->query["user_password"])) {
 		$app->auth->setPassword($app->request->query["reset_id"], $app->request->query["user_password"]);
-		$app->redirect(Config::WEBROOT . "/backend/users/list?ms=Password reset.");
+		$app->redirectWithMessages("/backend/users/list", array("type" => "success", "content" => "Password reset."));
 	}
 
 	$app->vars["user_name"] = $app->users->getUser($app->request->query["reset_id"])->name;

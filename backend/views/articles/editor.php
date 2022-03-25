@@ -41,16 +41,16 @@
 
 	if (isset($app->request->query["edit_id"])) {
 		if (!$app->content->existsArticle($app->request->query["edit_id"]))
-			$app->redirect(Config::WEBROOT . "/backend/articles/list?me=Article does not exist");
+			$app->redirectWithMessages("/backend/articles/list", array("type" => "error", "content" => "Article does not exist"));
 
 		$article = $app->content->getArticle($app->request->query["edit_id"]);
 
 		if ($article->author == $app->session->getCurrentSession()->user) {
 			if (!$app->users->userHasPermissions($app->session->getCurrentSession()->user, UserPermissions::MODIFY_ARTICLES_OWN))
-				$app->redirect(Config::WEBROOT . "/backend/articles/list?me=You do not have permission to modify articles");
+				$app->redirectWithMessages("/backend/articles/list", array("type" => "error", "content" => "You do not have permission to modify articles"));
 		} else {
 			if (!$app->users->userHasPermissions($app->session->getCurrentSession()->user, UserPermissions::MODIFY_ARTICLES))
-				$app->redirect(Config::WEBROOT . "/backend/articles/list?me=You do not have permission to modify others' articles");
+				$app->redirectWithMessages("/backend/articles/list", array("type" => "error", "content" => "You do not have permission to modify others' articles"));
 		}
 
 		if (checkQuery()) {
@@ -84,7 +84,7 @@
 			$app->content->setArticle($id, $article);
 
 			if ($app->request->query["article_id"] == "")
-				$app->redirect(Config::WEBROOT . "/backend/articles/editor?edit_id=$id&ms=Changes saved.");
+				$app->redirectWithMessages("/backend/articles/editor?edit_id=$id", array("type" => "success", "content" => "Changes saved."));
 
 			$app->page->alerts["edit_success"] = array("class" => "success", "content" => "Changes saved.");
 		}
@@ -107,7 +107,7 @@
 
 		if (checkQuery()) {
 			if (!$app->users->userHasPermissions($app->session->getCurrentSession()->user, UserPermissions::MODIFY_ARTICLES_OWN))
-				$app->redirect(Config::WEBROOT . "/backend/articles/list?me=You do not have permission to create articles");
+				$app->redirectWithMessages("/backend/articles/list", array("type" => "error", "content" => "You do not have permission to create articles"));
 
 			if ($app->request->query["article_id"] == "")
 				$id = $app->nameToId($app->request->query["article_title"]);
@@ -136,7 +136,7 @@
 
 			$app->content->setArticle($id, $article);
 
-			$app->redirect(Config::WEBROOT . "/backend/articles/editor?edit_id=$id&ms=Changes saved.");
+			$app->redirectWithMessages("/backend/articles/editor?edit_id=$id", array("type" => "success", "content" => "Changes saved."));
 		}
 	}
 
@@ -197,10 +197,10 @@
 										<option value="no" <?php if (($app->vars["article_options"]["show_info"] ?? "no") == "no") echo "selected"; ?>>No (Default)</option>
 									<?php } ?>
 								</select>
-								
+
 								<label for="article_options[show_title]">Show Title:</label>
 								<select class="form-control" name="article_options[show_title]">
-									<?php if ($app->getSetting("articles.show_info", "yes") == "yes") { ?>
+									<?php if ($app->getSetting("articles.show_title", "yes") == "yes") { ?>
 										<option value="yes" <?php if (($app->vars["article_options"]["show_title"] ?? "yes") == "yes") echo "selected"; ?>>Yes (Default)</option>
 										<option value="no" <?php if (($app->vars["article_options"]["show_title"] ?? "yes") == "no") echo "selected"; ?>>No</option>
 									<?php } else { ?>
@@ -208,7 +208,7 @@
 										<option value="no" <?php if (($app->vars["article_options"]["show_title"] ?? "no") == "no") echo "selected"; ?>>No (Default)</option>
 									<?php } ?>
 								</select>
-								
+
 								<label for="article_options[show_sidebar]">Show Sidebar</label>
 								<select class="form-control" name="article_options[show_sidebar]">
 									<?php if ($app->getSetting("articles.show_sidebar", "yes") == "yes") { ?>

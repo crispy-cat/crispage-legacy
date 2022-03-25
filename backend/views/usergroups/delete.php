@@ -11,20 +11,20 @@
 	require_once Config::APPROOT . "/backend/header.php";
 
 	if (!$app->users->userHasPermissions($app->session->getCurrentSession()->user, UserPermissions::MODIFY_USERGROUPS))
-		$app->redirect(Config::WEBROOT . "/backend/usergroups/list?me=You do not have permission to delete usergroups");
+		$app->redirectWithMessages("/backend/usergroups/list", array("type" => "error", "content" => "You do not have permission to delete usergroups"));
 
 	if (!isset($app->request->query["delete_id"]))
-		$app->redirect(Config::WEBROOT . "/backend/usergroups/list?me=No ID Specified");
+		$app->redirectWithMessages("/backend/usergroups/list", array("type" => "error", "content" => "No ID Specified"));
 
 	if (!$app->users->existsUserGroup($app->request->query["delete_id"]))
-		$app->redirect(Config::WEBROOT . "/backend/usergroups/list?me=Group does not exist");
+		$app->redirectWithMessages("/backend/usergroups/list", array("type" => "error", "content" => "Group does not exist"));
 
 	if (isset($app->request->query["confirm"]) && $app->request->query["confirm"]) {
 		if (count($app->users->getUserGroups()) < 2)
-			$app->redirect(Config::WEBROOT . "/backend/usergroups/list?me=There must be at least one usergroup");
+			$app->redirectWithMessages("/backend/usergroups/list", array("type" => "error", "content" => "There must be at least one usergroup"));
 
 		$app->users->deleteUserGroup($app->request->query["delete_id"]);
-		$app->redirect(Config::WEBROOT . "/backend/usergroups/list?ms=Group deleted.");
+		$app->redirectWithMessages("/backend/usergroups/list", array("type" => "success", "content" => "Group deleted."));
 	}
 
 	$app->vars["usergroup_name"] = htmlentities($app->users->getUserGroup($app->request->query["delete_id"])->name);

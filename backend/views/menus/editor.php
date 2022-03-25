@@ -11,7 +11,7 @@
 	require_once Config::APPROOT . "/backend/header.php";
 
 	if (!$app->users->userHasPermissions($app->session->getCurrentSession()->user, UserPermissions::MODIFY_MENUS))
-		$app->redirect(Config::WEBROOT . "/backend/menus/list?me=You do not have permission to modify menus");
+		$app->redirectWithMessages("/backend/menus/list", array("type" => "error", "content" => "You do not have permission to modify menus"));
 
 	function checkQuery() {
 		global $app;
@@ -25,7 +25,7 @@
 
 	if (isset($app->request->query["edit_id"])) {
 		if (!$app->menus->existsMenu($app->request->query["edit_id"]))
-			$app->redirect(Config::WEBROOT . "/backend/articles/list?me=Menu does not exist");
+			$app->redirectWithMessages("/backend/articles/list", array("type" => "error", "content" => "Menu does not exist"));
 
 		$menu = $app->menus->getMenu($app->request->query["edit_id"]);
 
@@ -52,7 +52,7 @@
 			$app->menus->setMenu($id, $menu);
 
 			if ($app->request->query["menu_id"] == "")
-				$app->redirect(Config::WEBROOT . "/backend/menus/editor?edit_id=$id&ms=Changes saved.");
+				$app->redirectWithMessages("/backend/menus/editor?edit_id=$id", array("type" => "success", "content" => "Changes saved."));
 
 			$app->page->alerts["edit_success"] = array("class" => "success", "content" => "Changes saved.");
 		}
@@ -84,7 +84,7 @@
 
 			$app->menus->setMenu($id, $menu);
 
-			$app->redirect(Config::WEBROOT . "/backend/menus/editor?edit_id=$id&ms=Changes saved.");
+			$app->redirectWithMessages("/backend/menus/editor?edit_id=$id", array("type" => "success", "content" => "Changes saved."));
 		}
 	}
 

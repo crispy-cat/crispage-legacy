@@ -1,3 +1,8 @@
+# 0.5.1 alpha
+- Page messages now use cookies instead of query parameters
+- Added page->setCookie and page->deleteCookie
+- Bug fixes
+
 # 0.5.0 alpha
 - Plugins can now be activated and deactivated
 - Added MODIFY_PLUGINS permission

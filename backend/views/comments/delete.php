@@ -11,17 +11,17 @@
 	require_once Config::APPROOT . "/backend/header.php";
 
 	if (!$app->users->userHasPermissions($app->session->getCurrentSession()->user, UserPermissions::MODIFY_COMMENTS))
-		$app->redirect(Config::WEBROOT . "/backend/comments/list?me=You do not have permission to delete comments");
+		$app->redirectWithMessages("/backend/comments/list", array("type" => "error", "content" => "You do not have permission to delete comments"));
 
 	if (!isset($app->request->query["delete_id"]))
-		$app->redirect(Config::WEBROOT . "/backend/comments/list?me=No ID Specified");
+		$app->redirectWithMessages("/backend/comments/list", array("type" => "error", "content" => "No ID Specified"));
 
 	if (!$app->comments->existsComment($app->request->query["delete_id"]))
-		$app->redirect(Config::WEBROOT . "/backend/comments/list?me=Comment does not exist");
+		$app->redirectWithMessages("/backend/comments/list", array("type" => "error", "content" => "Comment does not exist"));
 
 	if (isset($app->request->query["confirm"]) && $app->request->query["confirm"]) {
 		$app->comments->deleteComment($app->request->query["delete_id"]);
-		$app->redirect(Config::WEBROOT . "/backend/comments/list?ms=Comment deleted.");
+		$app->redirectWithMessages("/backend/comments/list", array("type" => "success", "content" => "Comment deleted."));
 	}
 
 	$app->page->setTitle("Delete Comment");

@@ -153,6 +153,21 @@
 			die("Redirecting...");
 		}
 
+		public function redirectWithMessages(string $url, array $messages) {
+			if (isset($messages["type"]) && isset($messages["content"])) {
+				$this->events->trigger("message", $messages);
+				$this->page->setCookie("msg_" . $messages["type"], $messages["content"]);
+			} else {
+				foreach ($messages as $message) {
+					$this->events->trigger("message", $message);
+					$this->page->setCookie("msg_" . ($message["type"] ?? "info"), $message["content"] ?? "");
+				}
+			}
+			http_response_code(302);
+			header("Location: " . Config::WEBROOT . "$url");
+			die("Redirecting...");
+		}
+
 		public function renderPage() {
 			$this->events->trigger("app.page.pre_render");
 			try {

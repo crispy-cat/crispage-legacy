@@ -11,7 +11,7 @@
 	require_once Config::APPROOT . "/backend/header.php";
 
 	if (!$app->users->userHasPermissions($app->session->getCurrentSession()->user, UserPermissions::MODIFY_CATEGORIES))
-		$app->redirect(Config::WEBROOT . "/backend/categories/list?me=You do not have permission to modify categories");
+		$app->redirectWithMessages("/backend/categories/list", array("type" => "error", "content" => "You do not have permission to modify categories"));
 
 	function checkQuery() {
 		global $app;
@@ -42,7 +42,7 @@
 
 	if (isset($app->request->query["edit_id"])) {
 		if (!$app->content->existsCategory($app->request->query["edit_id"]))
-			$app->redirect(Config::WEBROOT . "/backend/categories/list?me=Category does not exist");
+			$app->redirectWithMessages("/backend/categories/list", array("type" => "error", "content" => "Category does not exist"));
 
 		$category = $app->content->getCategory($app->request->query["edit_id"]);
 
@@ -88,7 +88,7 @@
 			}
 
 			if ($app->request->query["category_id"] == "")
-				$app->redirect(Config::WEBROOT . "/backend/categories/editor?edit_id=$id&ms=Changes saved.");
+				$app->redirectWithMessages("/backend/categories/editor?edit_id=$id", array("type" => "success", "content" => "Changes saved."));
 
 			$app->page->alerts["edit_success"] = array("class" => "success", "content" => "Changes saved.");
 		}
@@ -142,7 +142,7 @@
 
 			$app->content->setCategory($id, $category);
 
-			$app->redirect(Config::WEBROOT . "/backend/categories/editor?edit_id=$id&ms=Changes saved.");
+			$app->redirectWithMessages("/backend/categories/editor?edit_id=$id", array("type" => "success", "content" => "Changes saved."));
 		}
 	}
 
@@ -191,7 +191,7 @@
 										<option value="no" <?php if (($app->vars["category_options"]["show_title"] ?? "no") == "no") echo "selected"; ?>>No (Default)</option>
 									<?php } ?>
 								</select>
-								
+
 								<label for="category_options[show_sidebar]">Show Sidebar</label>
 								<select class="form-control" name="category_options[show_sidebar]">
 									<?php if ($app->getSetting("category.show_sidebar", "yes") == "yes") { ?>

@@ -11,19 +11,19 @@
 	require_once Config::APPROOT . "/backend/header.php";
 
 	if (!isset($app->request->query["delete_id"]))
-		$app->redirect(Config::WEBROOT . "/backend/users/list?me=No ID Specified");
+		$app->redirectWithMessages("/backend/users/list", array("type" => "error", "content" => "No ID Specified"));
 
 	if (!$app->bans->existsBan($app->request->query["delete_id"]))
-		$app->redirect(Config::WEBROOT . "/backend/users/list?me=Ban does not exist");
+		$app->redirectWithMessages("/backend/users/list", array("type" => "error", "content" => "Ban does not exist"));
 
 	$ban = $app->bans->getBan($app->request->query["delete_id"]);
 
 	if (!$app->users->userHasPermissions($app->session->getCurrentSession()->user, UserPermissions::BAN_USERS))
-		$app->redirect(Config::WEBROOT . "/backend/users/list_bans?user_id={$ban->user}&me=You do not have permission to delete bans");
+		$app->redirectWithMessages("/backend/users/list_bans?user_id={$ban->user}", array("type" => "error", "content" => "You do not have permission to delete bans"));
 
 	if (isset($app->request->query["confirm"]) && $app->request->query["confirm"]) {
 		$app->bans->deleteBan($ban->id);
-		$app->redirect(Config::WEBROOT . "/backend/users/list_bans?user_id={$ban->user}&ms=Ban deleted.");
+		$app->redirectWithMessages("/backend/users/list_bans?user_id={$ban->user}", array("type" => "success", "content" => "Ban deleted."));
 	}
 
 	$app->vars["ban_user"] = $ban->user;

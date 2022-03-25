@@ -12,15 +12,15 @@
 
 	$session = $app->session->getCurrentSession();
 	if ($session)
-		$app->redirect(Config::WEBROOT . "/?me=There is an active session");
+		$app->redirectWithMessages("/", array("type" => "error", "content" => "There is an active session"));
 
 	if (isset($app->request->query["user_id"]) && isset($app->request->query["token"]) && isset($app->request->query["password"])) {
 		$id = $app->request->query["user_id"];
 		$ars = $app->database->readRow("authreset", $id);
 		if (!$ars)
-			$app->redirect(Config::WEBROOT . "/reset_password?me=Invalid user ID");
+			$app->redirectWithMessages("/reset_password", array("type" => "error", "content" => "Invalid user ID"));
 		if ($app->request->query["token"] != $ars["token"])
-			$app->redirect(Config::WEBROOT . "/reset_password?me=Invalid token");
+			$app->redirectWithMessages("/reset_password", array("type" => "error", "content" => "Invalid token"));
 
 		$password = $app->request->query["password"];
 		$password_min =  $app->getSetting("users.password_min", 8);
@@ -29,29 +29,29 @@
 		$password_min_special = $app->getSetting("users.password_min_special", 1);
 
 		if (strlen($password) < $password_min)
-			$app->redirect(Config::WEBROOT . "/reset_password?me=Password must be $password_min or more characters");
+			$app->redirectWithMessages("/reset_password", array("type" => "error", "content" => "Password must be $password_min or more characters"));
 
 		if (preg_match_all("/[a-z]/i", $password) < $password_min_letters)
-			$app->redirect(Config::WEBROOT . "/reset_password?me=Password must have $password_min_letters or more letters");
+			$app->redirectWithMessages("/reset_password", array("type" => "error", "content" => "Password must have $password_min_letters or more letters"));
 
 		if (preg_match_all("/[0-9]/", $password) < $password_min_numbers)
-			$app->redirect(Config::WEBROOT . "/reset_password?me=Password must have $password_min_numbers or more numbers");
+			$app->redirectWithMessages("/reset_password", array("type" => "error", "content" => "Password must have $password_min_numbers or more numbers"));
 
 		if (preg_match_all("/[^a-z0-9]/i", $password) < $password_min_special)
-			$app->redirect(Config::WEBROOT . "/reset_password?me=Password must have $password_min_special or more special characters");
+			$app->redirectWithMessages("/reset_password", array("type" => "error", "content" => "Password must have $password_min_special or more special characters"));
 
 		$app->auth->setPassword($id, $password);
 		$app->database->deleteRow("authreset", $id);
 
-		$app->redirect(Config::WEBROOT . "/login?ms=Password reset. Please log in.");
+		$app->redirectWithMessages("/login", array("type" => "success", "content" => "Password reset. Please log in."));
 	} elseif (isset($app->request->query["user_id"]) && isset($app->request->query["user_email"])) {
 		$id = $app->request->query["user_id"];
 		$email = $app->request->query["user_email"];
 		$user = $app->users->getUser($id);
 		if (!$user)
-			$app->redirect(Config::WEBROOT . "/reset_password?me=User does not exist");
+			$app->redirectWithMessages("/reset_password", array("type" => "error", "content" => "User does not exist"));
 		if ($email != $user->email)
-			$app->redirect(Config::WEBROOT . "/reset_password?me=Email does not match");
+			$app->redirectWithMessages("/reset_password", array("type" => "error", "content" => "Email does not match"));
 
 		$token = Randomizer::randomString(64, 36);
 
@@ -62,9 +62,9 @@
 		$sent = Mailer::sendMail(array($email), "Reset your " . $app->getSetting("sitename") . " password", $body);
 		if ($sent === true) {
 			$app->database->writeRow("authreset", $id, array("token" => $token));
-			$app->redirect(Config::WEBROOT . "/reset_password?ms=A reset token has been sent to your email.");
+			$app->redirectWithMessages("/reset_password", array("type" => "success", "content" => "A reset token has been sent to your email."));
 		} else {
-			$app->redirect(Config::WEBROOT . "/reset_password?me=Token could not be sent: $sent");
+			$app->redirectWithMessages("/reset_password", array("type" => "error", "content" => "Token could not be sent: $sent"));
 		}
 	}
 

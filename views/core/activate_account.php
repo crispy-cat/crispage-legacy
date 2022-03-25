@@ -12,24 +12,24 @@
 
 	$session = $app->session->getCurrentSession();
 	if ($session)
-		$app->redirect(Config::WEBROOT . "/?me=There is an active session");
+		$app->redirectWithMessages("/", array("type" => "error", "content" => "There is an active session"));
 
 	if (isset($app->request->query["user_id"]) && isset($app->request->query["token"])) {
 		$id = $app->request->query["user_id"];
 		$act = $app->database->readRow("activation", $id);
 		if (!$act)
-			$app->redirect(Config::WEBROOT . "/activate_account?me=Invalid user ID");
+			$app->redirectWithMessages("/activate_account", array("type" => "error", "content" => "Invalid user ID"));
 		if ($app->request->query["token"] != $act["token"])
-			$app->redirect(Config::WEBROOT . "/activate_account?me=Invalid token");
+			$app->redirectWithMessages("/activate_account", array("type" => "error", "content" => "Invalid token"));
 		$user = $app->users->getUser($id);
 		if (!$user)
-			$app->redirect(Config::WEBROOT . "/activate_account?me=User does not exist");
+			$app->redirectWithMessages("/activate_account", array("type" => "error", "content" => "User does not exist"));
 
 		$user->activated = 2;
 		$user->modified = time();
 		$app->users->setUser($id, $user);
 		$app->database->deleteRow("activation", $id);
-		$app->redirect(Config::WEBROOT . "/login?ms=Account activated. Please log in.");
+		$app->redirectWithMessages("/login", array("type" => "success", "content" => "Account activated. Please log in."));
 	}
 
 	$app->page->setTitle("Activate Account");

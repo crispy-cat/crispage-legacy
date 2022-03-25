@@ -12,7 +12,7 @@
 
 	$id = $app->request->query["uninstall_id"] ?? null;
 
-	if (!$id) $app->redirect(Config::WEBROOT . "/installer/extensions/list?me=No ID specified");
+	if (!$id) $app->redirectWithMessages("/installer/extensions/list", array("type" => "error", "content" => "No ID specified"));
 
 	$ext = $app->database->readRow("installation", $id);
 
@@ -37,5 +37,5 @@
 		default:
 	}
 
-	$app->redirect(Config::WEBROOT . "/installer/extensions/list?ms=Extension uninstalled");
+	$app->redirectWithMessages("/installer/extensions/list", array("type" => "success", "content" => "Extension uninstalled"));
 ?>

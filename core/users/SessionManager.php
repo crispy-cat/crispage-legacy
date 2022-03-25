@@ -21,7 +21,7 @@
 				"created" => time(),
 				"modified" => time()
 			)));
-			setcookie("session_id", $sid);
+			$app->page->setCookie("session_id", $sid);
 			$app->events->trigger("session.session_start", $sid);
 		}
 

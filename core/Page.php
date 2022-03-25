@@ -9,6 +9,9 @@
 
 	defined("CRISPAGE") or die("Application must be started from index.php!");
 
+	define("WEBROOT", Config::WEBROOT);
+	define("SERVER_NAME", $_SERVER["SERVER_NAME"]);
+
 	class Page {
 		private string $title;
 		private $content;
@@ -25,7 +28,7 @@
 			else return null;
 		}
 
-		public function getBrowserTitle() : string{
+		public function getBrowserTitle() : string {
 			global $app;
 			return $this->getTitle() . $app->getSetting("title_sep", " &mdash; ") . $app->getSetting("sitename", "");
 		}
@@ -149,6 +152,15 @@
 			if (!isset($this->modules[$pos])) return;
 			foreach ($this->modules[$pos] as $module)
 				$module->render();
+		}
+
+		public function setCookie(string $id, string $content, int $expires = 0, string $path = WEBROOT, string $domain = SERVER_NAME) : bool {
+			return setcookie($id, $content, $expires, $path, $domain);
+		}
+
+		public function deleteCookie(string $id, string $path = WEBROOT, string $domain = SERVER_NAME) : bool {
+			unset($_COOKIE[$id]);
+			return setcookie($id, "", 0, $path, $domain);
 		}
 	}
 ?>

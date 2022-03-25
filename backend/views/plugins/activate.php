@@ -16,7 +16,7 @@
 		$id = $app->request->query["activate_id"];
 		$ext = $app->database->readRow("installation", $id);
 		if (!$ext)
-			$app->redirect(Config::WEBROOT . "/backend/plugins/list?me=Plugin does not exist in installation table");
+			$app->redirectWithMessages("/backend/plugins/list", array("type" => "error", "content" => "Plugin does not exist in installation table"));
 		if (!$app->plugins->existsPlugin($ext["class"])) {
 			$plugin = new Plugin(array(
 				"id" => basename($ext["class"]),
@@ -29,9 +29,9 @@
 			));
 
 			$app->plugins->setPlugin(basename($ext["class"]), $plugin);
-			$app->redirect(Config::WEBROOT . "/backend/plugins/list?ms=Plugin activated");
+			$app->redirectWithMessages("/backend/plugins/list", array("type" => "success", "content" => "Plugin activated"));
 		} else {
-			$app->redirect(Config::WEBROOT . "/backend/plugins/list?mw=Plugin already activated");
+			$app->redirectWithMessages("/backend/plugins/list?mw=Plugin already activated"));
 		}
 	}
 

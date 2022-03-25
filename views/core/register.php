@@ -13,7 +13,7 @@
 
 	$session = $app->session->getCurrentSession();
 	if ($session)
-		$app->redirect(Config::WEBROOT . "/?me=There is an active session");
+		$app->redirectWithMessages("/", array("type" => "error", "content" => "There is an active session"));
 
 	$message = false;
 
@@ -32,10 +32,10 @@
 		$confirm = $app->request->query["user_confirm"];
 
 		if ($app->users->existsUser($id))
-			$app->redirect(Config::WEBROOT . "/register?me=User with ID '$id' already exists");
+			$app->redirectWithMessages("/register", array("type" => "error", "content" => "User with ID '$id' already exists"));
 
 		if ($password != $confirm)
-			$app->redirect(Config::WEBROOT . "/register?me=Passwords do not match");
+			$app->redirectWithMessages("/register", array("type" => "error", "content" => "Passwords do not match"));
 
 		$password_min =  $app->getSetting("users.password_min", 8);
 		$password_min_letters = $app->getSetting("users.password_min_letters", 2);
@@ -43,16 +43,16 @@
 		$password_min_special = $app->getSetting("users.password_min_special", 1);
 
 		if (strlen($password) < $password_min)
-			$app->redirect(Config::WEBROOT . "/register?me=Password must be $password_min or more characters");
+			$app->redirectWithMessages("/register", array("type" => "error", "content" => "Password must be $password_min or more characters"));
 
 		if (preg_match_all("/[a-z]/i", $password) < $password_min_letters)
-			$app->redirect(Config::WEBROOT . "/register?me=Password must have $password_min_letters or more letters");
+			$app->redirectWithMessages("/register", array("type" => "error", "content" => "Password must have $password_min_letters or more letters"));
 
 		if (preg_match_all("/[0-9]/", $password) < $password_min_numbers)
-			$app->redirect(Config::WEBROOT . "/register?me=Password must have $password_min_numbers or more numbers");
+			$app->redirectWithMessages("/register", array("type" => "error", "content" => "Password must have $password_min_numbers or more numbers"));
 
 		if (preg_match_all("/[^a-z0-9]/i", $password) < $password_min_special)
-			$app->redirect(Config::WEBROOT . "/register?me=Password must have $password_min_special or more special characters");
+			$app->redirectWithMessages("/register", array("type" => "error", "content" => "Password must have $password_min_special or more special characters"));
 
 		$token = Randomizer::randomString(64, 36);
 		$body = "Your account on " . $app->getSetting("sitename") . " has been registered.\n";

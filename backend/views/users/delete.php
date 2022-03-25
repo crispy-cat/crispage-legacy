@@ -11,26 +11,26 @@
 	require_once Config::APPROOT . "/backend/header.php";
 
 	if (!isset($app->request->query["delete_id"]))
-		$app->redirect(Config::WEBROOT . "/backend/users/list?me=No ID Specified");
+		$app->redirectWithMessages("/backend/users/list", array("type" => "error", "content" => "No ID Specified"));
 
 	if (!$app->users->existsUser($app->request->query["delete_id"]))
-		$app->redirect(Config::WEBROOT . "/backend/users/list?me=User does not exist");
+		$app->redirectWithMessages("/backend/users/list", array("type" => "error", "content" => "User does not exist"));
 
 	$user = $app->users->getUser($app->request->query["delete_id"]);
 
 	if ($user->id == $app->session->getCurrentSession()->user) {
-		$app->redirect(Config::WEBROOT . "/backend/users/list?me=The active user cannot be deleted");
+		$app->redirectWithMessages("/backend/users/list", array("type" => "error", "content" => "The active user cannot be deleted"));
 	} else {
 		if (!$app->users->userHasPermissions($app->session->getCurrentSession()->user, UserPermissions::MODIFY_USERS))
-			$app->redirect(Config::WEBROOT . "/backend/users/list?me=You do not have permission to delete other users");
+			$app->redirectWithMessages("/backend/users/list", array("type" => "error", "content" => "You do not have permission to delete other users"));
 	}
 
 	if (isset($app->request->query["confirm"]) && $app->request->query["confirm"]) {
 		if (count($app->users->getUsers()) < 2)
-			$app->redirect(Config::WEBROOT . "/backend/users/list?me=There must be at least one user");
+			$app->redirectWithMessages("/backend/users/list", array("type" => "error", "content" => "There must be at least one user"));
 
 		$app->users->deleteUser($user->id);
-		$app->redirect(Config::WEBROOT . "/backend/users/list?ms=User deleted.");
+		$app->redirectWithMessages("/backend/users/list", array("type" => "success", "content" => "User deleted."));
 	}
 
 	$app->vars["user_name"] = htmlentities($user->name);

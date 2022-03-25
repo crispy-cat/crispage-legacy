@@ -10,14 +10,14 @@
 	defined("CRISPAGE") or die("Application must be started from index.php!");
 	require_once Config::APPROOT . "/core/header.php";
 
-	$ploc = $app->request->query["ploc"] ?? "";
+	$ploc = preg_replace("/\/\//", "/", "/" . ($app->request->query["ploc"] ?? "/"));
 
 	$session = $app->session->getCurrentSession();
 	if (!$session)
-		$app->redirect(preg_replace("/\\/\\//", "/", Config::WEBROOT . "/$ploc?me=There is no active session"));
+		$app->redirectWithMessages($ploc, array("type" => "error", "content" => "There is no active session"));
 
 	$app->session->endCurrentSession();
 	$app->events->trigger("users.log_out", $session->user);
 
-	$app->redirect(preg_replace("/\\/\\//", "/", Config::WEBROOT . "/$ploc?ms=Logged out."));
+	$app->redirectWithMessages($ploc, array("type" => "success", "content" => "Logged out."));
 ?>

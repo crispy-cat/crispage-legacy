@@ -11,17 +11,17 @@
 	require_once Config::APPROOT . "/backend/header.php";
 
 	if (!$app->users->userHasPermissions($app->session->getCurrentSession()->user, UserPermissions::MODIFY_MODULES))
-		$app->redirect(Config::WEBROOT . "/backend/modules/list?me=You do not have permission to delete modules");
+		$app->redirectWithMessages("/backend/modules/list", array("type" => "error", "content" => "You do not have permission to delete modules"));
 
 	if (!isset($app->request->query["delete_id"]))
-		$app->redirect(Config::WEBROOT . "/backend/modules/list?me=No ID Specified");
+		$app->redirectWithMessages("/backend/modules/list", array("type" => "error", "content" => "No ID Specified"));
 
 	if (!$app->modules->existsModule($app->request->query["delete_id"]))
-		$app->redirect(Config::WEBROOT . "/backend/modules/list?me=Module does not exist");
+		$app->redirectWithMessages("/backend/modules/list", array("type" => "error", "content" => "Module does not exist"));
 
 	if (isset($app->request->query["confirm"]) && $app->request->query["confirm"]) {
 		$app->modules->deleteModule($app->request->query["delete_id"]);
-		$app->redirect(Config::WEBROOT . "/backend/modules/list?ms=Module deleted.");
+		$app->redirectWithMessages("/backend/modules/list", array("type" => "success", "content" => "Module deleted."));
 	}
 
 	$app->vars["module_title"] = htmlentities($app->modules->getModule($app->request->query["delete_id"])->title);

@@ -10,23 +10,23 @@
 	defined("CRISPAGE") or die("Application must be started from index.php!");
 	require_once Config::APPROOT . "/core/header.php";
 
-	$ploc = $app->request->query["ploc"] ?? "";
+	$ploc = preg_replace("/\/\//", "/", "/" . ($app->request->query["ploc"] ?? "/"));
 
 	if (!isset($app->request->query["article_id"]))
-		$app->redirect(Config:WEBROOT . "/$ploc?me=Article ID not specified");
+		$app->redirectWithMessages($ploc, array("type" => "error", "content" => "Article ID not specified"));
 
 	$session = $app->session->getCurrentSession();
 	if (!$session)
-		$app->redirect(Config::WEBROOT . "/$ploc?me=You must be logged in to post comments");
+		$app->redirectWithMessages($ploc, array("type" => "error", "content" => "You must be logged in to post comments"));
 
 	$user = $app->users->getUser($session->user);
 	if (!$app->users->userHasPermissions($user->id, UserPermissions::POST_COMMENTS))
-		$app->redirect(Config::WEBROOT . "/$ploc?me=You do not have permission to post comments");
+		$app->redirectWithMessages($ploc, array("type" => "error", "content" => "You do not have permission to post comments"));
 
 	$content = $app->request->query["comment"] ?? "";
 
 	if (!strlen($content))
-		$app->redirect(Config::WEBROOT . "/$ploc?mw=Post is empty");
+		$app->redirectWithMessages($ploc, array("type" => "warning", "content" => "Post is empty"));
 
 	$id = Randomizer::randomString(16, 62);
 	$comment = new Comment(array(
@@ -42,5 +42,5 @@
 
 	$app->events->trigger("comments.post_comment", $id);
 
-	$app->redirect(Config::WEBROOT . "/$ploc?ms=Comment posted.");
+	$app->redirectWithMessages($ploc, array("type" => "success", "content" => "Comment posted."));
 ?>

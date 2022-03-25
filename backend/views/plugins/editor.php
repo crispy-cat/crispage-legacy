@@ -11,7 +11,7 @@
 	require_once Config::APPROOT . "/backend/header.php";
 
 	if (!$app->users->userHasPermissions($app->session->getCurrentSession()->user, UserPermissions::MODIFY_PLUGINS))
-		$app->redirect(Config::WEBROOT . "/backend/plugins/list?me=You do not have permission to modify plugins");
+		$app->redirectWithMessages("/backend/plugins/list", array("type" => "error", "content" => "You do not have permission to modify plugins"));
 
 	function checkQuery() {
 		global $app;
@@ -25,19 +25,19 @@
 	$app->vars["plugin_priority"]	= "";
 
 	if (!isset($app->request->query["class"]))
-		$app->redirect(Config::WEBROOT . "/backend/plugins/select?info=Please select a plugin type first");
+		$app->redirectWithMessages("/backend/plugins/select?info=Please select a plugin type first"));
 
 	$plugininfo = $app->plugins->getPluginInfo($app->request->query["class"]);
 
 	if (!$plugininfo)
-		$app->redirect(Config::WEBROOT . "/backend/plugins/list?me=Invalid plugin type");
+		$app->redirectWithMessages("/backend/plugins/list", array("type" => "error", "content" => "Invalid plugin type"));
 
 	$app->vars["plugin_name"] = $plugininfo["name"];
 	$app->vars["plugin_class_options"] = $plugininfo["options"];
 
 	if (isset($app->request->query["edit_id"])) {
 		if (!$app->plugins->existsPlugin($app->request->query["edit_id"]))
-			$app->redirect(Config::WEBROOT . "/backend/plugins/list?me=Plugin does not exist");
+			$app->redirectWithMessages("/backend/plugins/list", array("type" => "error", "content" => "Plugin does not exist"));
 
 		$plugin = $app->plugins->getPlugin($app->request->query["edit_id"]);
 
@@ -61,7 +61,7 @@
 		$app->vars["plugin_options"] = $plugin->options;
 		$app->vars["plugin_priority"]	= $plugin->priority;
 	} else {
-		$app->redirect(Config::WEBROOT . "/backend/plugins/list?me=No ID specified");
+		$app->redirectWithMessages("/backend/plugins/list", array("type" => "error", "content" => "No ID specified"));
 	}
 
 	$app->page->setTitle($app->vars["title"]);

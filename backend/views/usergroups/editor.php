@@ -11,7 +11,7 @@
 	require_once Config::APPROOT . "/backend/header.php";
 
 	if (!$app->users->userHasPermissions($app->session->getCurrentSession()->user, UserPermissions::MODIFY_USERGROUPS))
-		$app->redirect(Config::WEBROOT . "/backend/usergroups/list?me=You do not have permission to modify usergroups");
+		$app->redirectWithMessages("/backend/usergroups/list", array("type" => "error", "content" => "You do not have permission to modify usergroups"));
 
 	function checkQuery() {
 		global $app;
@@ -29,7 +29,7 @@
 
 	if (isset($app->request->query["edit_id"])) {
 		if (!$app->users->existsUserGroup($app->request->query["edit_id"]))
-			$app->redirect(Config::WEBROOT . "/backend/usergroups/list?me=Group does not exist");
+			$app->redirectWithMessages("/backend/usergroups/list", array("type" => "error", "content" => "Group does not exist"));
 
 		$group = $app->users->getUserGroup($app->request->query["edit_id"]);
 
@@ -69,7 +69,7 @@
 			}
 
 			if ($app->request->query["group_id"] == "")
-				$app->redirect(Config::WEBROOT . "/backend/usergroups/editor?edit_id=$id&ms=Changes saved.");
+				$app->redirectWithMessages("/backend/usergroups/editor?edit_id=$id", array("type" => "success", "content" => "Changes saved."));
 
 			$app->page->alerts["edit_success"] = array("class" => "success", "content" => "Changes saved.");
 		}
@@ -109,7 +109,7 @@
 
 			$app->users->setUserGroup($id, $group);
 
-			$app->redirect(Config::WEBROOT . "/backend/usergroups/editor?edit_id=$id&ms=Changes saved.");
+			$app->redirectWithMessages("/backend/usergroups/editor?edit_id=$id", array("type" => "success", "content" => "Changes saved."));
 		}
 	}
 

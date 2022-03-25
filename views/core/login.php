@@ -10,11 +10,11 @@
 	defined("CRISPAGE") or die("Application must be started from index.php!");
 	require_once Config::APPROOT . "/core/header.php";
 
-	$ploc = $app->request->query["ploc"] ?? "";
+	$ploc = preg_replace("/\/\//", "/", "/" . ($app->request->query["ploc"] ?? "/"));
 
 	$session = $app->session->getCurrentSession();
 	if ($session)
-		$app->redirect(Config::WEBROOT . "/$ploc?me=There is an active session");
+		$app->redirectWithMessages($ploc, array("type" => "error", "content" => "There is an active session"));
 
 	if (isset($app->request->query["user_id"]) && isset($app->request->query["user_password"])) {
 		$id = $app->request->query["user_id"];
@@ -22,13 +22,13 @@
 
 		$user = $app->users->getUser($id);
 		if (!$user)
-			$app->redirect(preg_replace("/\\/\\//", "/", Config::WEBROOT . "/login?ploc=$ploc&me=User does not exist"));
+			$app->redirectWithMessages("/login?ploc=" . ($app->request->query["ploc"] ?? ""), array("type" => "error", "content" => "User does not exist"));
 
 		if (!$user->activated)
-			$app->redirect(preg_replace("/\\/\\//", "/", Config::WEBROOT . "/login?ploc=$ploc&me=User is not activated"));
+			$app->redirectWithMessages("/login?ploc=" . ($app->request->query["ploc"] ?? ""), array("type" => "error", "content" => "User is not activated"));
 
 		if (!$app->auth->authenticateUser($id, $password))
-			$app->redirect(preg_replace("/\\/\\//", "/", Config::WEBROOT . "/login?ploc=$ploc&me=Invalid ID or password"));
+			$app->redirectWithMessages("/login?ploc=" . ($app->request->query["ploc"] ?? ""), array("type" => "error", "content" => "Invalid ID or password"));
 
 		$app->vars["bans"] = $app->bans->getBans($id);
 		$app->vars["banned"] = false;
@@ -39,7 +39,7 @@
 			$user->loggedin = time();
 			$app->users->setUser($id, $user);
 			$app->events->trigger("users.log_in", $id);
-			$app->redirect(preg_replace("/\\/\\//", "/", Config::WEBROOT . "/$ploc?ms=Welcome, $id"));
+			$app->redirectWithMessages($ploc, array("type" => "success", "content" => "Welcome, $id"));
 		}
 	}
 

@@ -11,18 +11,18 @@
 	require_once Config::APPROOT . "/backend/header.php";
 
 	if (!isset($app->request->query["user_id"]))
-		$app->redirect(Config::WEBROOT . "/backend/users/list?me=No ID Specified");
+		$app->redirectWithMessages("/backend/users/list", array("type" => "error", "content" => "No ID Specified"));
 
 	if (!$app->users->existsUser($app->request->query["user_id"]))
-		$app->redirect(Config::WEBROOT . "/backend/users/list?me=User does not exist");
+		$app->redirectWithMessages("/backend/users/list", array("type" => "error", "content" => "User does not exist"));
 
 	$user = $app->users->getUser($app->request->query["user_id"]);
 
 	if ($app->request->query["user_id"] == $app->session->getCurrentSession()->user) {
-		$app->redirect(Config::WEBROOT . "/backend/users/list_bans?user_id={$user->id}&me=The current user cannot be banned");
+		$app->redirectWithMessages("/backend/users/list_bans?user_id={$user->id}", array("type" => "error", "content" => "The current user cannot be banned"));
 	} else {
 		if (!$app->users->userHasPermissions($app->session->getCurrentSession()->user, UserPermissions::BAN_USERS))
-			$app->redirect(Config::WEBROOT . "/backend/users/list_bans?user_id={$user->id}&me=You do not have permission to ban users");
+			$app->redirectWithMessages("/backend/users/list_bans?user_id={$user->id}", array("type" => "error", "content" => "You do not have permission to ban users"));
 	}
 
 	if (isset($app->request->query["confirm"]) && $app->request->query["confirm"]) {
@@ -32,7 +32,7 @@
 			$app->bans->setBan($ban->id, $ban);
 		}
 
-		$app->redirect(Config::WEBROOT . "/backend/users/list_bans?user_id={$user->id}&ms=User unbanned");
+		$app->redirectWithMessages("/backend/users/list_bans?user_id={$user->id}", array("type" => "success", "content" => "User unbanned"));
 	}
 
 	$app->vars["user_id"] = $user->id;

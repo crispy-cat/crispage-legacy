@@ -11,24 +11,24 @@
 	require_once Config::APPROOT . "/backend/header.php";
 
 	if (!isset($app->request->query["user_id"]))
-		$app->redirect(Config::WEBROOT . "/backend/users/list?me=No ID Specified");
+		$app->redirectWithMessages("/backend/users/list", array("type" => "error", "content" => "No ID Specified"));
 
 	if (!$app->users->existsUser($app->request->query["user_id"]))
-		$app->redirect(Config::WEBROOT . "/backend/users/list?me=User does not exist");
+		$app->redirectWithMessages("/backend/users/list", array("type" => "error", "content" => "User does not exist"));
 
 	$user = $app->users->getUser($app->request->query["user_id"]);
 
 	if ($app->request->query["user_id"] == $app->session->getCurrentSession()->user) {
-		$app->redirect(Config::WEBROOT . "/backend/users/list_bans?user_id={$user->id}&me=The current user cannot be banned");
+		$app->redirectWithMessages("/backend/users/list_bans?user_id={$user->id}", array("type" => "error", "content" => "The current user cannot be banned"));
 	} else {
 		if (!$app->users->userHasPermissions($app->session->getCurrentSession()->user, UserPermissions::BAN_USERS))
-			$app->redirect(Config::WEBROOT . "/backend/users/list_bans?user_id={$user->id}&me=You do not have permission to ban users");
+			$app->redirectWithMessages("/backend/users/list_bans?user_id={$user->id}", array("type" => "error", "content" => "You do not have permission to ban users"));
 	}
 
 	if (isset($app->request->query["ban_expires"])) {
 		$expires = strtotime($app->request->query["ban_expires"]);
 		if (!$expires)
-			$app->redirect(Config::WEBROOT . "/backend/users/list_bans?user_id={$user->id}&me=Invalid expiry time");
+			$app->redirectWithMessages("/backend/users/list_bans?user_id={$user->id}", array("type" => "error", "content" => "Invalid expiry time"));
 
 		$reason = $app->request->query["ban_reason"] ?? null;
 
@@ -43,7 +43,7 @@
 		));
 
 		$app->bans->setBan($id, $ban);
-		$app->redirect(Config::WEBROOT . "/backend/users/list_bans?user_id={$user->id}&ms=User banned.");
+		$app->redirectWithMessages("/backend/users/list_bans?user_id={$user->id}", array("type" => "success", "content" => "User banned."));
 	}
 
 	$app->vars["user_id"] = $user->id;

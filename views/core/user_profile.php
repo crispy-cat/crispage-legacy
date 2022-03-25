@@ -6,14 +6,14 @@
 		Author: crispycat <the@crispy.cat> <https://crispy.cat>
 		Since: 0.0.1
 	*/
-	
+
 
 	defined("CRISPAGE") or die("Application must be started from index.php!");
 	require_once Config::APPROOT . "/core/header.php";
 
 	$session = $app->session->getCurrentSession();
 	if (!$session)
-		$app->redirect(Config::WEBROOT . "/?me=You are not logged in");
+		$app->redirectWithMessages("/", array("type" => "error", "content" => "You are not logged in"));
 	$user = $app->users->getUser($session->user);
 
 	$app->vars["user_id"] = $user->id;
@@ -27,7 +27,7 @@
 		filter_var($app->request->query["user_email"], FILTER_VALIDATE_EMAIL)
 	) {
 		if (!$app->auth->authenticateUser($user->id, $app->request->query["user_password_current"]))
-			$app->redirect(Config::WEBROOT . "/user_profile?me=Current password does not match");
+			$app->redirectWithMessages("/user_profile", array("type" => "error", "content" => "Current password does not match"));
 
 		$user->name = $app->request->query["user_name"];
 		$user->email = $app->request->query["user_email"];
@@ -44,16 +44,16 @@
 			$password_min_special = $app->getSetting("users.password_min_special", 1);
 
 			if (strlen($password) < $password_min)
-				$app->redirect(Config::WEBROOT . "/user_profile?me=Password must be $password_min or more characters");
+				$app->redirectWithMessages("/user_profile", array("type" => "error", "content" => "Password must be $password_min or more characters"));
 
 			if (preg_match_all("/[a-z]/i", $password) < $password_min_letters)
-				$app->redirect(Config::WEBROOT . "/user_profile?me=Password must have $password_min_letters or more letters");
+				$app->redirectWithMessages("/user_profile", array("type" => "error", "content" => "Password must have $password_min_letters or more letters"));
 
 			if (preg_match_all("/[0-9]/", $password) < $password_min_numbers)
-				$app->redirect(Config::WEBROOT . "/user_profile?me=Password must have $password_min_numbers or more numbers");
+				$app->redirectWithMessages("/user_profile", array("type" => "error", "content" => "Password must have $password_min_numbers or more numbers"));
 
 			if (preg_match_all("/[^a-z0-9]/i", $password) < $password_min_special)
-				$app->redirect(Config::WEBROOT . "/user_profile?me=Password must have $password_min_special or more special characters");
+				$app->redirectWithMessages("/user_profile", array("type" => "error", "content" => "Password must have $password_min_special or more special characters"));
 
 			$app->auth->setPassword($user->id, $password);
 		}

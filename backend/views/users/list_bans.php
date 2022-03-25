@@ -11,11 +11,11 @@
 	require_once Config::APPROOT . "/backend/header.php";
 
 	if (!isset($app->request->query["user_id"]))
-		$app->redirect(Config::WEBROOT . "/backend/users/list?me=No ID specified");
+		$app->redirectWithMessages("/backend/users/list", array("type" => "error", "content" => "No ID specified"));
 
 	$user = $app->users->getUser($app->request->query["user_id"]);
 	if (!$user)
-		$app->redirect(Config::WEBROOT . "/backend/users/list?me=User does not exist");
+		$app->redirectWithMessages("/backend/users/list", array("type" => "error", "content" => "User does not exist"));
 
 	$app->page->setTitle("Bans");
 
@@ -59,7 +59,7 @@
 							<a class="btn btn-warning" href="<?php echo Config::WEBROOT; ?>/backend/users/unban_user?user_id=<?php echo $app->request->query["user_id"]; ?>" style="width: 110px;">Unban User</a>
 						</div>
 						<?php
-							$baseurl = Config::WEBROOT . "/backend/users/list_bans?show=" . (($app->vars["show"]) ? $app->vars["show"] : "all") . "&page=";
+							$baseurl = "/backend/users/list_bans?show=" . (($app->vars["show"]) ? $app->vars["show"] : "all") . "&page=";
 							RenderHelper::renderPagination($baseurl, $app->vars["npages"], $app->vars["page"] ?? 1);
 						?>
 					</div>

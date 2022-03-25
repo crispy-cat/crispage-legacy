@@ -11,7 +11,7 @@
 	require_once Config::APPROOT . "/backend/header.php";
 
 	if (!$app->users->userHasPermissions($app->session->getCurrentSession()->user, UserPermissions::MODIFY_MODULES))
-		$app->redirect(Config::WEBROOT . "/backend/modules/list?me=You do not have permission to modify modules");
+		$app->redirectWithMessages("/backend/modules/list", array("type" => "error", "content" => "You do not have permission to modify modules"));
 
 	function checkQuery() {
 		global $app;
@@ -30,19 +30,19 @@
 	$app->vars["module_ord"]	= 0;
 
 	if (!isset($app->request->query["class"]))
-		$app->redirect(Config::WEBROOT . "/backend/modules/select?info=Please select a module type first");
+		$app->redirectWithMessages("/backend/modules/select?info=Please select a module type first"));
 
 	$moduleinfo = $app->modules->getModuleInfo($app->request->query["class"]);
 
 	if (!$moduleinfo)
-		$app->redirect(Config::WEBROOT . "/backend/modules/list?me=Invalid module type");
+		$app->redirectWithMessages("/backend/modules/list", array("type" => "error", "content" => "Invalid module type"));
 
 	$app->vars["module_name"] = $moduleinfo["name"];
 	$app->vars["module_class_options"] = $moduleinfo["options"];
 
 	if (isset($app->request->query["edit_id"])) {
 		if (!$app->modules->existsModule($app->request->query["edit_id"]))
-			$app->redirect(Config::WEBROOT . "/backend/modules/list?me=Module does not exist");
+			$app->redirectWithMessages("/backend/modules/list", array("type" => "error", "content" => "Module does not exist"));
 
 		$module = $app->modules->getModule($app->request->query["edit_id"]);
 
@@ -75,7 +75,7 @@
 			$app->modules->setModule($id, $module);
 
 			if ($app->request->query["module_id"] == "")
-				$app->redirect(Config::WEBROOT . "/backend/modules/editor?class=$module->class&edit_id=$id&ms=Changes saved.");
+				$app->redirectWithMessages("/backend/modules/editor?class=$module->class&edit_id=$id", array("type" => "success", "content" => "Changes saved."));
 
 			$app->page->alerts["edit_success"] = array("class" => "success", "content" => "Changes saved.");
 		}
@@ -115,7 +115,7 @@
 
 			$app->modules->setModule($id, $module);
 
-			$app->redirect(Config::WEBROOT . "/backend/modules/editor?class=" . $app->request->query["class"] . "&edit_id=$id&ms=Changes saved.");
+			$app->redirectWithMessages("/backend/modules/editor?class=" . $app->request->query["class"] . "&edit_id=$id", array("type" => "success", "content" => "Changes saved."));
 		}
 	}
 

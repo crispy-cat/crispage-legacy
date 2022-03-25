@@ -11,17 +11,17 @@
 	require_once Config::APPROOT . "/backend/header.php";
 
 	if (!$app->users->userHasPermissions($app->session->getCurrentSession()->user, UserPermissions::MODIFY_MENUS))
-		$app->redirect(Config::WEBROOT . "/backend/menu_items/list?me=You do not have permission to delete menu items");
+		$app->redirectWithMessages("/backend/menu_items/list", array("type" => "error", "content" => "You do not have permission to delete menu items"));
 
 	if (!isset($app->request->query["delete_id"]))
-		$app->redirect(Config::WEBROOT . "/backend/menu_items/list?me=No ID Specified");
+		$app->redirectWithMessages("/backend/menu_items/list", array("type" => "error", "content" => "No ID Specified"));
 
 	if (!$app->menus->existsMenuItem($app->request->query["delete_id"]))
-		$app->redirect(Config::WEBROOT . "/backend/menu_items/list?me=Menu does not exist");
+		$app->redirectWithMessages("/backend/menu_items/list", array("type" => "error", "content" => "Menu does not exist"));
 
 	if (isset($app->request->query["confirm"]) && $app->request->query["confirm"]) {
 		$app->menus->deleteMenuItem($app->request->query["delete_id"]);
-		$app->redirect(Config::WEBROOT . "/backend/menu_items/list?ms=Menu deleted.");
+		$app->redirectWithMessages("/backend/menu_items/list", array("type" => "success", "content" => "Menu deleted."));
 	}
 
 	$app->vars["item_label"] = htmlentities($app->menus->getMenuItem($app->request->query["delete_id"])->label);

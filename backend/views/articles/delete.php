@@ -11,25 +11,25 @@
 	require_once Config::APPROOT . "/backend/header.php";
 
 	if (!isset($app->request->query["delete_id"]))
-		$app->redirect(Config::WEBROOT . "/backend/articles/list?me=No ID Specified");
+		$app->redirectWithMessages("/backend/articles/list", array("type" => "error", "content" => "No ID Specified"));
 
 	if (!$app->content->existsArticle($app->request->query["delete_id"]))
-		$app->redirect(Config::WEBROOT . "/backend/articles/list?me=Article does not exist");
+		$app->redirectWithMessages("/backend/articles/list", array("type" => "error", "content" => "Article does not exist"));
 
 	$article = $app->content->getArticle($app->request->query["delete_id"]);
 
 	if ($article->author == $app->session->getCurrentSession()->user) {
 		if (!$app->users->userHasPermissions($app->session->getCurrentSession()->user, UserPermissions::MODIFY_ARTICLES_OWN))
-			$app->redirect(Config::WEBROOT . "/backend/articles/list?me=You do not have permission to delete articles");
+			$app->redirectWithMessages("/backend/articles/list", array("type" => "error", "content" => "You do not have permission to delete articles"));
 	} else {
 		if (!$app->users->userHasPermissions($app->session->getCurrentSession()->user, UserPermissions::MODIFY_ARTICLES))
-			$app->redirect(Config::WEBROOT . "/backend/articles/list?me=You do not have permission to delete others' articles");
+			$app->redirectWithMessages("/backend/articles/list", array("type" => "error", "content" => "You do not have permission to delete others' articles"));
 	}
 
 	if (isset($app->request->query["confirm"]) && $app->request->query["confirm"]) {
 
 		$app->content->deleteArticle($article->id);
-		$app->redirect(Config::WEBROOT . "/backend/articles/list?ms=Article deleted.");
+		$app->redirectWithMessages("/backend/articles/list", array("type" => "success", "content" => "Article deleted."));
 	}
 
 	$app->vars["article_title"] = htmlentities($article->title);

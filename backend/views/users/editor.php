@@ -27,16 +27,16 @@
 
 	if (isset($app->request->query["edit_id"])) {
 		if (!$app->users->existsUser($app->request->query["edit_id"]))
-			$app->redirect(Config::WEBROOT . "/backend/users/list?me=Menu user does not exist");
+			$app->redirectWithMessages("/backend/users/list", array("type" => "error", "content" => "Menu user does not exist"));
 
 		$user = $app->users->getUser($app->request->query["edit_id"]);
 
 		if ($user->id == $app->session->getCurrentSession()->user) {
 			if (!$app->users->userHasPermissions($app->session->getCurrentSession()->user, UserPermissions::MODIFY_SELF))
-				$app->redirect(Config::WEBROOT . "/backend/users/list?me=You do not have permission to modify yourself");
+				$app->redirectWithMessages("/backend/users/list", array("type" => "error", "content" => "You do not have permission to modify yourself"));
 		} else {
 			if (!$app->users->userHasPermissions($app->session->getCurrentSession()->user, UserPermissions::MODIFY_USERS))
-				$app->redirect(Config::WEBROOT . "/backend/users/list?me=You do not have permission to modify other users");
+				$app->redirectWithMessages("/backend/users/list", array("type" => "error", "content" => "You do not have permission to modify other users"));
 		}
 
 		if (checkQuery()) {
@@ -63,7 +63,7 @@
 			$app->users->setUser($id, $user);
 
 			if ($app->request->query["user_id"] == "")
-				$app->redirect(Config::WEBROOT . "/backend/users/editor?edit_id=$id&ms=Changes saved.");
+				$app->redirectWithMessages("/backend/users/editor?edit_id=$id", array("type" => "success", "content" => "Changes saved."));
 
 			$app->page->alerts["edit_success"] = array("class" => "success", "content" => "Changes saved.");
 		}
@@ -79,7 +79,7 @@
 
 		if (checkQuery()) {
 			if (!$app->users->userHasPermissions($app->session->getCurrentSession()->user, UserPermissions::MODIFY_USERS))
-				$app->redirect(Config::WEBROOT . "/backend/users/list?me=You do not have permission to create users");
+				$app->redirectWithMessages("/backend/users/list", array("type" => "error", "content" => "You do not have permission to create users"));
 
 			if ($app->request->query["user_id"] == "")
 				$id = $app->nameToId($app->request->query["user_name"]);
@@ -103,7 +103,7 @@
 
 			$app->users->setUser($id, $user);
 
-			$app->redirect(Config::WEBROOT . "/backend/users/editor?edit_id=$id&ms=Changes saved.");
+			$app->redirectWithMessages("/backend/users/editor?edit_id=$id", array("type" => "success", "content" => "Changes saved."));
 		}
 	}
 

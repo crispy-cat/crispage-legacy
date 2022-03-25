@@ -11,17 +11,17 @@
 	require_once Config::APPROOT . "/backend/header.php";
 
 	if (!$app->users->userHasPermissions($app->session->getCurrentSession()->user, UserPermissions::MODIFY_PLUGINS))
-		$app->redirect(Config::WEBROOT . "/backend/plugins/list?me=You do not have permission to deactivate plugins");
+		$app->redirectWithMessages("/backend/plugins/list", array("type" => "error", "content" => "You do not have permission to deactivate plugins"));
 
 	if (!isset($app->request->query["deactivate_id"]))
-		$app->redirect(Config::WEBROOT . "/backend/plugins/list?me=No ID Specified");
+		$app->redirectWithMessages("/backend/plugins/list", array("type" => "error", "content" => "No ID Specified"));
 
 	if (!$app->plugins->existsplugin($app->request->query["deactivate_id"]))
-		$app->redirect(Config::WEBROOT . "/backend/plugins/list?me=Plugin does not exist");
+		$app->redirectWithMessages("/backend/plugins/list", array("type" => "error", "content" => "Plugin does not exist"));
 
 	if (isset($app->request->query["confirm"]) && $app->request->query["confirm"]) {
 		$app->plugins->deleteplugin($app->request->query["deactivate_id"]);
-		$app->redirect(Config::WEBROOT . "/backend/plugins/list?ms=Plugin deactivated");
+		$app->redirectWithMessages("/backend/plugins/list", array("type" => "success", "content" => "Plugin deactivated"));
 	}
 
 	$app->page->setTitle("Deactivate Plugin");
