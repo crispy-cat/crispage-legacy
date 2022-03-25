@@ -55,9 +55,11 @@
 	}
 
 
+	$ipath = preg_replace("/\\/\\//", "/", dirname($app->request->query["path"] ?? "") . "/");
 	$app->vars["files"] = array(
 		array(
-			"path" => preg_replace("/\\/\\//", "/", dirname($app->request->query["path"] ?? "") . "/"),
+			"path" => $ipath,
+			"link" => Config::WEBROOT . "/backend/media?path=$ipath",
 			"type" => "parent",
 			"name" => "Parent directory",
 			"icon" => Config::WEBROOT . "/media/system/folder.png"
@@ -67,8 +69,10 @@
 	foreach (glob($path . "*") as $fp) {
 		if ($fp == $path) continue;
 		if (is_dir($fp)) {
+			$ipath = ($app->request->query["path"] ?? "/") . basename($fp) . "/";
 			$app->vars["files"][] = array(
-				"path" => ($app->request->query["path"] ?? "/") . basename($fp) . "/",
+				"path" => $ipath,
+				"link" => Config::WEBROOT . "/backend/media?path=$ipath",
 				"type" => "directory",
 				"name" => basename($fp),
 				"icon" => Config::WEBROOT . "/media/system/folder.png"
@@ -76,6 +80,7 @@
 		} else {
 			$app->vars["files"][] = array(
 				"path" => ($app->request->query["path"] ?? "/"),
+				"link" => str_replace(Config::APPROOT, Config::WEBROOT, $fp),
 				"type" => "file",
 				"name" => basename($fp),
 				"icon" => Config::WEBROOT . "/media" . ($app->request->query["path"] ?? "/") . basename($fp)
@@ -142,7 +147,7 @@
 ?>
 							<tr>
 								<td><img src="<?php echo $file["icon"]; ?>" width="32" height="32" onerror="this.onerror=null;this.src='<?php echo Config::WEBROOT; ?>/media/system/file.png';" /></td>
-								<td><a href="<?php echo Config::WEBROOT; ?>/backend/media?path=<?php echo $file["path"]; ?>"><?php echo $file["name"]; ?></a></td>
+								<td><a href="<?php echo $file["link"]; ?>"><?php echo $file["name"]; ?></a></td>
 								<td>
 									<?php if ($file["type"] != "parent") { ?>
 										<a class="btn btn-danger btn-sm" href="<?php echo Config::WEBROOT; ?>/backend/media?action=delete&path=<?php echo $app->request->query["path"] ?? "/"; ?>&delete_name=<?php echo $file["name"]; ?>"><i class="bi bi-trash"></i> Delete</a>

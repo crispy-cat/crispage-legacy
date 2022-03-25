@@ -20,19 +20,19 @@
 
 	switch ($ext["type"]) {
 		case "view":
-			FileHelper::deleteRecurs(Config::APPROOT . (($ext["scope"] == "backend") ? "/backend/" : "/") . "views/" . $ext["class"] . ".php");
+			unlink(Config::APPROOT . (($ext["scope"] == "backend") ? "/backend/" : "/") . "views/" . $ext["class"] . ".php");
 			break;
 		case "template":
 			FileHelper::deleteRecurs(Config::APPROOT . "/templates/" . dirname($ext["class"]));
 			break;
 		case "module":
-			FileHelper::deleteRecurs(Config::APPROOT . "/modules/" . $ext["class"] . ".json");
-			FileHelper::deleteRecurs(Config::APPROOT . "/modules/" . $ext["class"] . ".php");
+			unlink(Config::APPROOT . "/modules/" . $ext["class"] . ".json");
+			unlink(Config::APPROOT . "/modules/" . $ext["class"] . ".php");
 			break;
 		case "plugin":
-			FileHelper::deleteRecurs(Config::APPROOT . "/plugins/" . $ext["class"] . ".json");
-			FileHelper::deleteRecurs(Config::APPROOT . "/plugins/" . $ext["class"] . ".php");
 			foreach ($app->plugins->getPlugins() as $plugin) if ($plugin->class == $ext["class"]) $app->plugins->deletePlugin($plugin->id);
+			unlink(Config::APPROOT . "/plugins/" . $ext["class"] . ".json");
+			unlink(Config::APPROOT . "/plugins/" . $ext["class"] . ".php");
 			break;
 		default:
 	}

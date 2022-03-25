@@ -11,6 +11,9 @@
 	require_once Config::APPROOT . "/core/header.php";
 
 	$app->vars["article"] = $app->content->getArticle($app->request->route["item_id"] ?? "");
+	
+	$app->page->options["show_title"] = $app->vars["article"]->options["show_title"] ?? $app->getSetting("articles.show_title", "yes");
+	$app->page->options["show_sidebar"] = $app->vars["article"]->options["show_sidebar"] ?? $app->getSetting("articles.show_sidebar", "yes");
 
 	$app->vars["article"]->hits++;
 	$app->content->setArticle($app->request->route["item_id"], $app->vars["article"]);

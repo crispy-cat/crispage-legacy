@@ -58,7 +58,7 @@
 		{
 			"id": "7",
 			"type": "plugin",
-			"class": "ExamplePlugin\/ExamplePlugin",
+			"class": "example\/ExamplePlugin",
 			"scope": "frontend"
 		},
 		{

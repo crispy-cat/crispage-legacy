@@ -20,7 +20,7 @@
 		public function __construct($class, array $data) {
 			if (!is_array($data)) return;
 			$this->className = $class;
-			$this->uid = $data["uid"] ?? 0;
+			$this->uid = $data["uid"] ?? (int)hexdec(md5(time()));
 			$this->id = $data["id"] ?? "";
 			$this->created = $data["created"] ?? 0;
 			$this->modified = $data["modified"] ?? 0;

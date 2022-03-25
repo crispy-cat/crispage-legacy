@@ -81,7 +81,6 @@
 				include_once Config::APPROOT . "/plugins/$plugin->class.php";
 				@$classname = array_pop(explode("/", $plugin->class));
 				if (!class_exists($classname)) return;
-				if (!isset($this->loadedPlugins)) $this->loadedPlugins = array();
 				$this->loadedPlugins[] = new $classname(array(
 					"id"	=> $plugin->id,
 					"class"	=> $plugin->class,
@@ -105,12 +104,13 @@
 				return ($a->priority < $b->priority) ? -1 : 1;
 			});
 
-			foreach ($this->loadedPlugins as $plugin)
+			foreach ($this->loadedPlugins as $plugin) {
 				try {
 					$plugin->execute();
 				} catch (Throwable $e) {
 					$app->error(500, "An error occurred", "Plugin <code>$plugin->id</code> could not be executed: ", $e, false);
 				}
+			}
 		}
 
 		protected abstract function request(Request $request);

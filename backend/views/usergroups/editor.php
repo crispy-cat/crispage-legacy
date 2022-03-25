@@ -213,30 +213,35 @@
 								<input class="form-check-input" type="checkbox" id="perm_8388608" name="perm_8388608" />
 								<label class="form-check-label" for="perm_8388608">Use Installer</label>
 							</div>
+							<div class="form-check form-check-inline">
+								<input class="form-check-input" type="checkbox" id="perm_16777216" name="perm_16777216" />
+								<label class="form-check-label" for="perm_16777216">Modify Plugins</label>
+							</div>
 						</div>
 
 						<script>
 							function syncBox() {
 								var val = 0;
-								if (document.getElementById("perm_1").checked) val += 1;
-								if (document.getElementById("perm_2").checked) val += 2;
-								if (document.getElementById("perm_4").checked) val += 4;
-								if (document.getElementById("perm_8").checked) val += 8;
-								if (document.getElementById("perm_16").checked) val += 16;
-								if (document.getElementById("perm_32").checked) val += 32;
-								if (document.getElementById("perm_64").checked) val += 64;
-								if (document.getElementById("perm_256").checked) val += 256;
-								if (document.getElementById("perm_512").checked) val += 512;
-								if (document.getElementById("perm_1024").checked) val += 1024;
-								if (document.getElementById("perm_4096").checked) val += 4096;
-								if (document.getElementById("perm_8192").checked) val += 8192;
-								if (document.getElementById("perm_16384").checked) val += 16384;
-								if (document.getElementById("perm_32768").checked) val += 32768;
-								if (document.getElementById("perm_65536").checked) val += 65536;
-								if (document.getElementById("perm_1048576").checked) val += 1048576;
-								if (document.getElementById("perm_2097152").checked) val += 2097152;
-								if (document.getElementById("perm_4194304").checked) val += 4194304;
-								if (document.getElementById("perm_8388608").checked) val += 8388608;
+								if (document.getElementById("perm_1").checked) val |= 1;
+								if (document.getElementById("perm_2").checked) val |= 2;
+								if (document.getElementById("perm_4").checked) val |= 4;
+								if (document.getElementById("perm_8").checked) val |= 8;
+								if (document.getElementById("perm_16").checked) val |= 16;
+								if (document.getElementById("perm_32").checked) val |= 32;
+								if (document.getElementById("perm_64").checked) val |= 64;
+								if (document.getElementById("perm_256").checked) val |= 256;
+								if (document.getElementById("perm_512").checked) val |= 512;
+								if (document.getElementById("perm_1024").checked) val |= 1024;
+								if (document.getElementById("perm_4096").checked) val |= 4096;
+								if (document.getElementById("perm_8192").checked) val |= 8192;
+								if (document.getElementById("perm_16384").checked) val |= 16384;
+								if (document.getElementById("perm_32768").checked) val |= 32768;
+								if (document.getElementById("perm_65536").checked) val |= 65536;
+								if (document.getElementById("perm_1048576").checked) val |= 1048576;
+								if (document.getElementById("perm_2097152").checked) val |= 2097152;
+								if (document.getElementById("perm_4194304").checked) val |= 4194304;
+								if (document.getElementById("perm_8388608").checked) val |= 8388608;
+								if (document.getElementById("perm_16777216").checked) val |= 16777216;
 								document.getElementById("group_permissions").value = val;
 							}
 
@@ -261,6 +266,7 @@
 								document.getElementById("perm_2097152").checked = val & 2097152;
 								document.getElementById("perm_4194304").checked = val & 4194304;
 								document.getElementById("perm_8388608").checked = val & 8388608;
+								document.getElementById("perm_16777216").checked = val & 16777216;
 							}
 
 							setTimeout(syncChecks, 200);
@@ -284,6 +290,7 @@
 							document.getElementById("perm_2097152").onchange = syncBox;
 							document.getElementById("perm_4194304").onchange = syncBox;
 							document.getElementById("perm_8388608").onchange = syncBox;
+							document.getElementById("perm_16777216").onchange = syncBox;
 						</script>
 					</div>
 					<div class="col-12 col-lg-4 ps-lg-2">

@@ -1,7 +1,7 @@
 <?php
 	/*
 		Crispage - A lightweight CMS for developers
-		backend/views/delete.php - Backend module delete page
+		backend/views/modules/delete.php - Backend module delete page
 
 		Author: crispycat <the@crispy.cat> <https://crispy.cat>
 		Since: 0.0.1

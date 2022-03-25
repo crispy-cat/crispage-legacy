@@ -83,9 +83,9 @@
 			"pos": "footer",
 			"ord": 0,
 			"created": 1645363307,
-			"modified": 1645363307,
+			"modified": 1648220704,
 			"options": {
-				"content": "<small class=\"text-muted\">&copy;2022 crispycat &bull; This software is licensed under the GNU GPL v3 license or later.<\/small>"
+				"content": "<small class=\"text-muted\">&copy;2022 crispycat &bull; Crispage is licensed under the GNU GPL v3 license or later.<\/small>"
 			}
 		},
 		{

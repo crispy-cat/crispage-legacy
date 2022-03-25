@@ -16,6 +16,10 @@
 			if ($this->options["filter"]) $articles = $app->content->getArticles($this->options["filtercat"]);
 			else $articles = $app->content->getArticles();
 
+			foreach ($articles as $key => $article)
+				if ($article->state != "published")
+					$articles = array_splice($article, $key);
+
 			usort($articles, function($a, $b) {
 				if ($a->hits == $b->hits) return 0;
 				return ($a->hits < $b->hits) ? 1 : -1;

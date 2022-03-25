@@ -39,7 +39,7 @@
 			$session = $this->getSession($app->request->cookies["session_id"]);
 			if (!$session) return;
 			if (time() - $session->modified >= $app->getSetting("users.session_timeout", 3600)) return;
-			$session->lastactive = time();
+			$session->modified = time();
 			$this->setSession($session->id, $session);
 			$app->events->trigger("session.session_refresh", $session->id);
 		}

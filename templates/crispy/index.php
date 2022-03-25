@@ -2,17 +2,22 @@
 	defined("CRISPAGE") or die("Application must be started from index.php!");
 
 	$logopath = $app->getSetting("logopath", null);
-	$uselogo = $logopath != null && $logopath != "";
+	$uselogo = !empty($logopath);
 	$sitename = $app->getSetting("sitename", null);
+	$primary = $app->getSetting("colors.primary", "#002060");
+	$secondary = $app->getSetting("colors.secondary", "#0d6efd");
+	$iconsloc = $app->getSetting("icons_location", Config::WEBROOT . "/media/icons");
+	$showtitle = $app->page->options["show_title"] ?? "yes";
+	$showsidebar = $app->page->options["show_sidebar"] ?? "yes";
 
 	$app->page->metas["viewport"] = array("name" => "viewport", "content" => "width=device-width, initial-scale=1");
 
-	$app->page->links["apple-touch-icon"] = array("rel" => "apple-touch-icon", "sizes" => "180x180", "href" => Config::WEBROOT . "/media/icons/apple-touch-icon.png");
-	$app->page->links["favicon-16"] = array("rel" => "icon", "type" => "image/png", "sizes" => "16x16", "href" => Config::WEBROOT . "/media/icons/favicon-16x16.png");
-	$app->page->links["favicon-32"] = array("rel" => "icon", "type" => "image/png", "sizes" => "32x32", "href" => Config::WEBROOT . "/media/icons/favicon-32x32.png");
-	$app->page->links["favicon-194"] = array("rel" => "icon", "type" => "image/png", "sizes" => "194x194", "href" => Config::WEBROOT . "/media/icons/favicon-194x194.png");
-	$app->page->links["android-chrome-icon"] = array("rel" => "icon", "type" => "image/png", "sizes" => "192x192", "href" => Config::WEBROOT . "/media/icons/android-chrome-192x192.png");
-	$app->page->links["shortcut-icon"] = array("rel" => "shortcut icon","href" => Config::WEBROOT . "/media/icons/favicon.ico");
+	$app->page->links["apple-touch-icon"] = array("rel" => "apple-touch-icon", "sizes" => "180x180", "href" => $iconsloc . "/apple-touch-icon.png");
+	$app->page->links["favicon-16"] = array("rel" => "icon", "type" => "image/png", "sizes" => "16x16", "href" => $iconsloc . "/favicon-16x16.png");
+	$app->page->links["favicon-32"] = array("rel" => "icon", "type" => "image/png", "sizes" => "32x32", "href" => $iconsloc . "/favicon-32x32.png");
+	$app->page->links["favicon-194"] = array("rel" => "icon", "type" => "image/png", "sizes" => "194x194", "href" => $iconsloc . "/favicon-194x194.png");
+	$app->page->links["android-chrome-icon"] = array("rel" => "icon", "type" => "image/png", "sizes" => "192x192", "href" => $iconsloc . "/android-chrome-192x192.png");
+	$app->page->links["shortcut-icon"] = array("rel" => "shortcut icon","href" => $iconsloc . "/favicon.ico");
 
 	$app->page->styles["bootstrap"] = array("content" => file_get_contents(Config::APPROOT . "/media/system/css/bootstrap.min.css"));
 	$app->page->styles["fonts"] = array("content" => file_get_contents(__DIR__ . "/css/fonts.css"));
@@ -32,7 +37,7 @@
 		<?php $app->page->renderScripts(); ?>
 	</head>
 	<body>
-		<nav class="navbar navbar-expand-lg navbar-dark bg-crispycat">
+		<nav class="navbar navbar-expand-lg navbar-dark" style="background: <?php echo $primary; ?>;">
 			<div class="container-fluid">
 				<a class="navbar-brand" href="<?php echo Config::WEBROOT . "/"; ?>"><?php echo ($uselogo) ? "<img src=\"$logopath\" alt=\"$sitename\" height=\"30\" />" : $sitename; ?></a>
 				<button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar">
@@ -43,27 +48,31 @@
 				</div>
 			</div>
 		</nav>
-		<div class="bg-light mb-3">
-			<div class="container py-5">
-				<div class="row">
-					<div class="col">
-						<h1 class="display-3"><?php echo $app->page->getTitle(); ?></h1>
-						<hr />
+		<?php if ($showtitle == "yes") { ?>
+			<div class="bg-light mb-3">
+				<div class="container py-5">
+					<div class="row">
+						<div class="col">
+							<h1 class="display-3"><?php echo $app->page->getTitle(); ?></h1>
+							<hr />
+						</div>
 					</div>
 				</div>
 			</div>
-		</div>
+		<?php } ?>
 		<div class="container">
 			<div class="row">
-				<div class="col-lg-9">
+				<div class="<?php echo ($showsidebar == "yes") ? "col-lg-9" : "col-12"; ?>">
 					<?php $app->page->renderAlerts(); ?>
 					<?php $app->page->renderModules("before-content"); ?>
 					<?php $app->page->renderContent(); ?>
 					<?php $app->page->renderModules("after-content"); ?>
 				</div>
-				<div class="col-lg-3 bg-light p-3">
-					<?php $app->page->renderModules("sidebar"); ?>
-				</div>
+				<?php if ($showsidebar == "yes") { ?>
+					<div class="col-lg-3 bg-light p-3">
+						<?php $app->page->renderModules("sidebar"); ?>
+					</div>
+				<?php } ?>
 			</div>
 			<div class="row">
 				<div class="col">

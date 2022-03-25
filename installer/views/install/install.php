@@ -89,7 +89,7 @@
 		<input type="text" class="form-control" name="time_format" value="H:i" required />
 
 		<label for="date_format_long">Long Date Format:</label>
-		<input type="text" class="form-control" name="date_format_long" value="Y, F d" required />
+		<input type="text" class="form-control" name="date_format_long" value="Y, F j" required />
 
 		<label for="time_format_long">Long Time Format:</label>
 		<input type="text" class="form-control" name="time_format_long" value="H:i:s" required />

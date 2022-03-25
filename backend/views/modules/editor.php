@@ -67,7 +67,6 @@
 
 			$module->title		= $app->request->query["module_title"];
 			$module->id			= $id;
-			$module->class		= $app->request->query["class"];
 			$module->pos		= $app->request->query["module_pos"];
 			$module->ord		= $app->request->query["module_ord"];
 			$module->modified	= time();

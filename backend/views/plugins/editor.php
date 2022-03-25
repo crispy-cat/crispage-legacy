@@ -4,13 +4,13 @@
 		backend/views/plugins/editor.php - Backend plugin editor
 
 		Author: crispycat <the@crispy.cat> <https://crispy.cat>
-		Since: 0.0.1
+		Since: 0.4.0
 	*/
 
 	defined("CRISPAGE") or die("Application must be started from index.php!");
 	require_once Config::APPROOT . "/backend/header.php";
 
-	if (!$app->users->userHasPermissions($app->session->getCurrentSession()->user, UserPermissions::MODIFY_SETTINGS))
+	if (!$app->users->userHasPermissions($app->session->getCurrentSession()->user, UserPermissions::MODIFY_PLUGINS))
 		$app->redirect(Config::WEBROOT . "/backend/plugins/list?me=You do not have permission to modify plugins");
 
 	function checkQuery() {
@@ -46,7 +46,6 @@
 			foreach ($app->vars["plugin_class_options"] as $opt)
 				$options[$opt["name"]] = $app->request->query["plugin_options"][$opt["name"]];
 
-			$plugin->class		= $app->request->query["class"];
 			$plugin->priority	= $app->request->query["plugin_priority"];
 			$plugin->modified	= time();
 			$plugin->options	= $options;

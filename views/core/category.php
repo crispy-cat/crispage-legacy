@@ -12,6 +12,9 @@
 
 	$app->vars["category"] = $app->content->getCategory($app->request->route["item_id"]);
 	$app->vars["articles"] = $app->content->getArticles($app->request->route["item_id"]);
+	
+	$app->page->options["show_title"] = $app->vars["category"]->options["show_title"] ?? $app->getSetting("categories.show_title", "yes");
+	$app->page->options["show_sidebar"] = $app->vars["category"]->options["show_sidebar"] ?? $app->getSetting("categories.show_sidebar", "yes");
 
 	$app->page->setTitle(htmlentities($app->vars["category"]->title));
 	$app->page->metas["description"] = array("name" => "description", "content" => htmlentities($app->vars["category"]->meta_desc));

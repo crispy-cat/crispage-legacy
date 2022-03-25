@@ -43,7 +43,7 @@
 		},
 		{
 			"id": "date_format_long",
-			"value": "Y, F d"
+			"value": "Y, F j"
 		},
 		{
 			"id": "time_format",
@@ -115,6 +115,38 @@
 		},
 		{
 			"id": "articles.show_comments",
+			"value": "yes"
+		},
+		{
+			"id": "colors.primary",
+			"value": "#002060"
+		},
+		{
+			"id": "colors.secondary",
+			"value": "#0d6efd"
+		},
+		{
+			"id": "icons_location",
+			"value": "\/crispage\/media\/icons"
+		},
+		{
+			"id": "articles.show_info",
+			"value": "yes"
+		},
+		{
+			"id": "articles.show_title",
+			"value": "yes"
+		},
+		{
+			"id": "articles.show_sidebar",
+			"value": "yes"
+		},
+		{
+			"id": "categories.show_title",
+			"value": "yes"
+		},
+		{
+			"id": "categories.show_sidebar",
 			"value": "yes"
 		}
 	]

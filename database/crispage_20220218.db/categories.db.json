@@ -66,16 +66,17 @@
 			"parent": "category-1",
 			"state": "published",
 			"created": 1646600349,
-			"modified": 1646600372,
+			"modified": 1647255877,
 			"title": "Category 1.b",
 			"content": "Category 1.b",
 			"tags": "",
 			"meta_desc": "CrispyCMS",
 			"meta_keys": "crispycms,crispycat",
 			"meta_robots": "index, follow",
-			"options": [
-				""
-			]
+			"options": {
+				"show_title": "yes",
+				"show_sidebar": "yes"
+			}
 		},
 		{
 			"id": "category-2",

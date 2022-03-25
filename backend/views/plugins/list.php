@@ -43,6 +43,7 @@
 				</div>
 				<div class="col-12 col-md-8 col-xxl-10">
 					<div style="float: right;">
+						<a class="btn btn-success mt-4 mb-2 d-block ms-auto" href="<?php echo Config::WEBROOT; ?>/backend/plugins/activate" style="width: 130px;">Activate Plugin</a>
 						<?php
 							$baseurl = Config::WEBROOT . "/backend/plugins/list?show=" . (($app->vars["show"]) ? $app->vars["show"] : "all") . "&page=";
 							RenderHelper::renderPagination($baseurl, $app->vars["npages"], $app->vars["page"] ?? 1);
@@ -74,6 +75,7 @@
 										<td><?php echo date($app->getSetting("date_format", "Y-m-d"), $plugin->modified); ?></td>
 										<td>
 											<a class="btn btn-primary btn-sm" href="<?php echo Config::WEBROOT; ?>/backend/plugins/editor?class=<?php echo $plugin->class; ?>&edit_id=<?php echo $plugin->id; ?>"><i class="bi bi-pencil"></i> Edit</a>
+											<a class="btn btn-danger btn-sm" href="<?php echo Config::WEBROOT; ?>/backend/plugins/deactivate?deactivate_id=<?php echo $plugin->id; ?>"><i class="bi bi-dash-circle"></i> Deactivate</a>
 										</td>
 									</tr>
 								<?php } ?>

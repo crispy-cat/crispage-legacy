@@ -10,8 +10,6 @@
 	defined("CRISPAGE") or die("Application must be started from index.php!");
 
 	class UserPermissions {
-		public const NO_PERMISSIONS			= 0x0000000000000000;
-
 		public const LOGIN					= 0x0000000000000001;
 		public const LOGIN_BACKEND			= 0x0000000000000002;
 		public const MODIFY_SELF			= 0x0000000000000004;
@@ -35,6 +33,9 @@
 		public const MODIFY_MODULES			= 0x0000000000200000;
 		public const MODIFY_SETTINGS		= 0x0000000000400000;
 		public const USE_INSTALLER			= 0x0000000000800000;
-
-		public const ALL_PERMISSIONS		= 0x0000000000f1f77f;
+		public const MODIFY_PLUGINS			= 0x0000000001000000;
+		
+		public const NO_PERMISSIONS			= 0x0000000000000000;
+		public const ALL_PERMISSIONS		= 0x0000000001f1f77f;
+		public const ALL_PERMISSIONS_X		= 0xffffffffffffffff;
 	}

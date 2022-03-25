@@ -18,6 +18,7 @@
 		public array $styles = array();
 		public array $scripts = array();
 		public array $alerts = array();
+		public array $options = array();
 
 		public function getTitle() : string {
 			if (isset($this->title)) return $this->title;
@@ -144,7 +145,7 @@
 
 		public function renderModules(string $pos) {
 			global $app;
-			$app->events->trigger("page.modules.pre_render");
+			$app->events->trigger("page.modules.pre_render", $pos);
 			if (!isset($this->modules[$pos])) return;
 			foreach ($this->modules[$pos] as $module)
 				$module->render();

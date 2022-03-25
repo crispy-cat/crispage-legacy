@@ -197,6 +197,28 @@
 										<option value="no" <?php if (($app->vars["article_options"]["show_info"] ?? "no") == "no") echo "selected"; ?>>No (Default)</option>
 									<?php } ?>
 								</select>
+								
+								<label for="article_options[show_title]">Show Title:</label>
+								<select class="form-control" name="article_options[show_title]">
+									<?php if ($app->getSetting("articles.show_info", "yes") == "yes") { ?>
+										<option value="yes" <?php if (($app->vars["article_options"]["show_title"] ?? "yes") == "yes") echo "selected"; ?>>Yes (Default)</option>
+										<option value="no" <?php if (($app->vars["article_options"]["show_title"] ?? "yes") == "no") echo "selected"; ?>>No</option>
+									<?php } else { ?>
+										<option value="yes" <?php if (($app->vars["article_options"]["show_title"] ?? "no") == "yes") echo "selected"; ?>>Yes</option>
+										<option value="no" <?php if (($app->vars["article_options"]["show_title"] ?? "no") == "no") echo "selected"; ?>>No (Default)</option>
+									<?php } ?>
+								</select>
+								
+								<label for="article_options[show_sidebar]">Show Sidebar</label>
+								<select class="form-control" name="article_options[show_sidebar]">
+									<?php if ($app->getSetting("articles.show_sidebar", "yes") == "yes") { ?>
+										<option value="yes" <?php if (($app->vars["article_options"]["show_sidebar"] ?? "yes") == "yes") echo "selected"; ?>>Yes (Default)</option>
+										<option value="no" <?php if (($app->vars["article_options"]["show_sidebar"] ?? "yes") == "no") echo "selected"; ?>>No</option>
+									<?php } else { ?>
+										<option value="yes" <?php if (($app->vars["article_options"]["show_sidebar"] ?? "no") == "yes") echo "selected"; ?>>Yes</option>
+										<option value="no" <?php if (($app->vars["article_options"]["show_sidebar"] ?? "no") == "no") echo "selected"; ?>>No (Default)</option>
+									<?php } ?>
+								</select>
 							</div>
 						</div>
 					</div>

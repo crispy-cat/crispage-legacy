@@ -41,17 +41,21 @@
 				echo "\">";
 
 				$class = "nav-link";
-				if ($item->getUrl() == $app->request->slug)
-					// || is home
-					$class .= " active";
+				if ($item->getUrl() == $app->request->slug) $class .= " active";
 				if (count($children)) $class .= " dropdown-toggle";
 				echo "<a class=\"$class\" href=\"" . (($item->type == "url") ? "" : Config::WEBROOT . "/") . $item->getUrl() . "\"";
 				if (count($children)) echo " role=\"button\" data-bs-toggle=\"dropdown\"";
 				echo ">$item->label</a>\n";
 				if (count($children)) {
 					echo "<ul class=\"dropdown-menu\">\n";
-					foreach ($children as $child)
+					foreach ($children as $child) {
+						if ($child->type == "login" && $app->session->getCurrentSession()) continue;
+						if ($child->type == "register" && $app->session->getCurrentSession()) continue;
+						if ($child->type == "logout" && !$app->session->getCurrentSession()) continue;
+						if ($child->type == "reset_password" && $app->session->getCurrentSession()) continue;
+						if ($child->type == "user_profile" && !$app->session->getCurrentSession()) continue;
 						echo "<li><a class=\"dropdown-item\" href=\"" . (($child->type == "url") ? "" : Config::WEBROOT . "/") . $child->getUrl() . "\">$child->label</a></li>\n";
+					}
 					echo "</ul>\n";
 				}
 				echo "</li>\n";

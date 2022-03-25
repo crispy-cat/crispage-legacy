@@ -58,7 +58,17 @@
 			"group": "super-user",
 			"created": 1646600677,
 			"modified": 1646600677,
-			"loggedin": 1647717044,
+			"loggedin": 1648217567,
+			"activated": 2
+		},
+		{
+			"id": "banned",
+			"name": "Banned Member",
+			"email": "banned@crispy.cat",
+			"group": "member",
+			"created": 1647263044,
+			"modified": 1647263044,
+			"loggedin": 0,
 			"activated": 2
 		}
 	]

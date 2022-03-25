@@ -12,6 +12,11 @@
 
 	$query = $app->request->query["q"] ?? "";
 	$app->vars["results"] = array();
+	
+	$app->vars["show"] = $app->request->query["show"] ?? 15;
+	$app->vars["page"] = $app->request->query["page"] ?? 1;
+	
+	$app->vars["npages"] = 1;
 
 	if (strlen($query)) {
 		$keywords = explode(" ", preg_replace("/[^0-9a-z]/", " ", strtolower($query)));
@@ -59,6 +64,9 @@
 			if ($a["nkeys"] == $b["nkeys"]) return 0;
 			return ($a["nkeys"] < $b["nkeys"]) ? -1 : 1;
 		});
+		
+		$app->vars["npages"] = Paginator::numPages($app->vars["results"], (is_numeric($app->vars["show"])) ? $app->vars["show"] : 0);
+		$app->vars["results"] = Paginator::sPaginate($app->vars["results"], $app->vars["show"], $app->vars["page"]);
 	}
 
 	if (strlen($query)) $app->page->setTitle("Search results for '$query'");
@@ -69,10 +77,24 @@
 		<div id="main" class="page-content">
 			<form class="d-flex">
 				<input type="text" class="form-control" name="q" placeholder="Enter search term..." required />
+				<select class="form-select ms-2" name="show">
+					<option value="15">15</option>
+					<option value="30">30</option>
+					<option value="60">60</option>
+					<option value="120">120</option>
+					<option value="240">240</option>
+					<option value="480">480</option>
+					<option value="all">All</option>
+				</select>
 				<button type="submit" class="btn btn-primary ms-1">Search</button>
 			</form>
 
 			<hr />
+			
+			<?php
+				$baseurl = Config::WEBROOT . "/search?q=" . ($app->request->query["q"] ?? "") . "&show=" . (($app->vars["show"]) ? $app->vars["show"] : "all") . "&page=";
+				RenderHelper::renderPagination($baseurl, $app->vars["npages"], $app->vars["page"] ?? 1);
+			?>
 <?php
 			foreach ($app->vars["results"] as $result) {
 ?>

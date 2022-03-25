@@ -49,7 +49,7 @@
 			"meta_desc": "CrispyCMS",
 			"meta_keys": "index, follow",
 			"meta_robots": "index, follow",
-			"hits": 85,
+			"hits": 116,
 			"options": {
 				"show_comments": "yes",
 				"show_info": "yes"
@@ -60,7 +60,7 @@
 			"category": "category-1",
 			"state": "published",
 			"created": 1646600509,
-			"modified": 1646600509,
+			"modified": 1647255833,
 			"author": "crispycat",
 			"summary": "Article in Category 1",
 			"tags": "",
@@ -69,9 +69,12 @@
 			"meta_desc": "CrispyCMS",
 			"meta_keys": "crispycms,crispycat",
 			"meta_robots": "index, follow",
-			"hits": 21,
+			"hits": 33,
 			"options": {
-				"show_comments": "yes"
+				"show_comments": "yes",
+				"show_info": "yes",
+				"show_title": "yes",
+				"show_sidebar": "yes"
 			}
 		},
 		{
@@ -88,7 +91,7 @@
 			"meta_desc": "CrispyCMS",
 			"meta_keys": "crispycms,crispycat",
 			"meta_robots": "index, follow",
-			"hits": 3,
+			"hits": 10,
 			"options": {
 				"show_comments": "yes"
 			}

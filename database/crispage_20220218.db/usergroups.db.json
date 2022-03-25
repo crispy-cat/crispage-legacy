@@ -21,9 +21,9 @@
 			"id": "super-user",
 			"name": "Super User",
 			"parent": "admin",
-			"permissions": 15857535,
+			"permissions": 32634751,
 			"created": 1645368557,
-			"modified": 1645890876
+			"modified": 1647241752
 		},
 		{
 			"id": "admin",
