@@ -27,9 +27,9 @@
 		if (!$user->activated)
 			$app->redirectWithMessages("/login?ploc=" . ($app->request->query["ploc"] ?? ""), array("type" => "error", "content" => "User is not activated"));
 
-		if (!$app->users->userHasPermissions($session->user, UserPermissions::LOGIN))
+		if (!$app->users->userHasPermissions($user, UserPermissions::LOGIN))
 			$app->redirectWithMessages("/login?ploc=" . ($app->request->query["ploc"] ?? ""), array("type" => "error", "content" => "You do not have permission to log in"));
-			
+
 		if (!$app->auth->authenticateUser($id, $password))
 			$app->redirectWithMessages("/login?ploc=" . ($app->request->query["ploc"] ?? ""), array("type" => "error", "content" => "Invalid ID or password"));
 

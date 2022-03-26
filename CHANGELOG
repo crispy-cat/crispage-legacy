@@ -1,8 +1,11 @@
+# 0.6.1 alpha
+- Bug fixes
+
 # 0.6.0 alpha
 - Unpublished content is now only accessible to users with permission to
 	VIEW_UNPUBLISHED
 - Added UserPermissions::VIEW_UNPUBLISHED
-- Added "View article|category page" link in content editors @
+- Added "View article|category page" link in content editors
 - Categories now have pagination
 - Bug fixes
 
