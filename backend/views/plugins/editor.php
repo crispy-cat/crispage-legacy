@@ -25,7 +25,7 @@
 	$app->vars["plugin_priority"]	= "";
 
 	if (!isset($app->request->query["class"]))
-		$app->redirectWithMessages("/backend/plugins/select?info=Please select a plugin type first"));
+		$app->redirectWithMessages("/backend/plugins/select", array("type" => "info", "content" => "Please select a plugin type first"));
 
 	$plugininfo = $app->plugins->getPluginInfo($app->request->query["class"]);
 
