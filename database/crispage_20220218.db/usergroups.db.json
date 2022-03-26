@@ -21,25 +21,25 @@
 			"id": "super-user",
 			"name": "Super User",
 			"parent": "admin",
-			"permissions": 32634751,
+			"permissions": 32636799,
 			"created": 1645368557,
-			"modified": 1647241752
+			"modified": 1648313744
 		},
 		{
 			"id": "admin",
 			"name": "Admin",
 			"parent": "moderator",
-			"permissions": 128831,
+			"permissions": 130879,
 			"created": 1645890557,
-			"modified": 1645890868
+			"modified": 1648313759
 		},
 		{
 			"id": "moderator",
 			"name": "Moderator",
 			"parent": "member",
-			"permissions": 61495,
+			"permissions": 63543,
 			"created": 1645890587,
-			"modified": 1645890858
+			"modified": 1648313765
 		},
 		{
 			"id": "member",

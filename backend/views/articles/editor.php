@@ -148,6 +148,9 @@
 			<div class="row">
 				<div class="col">
 					<h1><?php echo $app->vars["title"]; ?></h1>
+					<?php if ($app->vars["article_id"] != "") { ?>
+						<a href="<?php echo Config::WEBROOT . "/" . Router::getArticleRoute($app->vars["article_id"]); ?>">View article page</a>
+					<?php } ?>
 				</div>
 			</div>
 			<form method="post">

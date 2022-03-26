@@ -155,6 +155,9 @@
 			<div class="row">
 				<div class="col">
 					<h1><?php echo $app->vars["title"]; ?></h1>
+					<?php if ($app->vars["category_id"] != "") { ?>
+						<a href="<?php echo Config::WEBROOT . "/" . Router::getCategoryRoute($app->vars["category_id"]); ?>">View category page</a>
+					<?php } ?>
 				</div>
 			</div>
 			<form method="post">

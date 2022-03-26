@@ -16,7 +16,7 @@
 			if (!isset($app->request->route["view"]) || $app->request->route["view"] != "core/article") return;
 
 			$article = $app->content->getArticle($app->request->route["item_id"]);
-			if (@$article->options["show_comments"] != "yes") return;
+			if ($article->state != "published" || @$article->options["show_comments"] != "yes") return;
 
 			$comments = $app->comments->getComments($app->request->route["item_id"]);
 

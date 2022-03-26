@@ -18,7 +18,7 @@
 
 			foreach ($articles as $key => $article)
 				if ($article->state != "published")
-					$articles = array_splice($article, $key);
+					array_splice($articles, $key, 1);
 
 			usort($articles, function($a, $b) {
 				if ($a->hits == $b->hits) return 0;

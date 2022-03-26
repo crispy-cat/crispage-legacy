@@ -11,8 +11,25 @@
 	require_once Config::APPROOT . "/core/header.php";
 
 	$app->vars["category"] = $app->content->getCategory($app->request->route["item_id"]);
+
+	$session = $app->session->getCurrentSession();
+	if ($app->vars["category"]->state != "published" && (!$session || !$app->users->userHasPermissions($session->user, UserPermissions::VIEW_UNPUBLISHED)))
+		$app->error(404, "Page not found", "The page you requested could not be found. Please check the URL or try searching for it.");
+
 	$app->vars["articles"] = $app->content->getArticles($app->request->route["item_id"]);
 	$app->vars["subcategories"] = $app->content->getCategories($app->request->route["item_id"]);
+
+	if (!$session || !$app->users->userHasPermissions($session->user, UserPermissions::VIEW_UNPUBLISHED)) {
+		foreach ($app->vars["articles"] as $key => $article)
+			if ($article->state != "published")
+				array_splice($app->vars["articles"], $key, 1);
+	}
+
+	$app->vars["show"] = $app->request->query["show"] ?? 5;
+	$app->vars["page"] = $app->request->query["page"] ?? 1;
+
+	$app->vars["npages"] = Paginator::numPages($app->vars["articles"], (is_numeric($app->vars["show"])) ? $app->vars["show"] : 0);
+	$app->vars["articles"] = Paginator::sPaginate($app->vars["articles"], $app->vars["show"], $app->vars["page"]);
 
 	$app->page->options["show_title"] = $app->vars["category"]->options["show_title"] ?? $app->getSetting("categories.show_title", "yes");
 	$app->page->options["show_sidebar"] = $app->vars["category"]->options["show_sidebar"] ?? $app->getSetting("categories.show_sidebar", "yes");
@@ -27,6 +44,25 @@
 		<div id="main" class="page-content">
 			<?php echo $app->vars["category"]->content; ?>
 			<hr />
+
+			<form class="d-flex w-25 mb-3">
+				<label for="show">Show: </label>
+				<select class="form-select ms-2" name="show">
+					<option value="5">5</option>
+					<option value="15">15</option>
+					<option value="30">30</option>
+					<option value="60">60</option>
+					<option value="120">120</option>
+					<option value="240">240</option>
+					<option value="480">480</option>
+					<option value="all">All</option>
+				</select>
+				<button class="btn btn-primary ms-2" type="submit">Go</button>
+			</form>
+			<?php
+				$baseurl = Config::WEBROOT . "/" . Router::getCategoryRoute($app->request->route["item_id"]) . "?show=" . (($app->vars["show"]) ? $app->vars["show"] : "all") . "&page=";
+				RenderHelper::renderPagination($baseurl, $app->vars["npages"], $app->vars["page"] ?? 1);
+			?>
 
 			<?php if (count($app->vars["subcategories"])) { ?>
 				<div class="card mt-3">

@@ -150,8 +150,13 @@
 			global $app;
 			$app->events->trigger("page.modules.pre_render", $pos);
 			if (!isset($this->modules[$pos])) return;
-			foreach ($this->modules[$pos] as $module)
-				$module->render();
+			foreach ($this->modules[$pos] as $module) {
+				try {
+					$module->render();
+				} catch (Throwable $e) {
+					$app->error(500, "Module Error", "Module failed to render:", $e, false);
+				}
+			}
 		}
 
 		public function setCookie(string $id, string $content, int $expires = 0, string $path = WEBROOT, string $domain = null) : bool {

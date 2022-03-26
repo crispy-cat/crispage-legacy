@@ -105,6 +105,11 @@
 			"id": "category-1\/category-1-a\/article-in-category-1-a",
 			"item_id": "article-in-category-1-a",
 			"view": "core\/article"
+		},
+		{
+			"id": "category-2\/unpublished-article",
+			"item_id": "unpublished-article",
+			"view": "core\/article"
 		}
 	]
 }

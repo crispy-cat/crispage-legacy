@@ -178,6 +178,10 @@
 								<label class="form-check-label" for="perm_1024">Modify Categories</label>
 							</div>
 							<div class="form-check form-check-inline">
+								<input class="form-check-input" type="checkbox" id="perm_2048" name="perm_2048" />
+								<label class="form-check-label" for="perm_2048">View Unpublished Content</label>
+							</div>
+							<div class="form-check form-check-inline">
 								<input class="form-check-input" type="checkbox" id="perm_4096" name="perm_4096" />
 								<label class="form-check-label" for="perm_4096">View Comments</label>
 							</div>
@@ -232,6 +236,7 @@
 								if (document.getElementById("perm_256").checked) val |= 256;
 								if (document.getElementById("perm_512").checked) val |= 512;
 								if (document.getElementById("perm_1024").checked) val |= 1024;
+								if (document.getElementById("perm_2048").checked) val |= 2048;
 								if (document.getElementById("perm_4096").checked) val |= 4096;
 								if (document.getElementById("perm_8192").checked) val |= 8192;
 								if (document.getElementById("perm_16384").checked) val |= 16384;
@@ -257,6 +262,7 @@
 								document.getElementById("perm_256").checked = val & 256;
 								document.getElementById("perm_512").checked = val & 512;
 								document.getElementById("perm_1024").checked = val & 1024;
+								document.getElementById("perm_2048").checked = val & 2048;
 								document.getElementById("perm_4096").checked = val & 4096;
 								document.getElementById("perm_8192").checked = val & 8192;
 								document.getElementById("perm_16384").checked = val & 16384;
@@ -281,6 +287,7 @@
 							document.getElementById("perm_256").onchange = syncBox;
 							document.getElementById("perm_512").onchange = syncBox;
 							document.getElementById("perm_1024").onchange = syncBox;
+							document.getElementById("perm_2048").onchange = syncBox;
 							document.getElementById("perm_4096").onchange = syncBox;
 							document.getElementById("perm_8192").onchange = syncBox;
 							document.getElementById("perm_16384").onchange = syncBox;

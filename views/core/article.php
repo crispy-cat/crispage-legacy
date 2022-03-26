@@ -11,12 +11,18 @@
 	require_once Config::APPROOT . "/core/header.php";
 
 	$app->vars["article"] = $app->content->getArticle($app->request->route["item_id"] ?? "");
-	
+
+	$session = $app->session->getCurrentSession();
+	if ($app->vars["article"]->state != "published" && (!$session || !$app->users->userHasPermissions($session->user, UserPermissions::VIEW_UNPUBLISHED)))
+		$app->error(404, "Page not found", "The page you requested could not be found. Please check the URL or try searching for it.", null, false);
+
 	$app->page->options["show_title"] = $app->vars["article"]->options["show_title"] ?? $app->getSetting("articles.show_title", "yes");
 	$app->page->options["show_sidebar"] = $app->vars["article"]->options["show_sidebar"] ?? $app->getSetting("articles.show_sidebar", "yes");
 
-	$app->vars["article"]->hits++;
-	$app->content->setArticle($app->request->route["item_id"], $app->vars["article"]);
+	if (isset($app->request->route["item_id"])) {
+		$app->vars["article"]->hits++;
+		$app->content->setArticle($app->request->route["item_id"], $app->vars["article"]);
+	}
 
 	$app->page->setTitle(htmlentities($app->vars["article"]->title));
 	$app->page->metas["description"] = array("name" => "description", "content" => htmlentities($app->vars["article"]->meta_desc));

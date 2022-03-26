@@ -49,7 +49,7 @@
 			"meta_desc": "CrispyCMS",
 			"meta_keys": "index, follow",
 			"meta_robots": "index, follow",
-			"hits": 133,
+			"hits": 141,
 			"options": {
 				"show_comments": "yes",
 				"show_info": "yes"
@@ -94,6 +94,28 @@
 			"hits": 12,
 			"options": {
 				"show_comments": "yes"
+			}
+		},
+		{
+			"id": "unpublished-article",
+			"category": "category-2",
+			"state": "unpublished",
+			"created": 1648314137,
+			"modified": 1648314141,
+			"author": "super-user",
+			"summary": "Unpublished Article",
+			"tags": "",
+			"title": "Unpublished Article",
+			"content": "Unpublished Article",
+			"meta_desc": "Crispage",
+			"meta_keys": "crispage,crispycat",
+			"meta_robots": "index, follow",
+			"hits": 6,
+			"options": {
+				"show_comments": "yes",
+				"show_info": "yes",
+				"show_title": "yes",
+				"show_sidebar": "yes"
 			}
 		}
 	]
