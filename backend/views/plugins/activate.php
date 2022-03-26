@@ -31,7 +31,7 @@
 			$app->plugins->setPlugin(basename($ext["class"]), $plugin);
 			$app->redirectWithMessages("/backend/plugins/list", array("type" => "success", "content" => "Plugin activated"));
 		} else {
-			$app->redirectWithMessages("/backend/plugins/list?mw=Plugin already activated"));
+			$app->redirectWithMessages("/backend/plugins/list", array("type" => "warning", "content" => "Plugin already activated"));
 		}
 	}
 
