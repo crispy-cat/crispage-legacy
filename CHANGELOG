@@ -1,3 +1,9 @@
+# 0.5.6
+- Category pages now display subcategories
+- content->getCategories now accepts a $parent parameter
+- users->getUserGroups now accepts a $parent parameter
+- Bug fixes
+
 # 0.5.5
 - Tweaked page->setCookie
 - Bug fixes

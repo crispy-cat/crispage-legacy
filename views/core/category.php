@@ -12,7 +12,8 @@
 
 	$app->vars["category"] = $app->content->getCategory($app->request->route["item_id"]);
 	$app->vars["articles"] = $app->content->getArticles($app->request->route["item_id"]);
-	
+	$app->vars["subcategories"] = $app->content->getCategories($app->request->route["item_id"]);
+
 	$app->page->options["show_title"] = $app->vars["category"]->options["show_title"] ?? $app->getSetting("categories.show_title", "yes");
 	$app->page->options["show_sidebar"] = $app->vars["category"]->options["show_sidebar"] ?? $app->getSetting("categories.show_sidebar", "yes");
 
@@ -26,6 +27,18 @@
 		<div id="main" class="page-content">
 			<?php echo $app->vars["category"]->content; ?>
 			<hr />
+
+			<?php if (count($app->vars["subcategories"])) { ?>
+				<div class="card mt-3">
+					<div class="card-body">
+						<small>Subcategories</small>
+						<?php foreach ($app->vars["subcategories"] as $sub) { ?>
+							<h5><a href="<?php echo Config::WEBROOT . "/" . Router::getCategoryRoute($sub->id); ?>"><?php echo htmlentities($sub->title); ?></a></h5>
+						<?php } ?>
+					</div>
+				</div>
+			<?php } ?>
+
 			<?php
 				foreach ($app->vars["articles"] as $article) {
 					if ($article->tags != "") {
@@ -51,7 +64,7 @@
 			<?php
 				}
 
-				if (!count($app->vars["articles"]))
+				if (!count($app->vars["articles"]) && !count($app->vars["subcategories"]))
 					echo "<p>No articles exist in this category.</p>";
 			?>
 		</div>

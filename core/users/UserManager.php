@@ -108,10 +108,11 @@
 			return $users;
 		}
 
-		public function getUserGroups() : array {
+		public function getUserGroups(string $parent = null) : array {
 			global $app;
 
-			$dbgroups = $app->database->readRows("usergroups");
+			if ($parent) $dbgroups = $app->database->readRows("usergroups", array("parent" => $parent));
+			else $dbgroups = $app->database->readRows("usergroups");
 
 			$groups = array();
 

@@ -127,10 +127,11 @@
 			return $articles;
 		}
 
-		public function getCategories() : array {
+		public function getCategories(string $parent = null) : array {
 			global $app;
 
-			$dbcats = $app->database->readRows("categories");
+			if ($parent) $dbcats = $app->database->readRows("categories", array("parent" => $parent));
+			else $dbcats = $app->database->readRows("categories");
 
 			$categories = array();
 
