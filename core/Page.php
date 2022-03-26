@@ -154,7 +154,7 @@
 				$module->render();
 		}
 
-		public function setCookie(string $id, string $content, int $expires = 0, string $path = WEBROOT, string $domain = SERVER_NAME) : bool {
+		public function setCookie(string $id, string $content, int $expires = 0, string $path = WEBROOT, string $domain = null) : bool {
 			return setcookie($id, $content, $expires, $path, $domain);
 		}
 
