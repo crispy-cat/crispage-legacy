@@ -163,9 +163,8 @@
 			return setcookie($id, $content, $expires, $path, $domain);
 		}
 
-		public function deleteCookie(string $id, string $path = WEBROOT, string $domain = SERVER_NAME) : bool {
+		public function deleteCookie(string $id) {
 			unset($_COOKIE[$id]);
-			return setcookie($id, "", 0, $path, $domain);
 		}
 	}
 ?>
