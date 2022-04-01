@@ -1,57 +1,50 @@
-<ul class="navbar-nav me-auto">
-	<li class="nav-item">
-		<a class="nav-link" href="<?php echo Config::WEBROOT; ?>/backend/dashboard"><i class="bi bi-clipboard-data"></i> Dashboard</a>
-	</li>
-	<li class="nav-item dropdown">
-		<a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown">
-			<i class="bi bi-file-richtext"></i> Content
-		</a>
-		<ul class="dropdown-menu">
-			<li><a class="dropdown-item" href="<?php echo Config::WEBROOT; ?>/backend/articles/list"><i class="bi bi-files"></i> Articles</a></li>
-			<li><a class="dropdown-item" href="<?php echo Config::WEBROOT; ?>/backend/categories/list"><i class="bi bi-folder"></i> Categories</a></li>
-			<li><a class="dropdown-item" href="<?php echo Config::WEBROOT; ?>/backend/media"><i class="bi bi-images"></i> Media</a></li>
-			<li><a class="dropdown-item" href="<?php echo Config::WEBROOT; ?>/backend/comments/list"><i class="bi bi-chat-left-dots"></i> Comments</a></li>
-		</ul>
-	</li>
-	<li class="nav-item dropdown">
-		<a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown">
-			<i class="bi bi-menu-app"></i> Menus
-		</a>
-		<ul class="dropdown-menu">
-			<li><a class="dropdown-item" href="<?php echo Config::WEBROOT; ?>/backend/menus/list"><i class="bi bi-menu-app"></i> Menus</a></li>
-			<li><a class="dropdown-item" href="<?php echo Config::WEBROOT; ?>/backend/menu_items/list"><i class="bi bi-three-dots-vertical"></i> Menu Items</a></li>
-		</ul>
-	</li>
-	<li class="nav-item dropdown">
-		<a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown">
-			<i class="bi bi-people"></i> Users
-		</a>
-		<ul class="dropdown-menu">
-			<li><a class="dropdown-item" href="<?php echo Config::WEBROOT; ?>/backend/users/list"><i class="bi bi-person"></i> Manage Users</a></li>
-			<li><a class="dropdown-item" href="<?php echo Config::WEBROOT; ?>/backend/usergroups/list"><i class="bi bi-people"></i> Manage Usergroups</a></li>
-		</ul>
-	</li>
-	<li class="nav-item dropdown">
-		<a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown">
-			<i class="bi bi-plug"></i> Extensions
-		</a>
-		<ul class="dropdown-menu">
-			<li><a class="dropdown-item" href="<?php echo Config::WEBROOT; ?>/backend/modules/list"><i class="bi bi-grid-1x2"></i> Modules</a></li>
-			<li><a class="dropdown-item" href="<?php echo Config::WEBROOT; ?>/backend/plugins/list"><i class="bi bi-code"></i> Plugins</a></li>
-		</ul>
-	</li>
-	<li class="nav-item">
-		<a class="nav-link" href="<?php echo Config::WEBROOT; ?>/backend/settings"><i class="bi bi-sliders"></i> Settings</a>
-	</li>
-	<li class="nav-item dropdown">
-		<a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown">
-			<i class="bi bi-question-circle"></i> Help
-		</a>
-		<ul class="dropdown-menu">
-			<li><a class="dropdown-item" href="<?php echo Config::WEBROOT; ?>/backend/about"><i class="bi bi-info-circle"></i> About</a></li>
-			<li><a class="dropdown-item" href="<?php echo Config::WEBROOT; ?>/backend/support"><i class="bi bi-life-preserver"></i> Support</a></li>
-		</ul>
-	</li>
+<?php
+	/*
+		Crispage - A lightweight CMS for developers
+		backend/menu.php - Backend menu
+
+		Author: crispycat <the@crispy.cat> <https://crispy.cat>
+		Since: 0.6.0
+	*/
+
+	defined("CRISPAGE") or die("Application must be started from index.php!");
+?>
+<ul class="navbar-nav">
+	<?php
+		$menuitems = $app->getBackendMenuItems();
+		usort($menuitems, function($a, $b) {
+			if ($a->ord == $b->ord) return 0;
+			return ($a->ord < $b->ord) ? -1 : 1;
+		});
+
+		foreach ($menuitems as $item) {
+			if ($item->parent) continue;
+
+			$children = array();
+			foreach ($menuitems as $citem) {
+				if ($citem->parent == $item->id)
+					array_push($children, $citem);
+			}
+
+			echo "<li class=\"nav-item";
+			if (count($children)) echo " dropdown";
+			echo "\">";
+
+			$class = "nav-link";
+			if ($item->url == $app->request->slug) $class .= " active";
+			if (count($children)) $class .= " dropdown-toggle";
+			echo "<a class=\"$class\" href=\"" . Config::WEBROOT . $item->url . "\"";
+			if (count($children)) echo " role=\"button\" data-bs-toggle=\"dropdown\"";
+			echo ">$item->label</a>\n";
+			if (count($children)) {
+				echo "<ul class=\"dropdown-menu\">\n";
+				foreach ($children as $child)
+					echo "<li><a class=\"dropdown-item\" href=\"" . Config::WEBROOT . $child->url . "\">$child->label</a></li>\n";
+				echo "</ul>\n";
+			}
+			echo "</li>\n";
+		}
+	?>
 </ul>
 <ul class="navbar-nav ms-auto">
 	<li class="nav-item">

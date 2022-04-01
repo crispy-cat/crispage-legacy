@@ -16,11 +16,11 @@
 	if (!isset($app->request->query["deactivate_id"]))
 		$app->redirectWithMessages("/backend/plugins/list", array("type" => "error", "content" => "No ID Specified"));
 
-	if (!$app->plugins->existsplugin($app->request->query["deactivate_id"]))
+	if (!$app->extensions->existsplugin($app->request->query["deactivate_id"]))
 		$app->redirectWithMessages("/backend/plugins/list", array("type" => "error", "content" => "Plugin does not exist"));
 
 	if (isset($app->request->query["confirm"]) && $app->request->query["confirm"]) {
-		$app->plugins->deleteplugin($app->request->query["deactivate_id"]);
+		$app->extensions->deleteplugin($app->request->query["deactivate_id"]);
 		$app->redirectWithMessages("/backend/plugins/list", array("type" => "success", "content" => "Plugin deactivated"));
 	}
 

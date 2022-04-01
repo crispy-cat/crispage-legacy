@@ -112,31 +112,42 @@
 			global $app;
 			return $app->database->existsRow("categories", $id);
 		}
-
-		public function getArticles(string $category = null) : array {
+		
+		public function gArticles(string $category = null) : Generator {
 			global $app;
-
+			
 			if ($category) $dbarts = $app->database->readRows("articles", array("category" => $category));
 			else $dbarts = $app->database->readRows("articles");
+			
+			foreach ($dbarts as $article)
+				yield new Article($article);
+		}
+		
+		public function gCategories(string $parent = null) : Generator {
+			global $app;
+			
+			if ($parent) $dbcats = $app->database->readRows("categories", array("parent" => $parent));
+			else $dbcats = $app->database->readRows("categories");
+			
+			foreach ($dbcats as $category)
+				yield new Category($category);
+		}
 
+		public function getArticles(string $category = null) : array {
 			$articles = array();
 
-			foreach ($dbarts as $article)
-				array_push($articles, $this->getArticle($article["id"]));
+			foreach ($this->gArticles($category) as $article)
+				$articles[] = $article;
 
 			return $articles;
 		}
+		
 
 		public function getCategories(string $parent = null) : array {
-			global $app;
-
-			if ($parent) $dbcats = $app->database->readRows("categories", array("parent" => $parent));
-			else $dbcats = $app->database->readRows("categories");
-
 			$categories = array();
 
-			foreach ($dbcats as $category)
-				array_push($categories, $this->getCategory($category["id"]));
+			foreach ($this->gCategories($parent) as $category)
+				$categories[] = $category;
 
 			return $categories;
 		}

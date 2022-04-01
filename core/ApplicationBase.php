@@ -9,13 +9,13 @@
 
 	defined("CRISPAGE") or die("Application must be started from index.php!");
 
+	require_once Config::APPROOT . "/core/ApplicationException.php";
 	require_once Config::APPROOT . "/core/database/Database.php";
 	require_once Config::APPROOT . "/core/events/EventManager.php";
 	require_once Config::APPROOT . "/core/database/JSONDatabase.php";
 	require_once Config::APPROOT . "/core/Template.php";
 	require_once Config::APPROOT . "/core/Asset.php";
-	require_once Config::APPROOT . "/core/plugins/PluginManager.php";
-	require_once Config::APPROOT . "/core/modules/ModuleManager.php";
+	require_once Config::APPROOT . "/core/extensions/ExtensionManager.php";
 	require_once Config::APPROOT . "/core/content/ContentManager.php";
 	require_once Config::APPROOT . "/core/comments/CommentManager.php";
 	require_once Config::APPROOT . "/core/menus/MenuManager.php";
@@ -35,8 +35,7 @@
 		public Database $database;
 		public EventManager $events;
 		public Page $page;
-		public PluginManager $plugins;
-		public ModuleManager $modules;
+		public ExtensionManager $extensions;
 		public ContentManager $content;
 		public CommentManager $comments;
 		public MenuManager $menus;
@@ -48,6 +47,7 @@
 		public Template $template;
 		public array $loadedPlugins	= array();
 		public array $vars			= array();
+		protected bool $pageRendered = false;
 
 		public function __construct() {
 			try {
@@ -58,8 +58,7 @@
 			}
 			$this->events = new EventManager();
 			$this->page = new Page();
-			$this->plugins = new PluginManager();
-			$this->modules = new ModuleManager();
+			$this->extensions = new ExtensionManager();
 			$this->content = new ContentManager();
 			$this->comments = new CommentManager();
 			$this->menus = new MenuManager();
@@ -90,14 +89,13 @@
 					"options" => $plugin->options
 				));
 			} catch (Throwable $e) {
-				$app->error(500, "An error occurred", "Plugin <code>$plugin->id</code> could not be loaded: ", $e, false);
+				throw new ApplicationException(500, "An error occurred", "Plugin <code>$plugin->id</code> could not be loaded: ", null, $e, false);
 			}
 		}
 
 		public function loadPlugins(string $scope = "frontend") {
-			global $app;
 			if (count($this->loadedPlugins)) return;
-			foreach ($app->plugins->getPlugins($scope) as $plugin)
+			foreach ($this->extensions->gPlugins($scope) as $plugin)
 				$this->loadPlugin($plugin);
 			usort($this->loadedPlugins, function($a, $b) {
 				if ($a->priority == $b->priority) return 0;
@@ -108,41 +106,54 @@
 				try {
 					$plugin->execute();
 				} catch (Throwable $e) {
-					$app->error(500, "An error occurred", "Plugin <code>$plugin->id</code> could not be executed: ", $e, false);
+					throw new ApplicationException(500, "An error occurred", "Plugin <code>$plugin->id</code> could not be executed: ", null, $e, false);
 				}
 			}
 		}
 
 		protected abstract function request(Request $request);
 
-		public function error(int $http, string $title, string $body, Throwable $e = null, bool $lp = true) {
-			$this->events->trigger("app.error", $http, $title, $body, $e);
+		public function error(Throwable $e) {
+			if ($e instanceof ApplicationException) {
+				$http = $e->getHttpStatus();
+				$title = $e->getPageTitle();
+			} else {
+				$http = 500;
+				$title = "Internal Server Error";
+			}
+			$body = $e->getMessage();
+			
+			$this->events->trigger("app.error", $e);
 			http_response_code($http);
 			$this->request = new Request(array("route" => array(), "slug" => Router::getSlug(get_called_class() == "Backend")));
-			if ($lp) {
-				$this->events->trigger("app.plugins.pre_load");
-				$this->loadPlugins();
-				$this->events->trigger("app.plugins.post_load");
-				$this->events->trigger("app.modules.pre_load");
-				$this->page->loadModules();
-				$this->events->trigger("app.modules.post_load");
+			
+			$this->events->trigger("app.error.pre_render", $e);
+			
+			if (!$this->pageRendered) {
+				if ($e instanceof ApplicationException && $e->loadPlugins()) {
+					$this->events->trigger("app.plugins.pre_load");
+					$this->loadPlugins();
+					$this->events->trigger("app.plugins.post_load");
+					$this->events->trigger("app.modules.pre_load");
+					$this->page->loadModules();
+					$this->events->trigger("app.modules.post_load");
+				}
+	
+				$this->page->setTitle($title);
+				$this->page->metas["charset"] = array("charset" => $this->getSetting("charset", "UTF-8"));
+				$this->page->metas["description"] = array("name" => "description", "content" => $this->getSetting("meta_desc", ""));
+				$this->page->metas["keywords"] = array("name" => "keywords", "content" => $this->getSetting("meta_keys", ""));
+	
+				$content = "<div id=\"main\" class=\"page-content\">\n";
+				$content .= "<p>$body</p>\n";
+				if ($e->getPrevious()) $content .= "<pre>\n" . $e->getPrevious() . "\n</pre>";
+				$content .= "</div>";
+	
+				$this->page->setContent($content);
+				$this->renderPage();
+			} else {
+				die($e);
 			}
-
-			$this->page->setTitle($title);
-			$this->page->metas["charset"] = array("charset" => $this->getSetting("charset", "UTF-8"));
-			$this->page->metas["description"] = array("name" => "description", "content" => $this->getSetting("meta_desc", ""));
-			$this->page->metas["keywords"] = array("name" => "keywords", "content" => $this->getSetting("meta_keys", ""));
-
-			$content = "<div id=\"main\" class=\"page-content\">\n";
-			$content .= "<p>$body</p>\n";
-			if (isset($e)) $content .= "<pre>\n$e\n</pre>";
-			$content .= "</div>";
-
-			$this->page->setContent($content);
-
-			$this->events->trigger("app.error.pre_render", $http, $title, $body, $e);
-
-			$this->renderPage();
 		}
 
 		public function redirect(string $url, bool $permanent = false) {
@@ -169,11 +180,13 @@
 		}
 
 		public function renderPage() {
+			if ($this->pageRendered) return;
+			$this->pageRendered = true;
 			$this->events->trigger("app.page.pre_render");
 			try {
 				$this->template->render();
 			} catch (Throwable $e) {
-				$this->error(500, "An error occurred", "The page could not be rendered: ", $e);
+				throw new ApplicationException(500, "An error occurred", "The page could not be rendered: ", null, $e);
 			}
 			$this->events->trigger("app.page.post_render");
 		}

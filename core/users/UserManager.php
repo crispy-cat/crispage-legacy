@@ -93,31 +93,41 @@
 			global $app;
 			return $app->database->existsRow("usergroups", $id);
 		}
-
-		public function getUsers(string $group = null) : array {
+		
+		public function gUsers(string $group = null) : Generator {
 			global $app;
 
 			if ($group) $dbusers = $app->database->readRows("users", array("group" => $group));
 			else $dbusers = $app->database->readRows("users");
-
-			$users = array();
-
+			
 			foreach ($dbusers as $user)
-				array_push($users, $this->getUser($user["id"]));
-
-			return $users;
+				yield new User($user);
 		}
-
-		public function getUserGroups(string $parent = null) : array {
+		
+		public function gUserGroups(string $parent = null) : Generator {
 			global $app;
 
 			if ($parent) $dbgroups = $app->database->readRows("usergroups", array("parent" => $parent));
 			else $dbgroups = $app->database->readRows("usergroups");
 
+			foreach ($dbgroups as $group)
+				yield new UserGroup($group);
+		}
+
+		public function getUsers(string $group = null) : array {
+			$users = array();
+
+			foreach ($this->gUsers($group) as $user)
+				$users[] = $user;
+
+			return $users;
+		}
+
+		public function getUserGroups(string $parent = null) : array {
 			$groups = array();
 
-			foreach ($dbgroups as $group)
-				array_push($groups, $this->getUserGroup($group["id"]));
+			foreach ($this->gUserGroups($parent) as $group)
+				$groups[] = $group;
 
 			return $groups;
 		}

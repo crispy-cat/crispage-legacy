@@ -22,8 +22,8 @@
 			"id": "ExamplePlugin",
 			"class": "example\/ExamplePlugin",
 			"priority": 0,
-			"created": 0,
-			"modified": 1647635965,
+			"created": 1647271094,
+			"modified": 1647271136,
 			"scope": "frontend",
 			"options": {
 				"test_string": "Hello world"

@@ -1,0 +1,215 @@
+{
+	"TableName": "backend_menu",
+	"Columns": [
+		"id",
+		"label",
+		"url",
+		"parent",
+		"ord",
+		"created",
+		"modified",
+		"options"
+	],
+	"ColumnTypes": {
+		"id": "string",
+		"label": "string",
+		"url": "string",
+		"parent": "string",
+		"ord": "integer",
+		"created": "integer",
+		"modified": "integer",
+		"options": "array"
+	},
+	"TableData": [
+		{
+			"id": "dashboard",
+			"label": "<i class=\"bi bi-clipboard-data\"><\/i> Dashboard",
+			"url": "\/backend\/dashboard",
+			"parent": "",
+			"ord": 0,
+			"created": 0,
+			"modified": 0,
+			"options": []
+		},
+		{
+			"id": "h_content",
+			"label": "<i class=\"bi bi-file-richtext\"><\/i> Content",
+			"url": "#",
+			"parent": "",
+			"ord": 16,
+			"created": 0,
+			"modified": 0,
+			"options": []
+		},
+		{
+			"id": "articles",
+			"label": "<i class=\"bi bi-files\"><\/i> Articles",
+			"url": "\/backend\/articles\/list",
+			"parent": "h_content",
+			"ord": 0,
+			"created": 0,
+			"modified": 0,
+			"options": []
+		},
+		{
+			"id": "categories",
+			"label": "<i class=\"bi bi-folder\"><\/i> Categories",
+			"url": "\/backend\/categories\/list",
+			"parent": "h_content",
+			"ord": 16,
+			"created": 0,
+			"modified": 0,
+			"options": []
+		},
+		{
+			"id": "media",
+			"label": "<i class=\"bi bi-images\"><\/i> Media",
+			"url": "\/backend\/media",
+			"parent": "h_content",
+			"ord": 32,
+			"created": 0,
+			"modified": 0,
+			"options": []
+		},
+		{
+			"id": "comments",
+			"label": "<i class=\"bi bi-chat-left-dots\"><\/i> Comments",
+			"url": "\/backend\/comments\/list",
+			"parent": "h_content",
+			"ord": 48,
+			"created": 0,
+			"modified": 0,
+			"options": []
+		},
+		{
+			"id": "h_menus",
+			"label": "<i class=\"bi bi-menu-app\"><\/i> Menus",
+			"url": "#",
+			"parent": "",
+			"ord": 32,
+			"created": 0,
+			"modified": 0,
+			"options": []
+		},
+		{
+			"id": "menus",
+			"label": "<i class=\"bi bi-menu-app\"><\/i> Menus",
+			"url": "\/backend\/menus\/list",
+			"parent": "h_menus",
+			"ord": 0,
+			"created": 0,
+			"modified": 0,
+			"options": []
+		},
+		{
+			"id": "menu_items",
+			"label": "<i class=\"bi bi-three-dots-vertical\"><\/i> Menu Items",
+			"url": "\/backend\/menu_items\/list",
+			"parent": "h_menus",
+			"ord": 16,
+			"created": 0,
+			"modified": 0,
+			"options": []
+		},
+		{
+			"id": "h_users",
+			"label": "<i class=\"bi bi-people\"><\/i> Users",
+			"url": "#",
+			"parent": "",
+			"ord": 48,
+			"created": 0,
+			"modified": 0,
+			"options": []
+		},
+		{
+			"id": "users",
+			"label": "<i class=\"bi bi-person\"><\/i> Users",
+			"url": "\/backend\/users\/list",
+			"parent": "h_users",
+			"ord": 0,
+			"created": 0,
+			"modified": 0,
+			"options": []
+		},
+		{
+			"id": "usergroups",
+			"label": "<i class=\"bi bi-people\"><\/i>Usergroups",
+			"url": "\/backend\/usergroups\/list",
+			"parent": "h_users",
+			"ord": 16,
+			"created": 0,
+			"modified": 0,
+			"options": []
+		},
+		{
+			"id": "h_extensions",
+			"label": "<i class=\"bi bi-plug\"><\/i> Extensions",
+			"url": "#",
+			"parent": "",
+			"ord": 64,
+			"created": 0,
+			"modified": 0,
+			"options": []
+		},
+		{
+			"id": "modules",
+			"label": "<i class=\"bi bi-grid-1x2\"><\/i> Modules",
+			"url": "\/backend\/modules\/list",
+			"parent": "h_extensions",
+			"ord": 0,
+			"created": 0,
+			"modified": 0,
+			"options": []
+		},
+		{
+			"id": "plugins",
+			"label": "<i class=\"bi bi-code\"><\/i> Plugins",
+			"url": "\/backend\/plugins\/list",
+			"parent": "h_extensions",
+			"ord": 16,
+			"created": 0,
+			"modified": 0,
+			"options": []
+		},
+		{
+			"id": "settings",
+			"label": "<i class=\"bi bi-sliders\"><\/i> Settings",
+			"url": "\/backend\/settings",
+			"parent": "",
+			"ord": 80,
+			"created": 0,
+			"modified": 0,
+			"options": []
+		},
+		{
+			"id": "h_help",
+			"label": "<i class=\"bi bi-question-circle\"><\/i> Help",
+			"url": "#",
+			"parent": "",
+			"ord": 96,
+			"created": 0,
+			"modified": 0,
+			"options": []
+		},
+		{
+			"id": "about",
+			"label": "<i class=\"bi bi-info-circle\"><\/i> About Crispage",
+			"url": "\/backend\/about",
+			"parent": "h_help",
+			"ord": 0,
+			"created": 0,
+			"modified": 0,
+			"options": []
+		},
+		{
+			"id": "support",
+			"label": "<i class=\"bi bi-life-preserver\"><\/i> Support<\/a>",
+			"url": "\/backend\/support",
+			"parent": "h_help",
+			"ord": 16,
+			"created": 0,
+			"modified": 0,
+			"options": []
+		}
+	]
+}

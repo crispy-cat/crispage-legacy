@@ -10,7 +10,6 @@
 	defined("CRISPAGE") or die("Application must be started from index.php!");
 
 	require_once Config::APPROOT . "/core/ApplicationBase.php";
-	require_once Config::APPROOT . "/installer/core/ExtensionManager.php";
 
 	class Installer extends ApplicationBase {
 		public ExtensionManager $extensions;
@@ -18,8 +17,7 @@
 		public function __construct() {
 			$this->events = new EventManager();
 			$this->page = new Page();
-			$this->plugins = new PluginManager();
-			$this->modules = new ModuleManager();
+			$this->extensions = new ExtensionManager();
 			$this->content = new ContentManager();
 			$this->comments = new CommentManager();
 			$this->menus = new MenuManager();
@@ -46,12 +44,15 @@
 				else
 					throw new Exception("No view '$request->slug' exists!");
 			} catch (Throwable $e) {
-				$this->error(500, "An error occurred", "A server error has occurred and the page you requested is not available. Please try again later.", $e);
+				throw new ApplicationException(500, "An error occurred", "A server error has occurred and the page you requested is not available. Please try again later.", null, $e, false);
 			}
 		}
 
-		public function error(int $http, string $title, string $body, Throwable $e = null, $lp = false) {
-			parent::error($http, $title, $body, $e, false);
+		public function error(Throwable $e) {
+			if ($e instanceof ApplicationException)
+				parent::error(new ApplicationException($e->getHttpStatus(), $e->getTitle(), $e->getMessage(), $e, false));
+			else
+				parent::error(500, "Internal Server Error", $e->getMessage(), $e, false);
 		}
 	}
 ?>

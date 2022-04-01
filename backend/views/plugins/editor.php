@@ -27,7 +27,7 @@
 	if (!isset($app->request->query["class"]))
 		$app->redirectWithMessages("/backend/plugins/select", array("type" => "info", "content" => "Please select a plugin type first"));
 
-	$plugininfo = $app->plugins->getPluginInfo($app->request->query["class"]);
+	$plugininfo = $app->extensions->getPluginInfo($app->request->query["class"]);
 
 	if (!$plugininfo)
 		$app->redirectWithMessages("/backend/plugins/list", array("type" => "error", "content" => "Invalid plugin type"));
@@ -36,10 +36,10 @@
 	$app->vars["plugin_class_options"] = $plugininfo["options"];
 
 	if (isset($app->request->query["edit_id"])) {
-		if (!$app->plugins->existsPlugin($app->request->query["edit_id"]))
+		if (!$app->extensions->existsPlugin($app->request->query["edit_id"]))
 			$app->redirectWithMessages("/backend/plugins/list", array("type" => "error", "content" => "Plugin does not exist"));
 
-		$plugin = $app->plugins->getPlugin($app->request->query["edit_id"]);
+		$plugin = $app->extensions->getPlugin($app->request->query["edit_id"]);
 
 		if (checkQuery()) {
 			$options = array();
@@ -50,7 +50,7 @@
 			$plugin->modified	= time();
 			$plugin->options	= $options;
 
-			$app->plugins->setPlugin($plugin->id, $plugin);
+			$app->extensions->setPlugin($plugin->id, $plugin);
 
 			$app->page->alerts["edit_success"] = array("class" => "success", "content" => "Changes saved.");
 		}

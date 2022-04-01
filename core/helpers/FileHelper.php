@@ -31,5 +31,24 @@
 				@unlink($file);
 			}
 		}
+
+		public static function uncompress(string $file, string $dest) : bool {
+			if (!mkdir($dest)) return false;
+			if (pathinfo($file, PATHINFO_EXTENSION) == "zip") {
+				$fzip = $file;
+			} else {
+				$phar = new PharData($file, RecursiveDirectoryIterator::SKIP_DOTS);
+				$phar->convertToData(Phar::ZIP);
+				$fzip = preg_replace("/\..+/", ".zip", $file);
+			}
+			$zip = new ZipArchive();
+			if ($zip->open($fzip) === true) {
+				$zip->extractTo($dest);
+				$zip->close();
+				return true;
+			} else {
+				return false;
+			}
+		}
 	}
 ?>

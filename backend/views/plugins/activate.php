@@ -17,7 +17,7 @@
 		$ext = $app->database->readRow("installation", $id);
 		if (!$ext)
 			$app->redirectWithMessages("/backend/plugins/list", array("type" => "error", "content" => "Plugin does not exist in installation table"));
-		if (!$app->plugins->existsPlugin($ext["class"])) {
+		if (!$app->extensions->existsPlugin($ext["class"])) {
 			$plugin = new Plugin(array(
 				"id" => basename($ext["class"]),
 				"class" => $ext["class"],
@@ -28,7 +28,7 @@
 				"options" => array()
 			));
 
-			$app->plugins->setPlugin(basename($ext["class"]), $plugin);
+			$app->extensions->setPlugin(basename($ext["class"]), $plugin);
 			$app->redirectWithMessages("/backend/plugins/list", array("type" => "success", "content" => "Plugin activated"));
 		} else {
 			$app->redirectWithMessages("/backend/plugins/list", array("type" => "warning", "content" => "Plugin already activated"));

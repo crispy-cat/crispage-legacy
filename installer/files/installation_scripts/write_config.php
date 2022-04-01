@@ -3,6 +3,7 @@
 	installer_message("Generating config.php");
 	$config = file_get_contents(Config::APPROOT . "/installer/files/default_config.php");
 	$replace = array(
+		"version" => CRISPAGE,
 		"approot" => $app->request->query["approot"] ?? Config::APPROOT,
 		"webroot" => $app->request->query["webroot"] ?? Config::WEBROOT,
 		"password_table" => $app->request->query["password_table"] ?? "auth",

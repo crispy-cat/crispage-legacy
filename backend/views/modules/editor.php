@@ -32,7 +32,7 @@
 	if (!isset($app->request->query["class"]))
 		$app->redirectWithMessages("/backend/modules/select", array("type" => "info", "content" => "Please select a module type first"));
 
-	$moduleinfo = $app->modules->getModuleInfo($app->request->query["class"]);
+	$moduleinfo = $app->extensions->getModuleInfo($app->request->query["class"]);
 
 	if (!$moduleinfo)
 		$app->redirectWithMessages("/backend/modules/list", array("type" => "error", "content" => "Invalid module type"));
@@ -41,15 +41,15 @@
 	$app->vars["module_class_options"] = $moduleinfo["options"];
 
 	if (isset($app->request->query["edit_id"])) {
-		if (!$app->modules->existsModule($app->request->query["edit_id"]))
+		if (!$app->extensions->existsModule($app->request->query["edit_id"]))
 			$app->redirectWithMessages("/backend/modules/list", array("type" => "error", "content" => "Module does not exist"));
 
-		$module = $app->modules->getModule($app->request->query["edit_id"]);
+		$module = $app->extensions->getModule($app->request->query["edit_id"]);
 
 		if (checkQuery()) {
 			$id = $app->request->query["edit_id"];
 			if ($app->request->query["edit_id"] != $app->request->query["module_id"]) {
-				if ($app->modules->existsModule($app->request->query["module_id"])) {
+				if ($app->extensions->existsModule($app->request->query["module_id"])) {
 					$app->page->alerts["id_taken"] = array("class" => "warning", "content" => "The ID '{$app->request->query["module_id"]}' is taken! Using '$id'.");
 				} else {
 					if ($app->request->query["module_id"] == "")
@@ -57,7 +57,7 @@
 					else
 						$id = $app->nameToId($app->request->query["module_id"]);
 
-					$app->modules->deleteModule($app->request->query["edit_id"]);
+					$app->extensions->deleteModule($app->request->query["edit_id"]);
 				}
 			}
 
@@ -72,7 +72,7 @@
 			$module->modified	= time();
 			$module->options	= $options;
 
-			$app->modules->setModule($id, $module);
+			$app->extensions->setModule($id, $module);
 
 			if ($app->request->query["module_id"] == "")
 				$app->redirectWithMessages("/backend/modules/editor?class=$module->class&edit_id=$id", array("type" => "success", "content" => "Changes saved."));
@@ -96,7 +96,7 @@
 			else
 				$id = $app->nameToId($app->request->query["module_id"]);
 
-			while ($app->modules->existsModule($id)) $id .= "_1";
+			while ($app->extensions->existsModule($id)) $id .= "_1";
 
 			$options = array();
 			foreach ($app->vars["module_class_options"] as $opt)
@@ -113,7 +113,7 @@
 				"options"	=> $options
 			));
 
-			$app->modules->setModule($id, $module);
+			$app->extensions->setModule($id, $module);
 
 			$app->redirectWithMessages("/backend/modules/editor?class=" . $app->request->query["class"] . "&edit_id=$id", array("type" => "success", "content" => "Changes saved."));
 		}

@@ -18,6 +18,10 @@
 	require_once Config::APPROOT . "/installer/core/Installer.php";
 	include_once Config::APPROOT . "/core/Router.php";
 	$app = new Installer();
+	set_exception_handler(function($e) {
+		global $app;
+		$app->error($e);
+	});
 	if (IS_INSTALLED) $app->initDatabase("JSONDatabase", array(
 		"location" => Config::DB_JSON_LOC,
 		"name" => Config::DB_JSON_NAME,

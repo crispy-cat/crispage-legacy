@@ -10,6 +10,7 @@
 	defined("CRISPAGE") or die("Application must be started from index.php!");
 
 	require_once Config::APPROOT . "/core/ApplicationBase.php";
+	require_once Config::APPROOT . "/backend/core/BackendMenuItem.php";
 
 	class Backend extends ApplicationBase {
 		public function __construct() {
@@ -32,12 +33,22 @@
 				else
 					throw new Exception("No view '$request->slug' exists!");
 			} catch (Throwable $e) {
-				$this->error(500, "An error occurred", "A server error has occurred and the page you requested is not available. Please try again later.", $e);
+				throw new ApplicationException(500, "An error occurred", "A server error has occurred and the page you requested is not available. Please try again later.", null, $e);
 			}
 		}
 
 		public function loadPlugins(string $scope = "backend") {
 			parent::loadPlugins($scope);
+		}
+		
+		public function getBackendMenuItems() {
+			$dbitems = $this->database->readRows("backend_menu");
+			
+			$items = array();
+			foreach ($dbitems as $item)
+				array_push($items, new BackendMenuItem($item));
+				
+			return $items;
 		}
 	}
 ?>

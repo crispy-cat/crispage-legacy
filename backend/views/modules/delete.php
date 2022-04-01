@@ -16,15 +16,15 @@
 	if (!isset($app->request->query["delete_id"]))
 		$app->redirectWithMessages("/backend/modules/list", array("type" => "error", "content" => "No ID Specified"));
 
-	if (!$app->modules->existsModule($app->request->query["delete_id"]))
+	if (!$app->extensions->existsModule($app->request->query["delete_id"]))
 		$app->redirectWithMessages("/backend/modules/list", array("type" => "error", "content" => "Module does not exist"));
 
 	if (isset($app->request->query["confirm"]) && $app->request->query["confirm"]) {
-		$app->modules->deleteModule($app->request->query["delete_id"]);
+		$app->extensions->deleteModule($app->request->query["delete_id"]);
 		$app->redirectWithMessages("/backend/modules/list", array("type" => "success", "content" => "Module deleted."));
 	}
 
-	$app->vars["module_title"] = htmlentities($app->modules->getModule($app->request->query["delete_id"])->title);
+	$app->vars["module_title"] = htmlentities($app->extensions->getModule($app->request->query["delete_id"])->title);
 
 	$app->page->setTitle("Delete {$app->vars["module_title"]}");
 

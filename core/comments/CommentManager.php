@@ -51,17 +51,22 @@
 			global $app;
 			return $app->database->existsRow("comments", $id);
 		}
-
-		public function getComments(string $article = null) : array {
+		
+		public function gComments(string $article = null) : Generator {
 			global $app;
-
+			
 			if ($article) $dbcomms = $app->database->readRows("comments", array("article" => $article));
 			else $dbcomms = $app->database->readRows("comments");
+			
+			foreach ($dbcomms as $comment)
+				yield new Comment($comment);
+		}
 
+		public function getComments(string $article = null) : array {
 			$comments = array();
 
-			foreach ($dbcomms as $comm)
-				array_push($comments, $this->getComment($comm["id"]));
+			foreach ($this->gComments($article) as $comment)
+				$comments[] = $comment;
 
 			return $comments;
 		}

@@ -22,8 +22,8 @@
 			$this->className = $class;
 			$this->uid = $data["uid"] ?? (int)hexdec(md5(time()));
 			$this->id = $data["id"] ?? "";
-			$this->created = $data["created"] ?? 0;
-			$this->modified = $data["modified"] ?? 0;
+			$this->created = $data["created"] ?? time();
+			$this->modified = $data["modified"] ?? time();
 			$this->options = $data["options"] ?? array();
 		}
 	}

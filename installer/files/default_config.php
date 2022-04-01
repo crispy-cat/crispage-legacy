@@ -37,7 +37,7 @@
 
 	// == Do not edit below this line ==
 
-	define("CRISPAGE", "0.6.1 alpha");
+	define("CRISPAGE", "{{version}}");
 
 	ini_set("display_errors", "1");
 	ini_set("display_startup_errors", "1");

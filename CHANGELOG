@@ -1,3 +1,20 @@
+# 0.7.0 alpha
+- Application->error now takes an Exception
+- Application->error is now the default error handler
+- Backend menu is now loaded from database
+- Added ApplicationException
+- Added FileHelper::uncompress
+- Extensions in .tar.gz format are now supported
+- Implemented update functionality
+- Added ContentManager->gArticles, ContentManager->gCategories,
+	CommentManager->gComments, MenuManager->gMenus,
+	MenuManager->gMenuItems, UserManager->gUsers,
+	UserManager->gUserGroups
+- Replaced ModuleManager and PluginManager with ExtensionManager,
+	now included in core
+- Added ExtensionManager->gModules
+- Added ExtensionManager->gPlugins
+
 # 0.6.1 alpha
 - Bug fixes
 

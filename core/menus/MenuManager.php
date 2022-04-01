@@ -94,30 +94,40 @@
 
 			return $app->database->existsRow("menuitems", $id);
 		}
+		
+		public function gMenus() : Generator {
+			global $app;
+			
+			$dbmenus = $app->database->readRows("menus");
+			
+			foreach ($dbmenus as $menu)
+				yield new Menu($menu);
+		}
+		
+		public function gMenuItems(string $menu = null) : Generator {
+			global $app;
+			
+			if ($menu) $dbitems = $app->database->readRows("menuitems", array("menu" => $menu));
+			else $dbitems = $app->database->readRows("menuitems");
+			
+			foreach ($dbitems as $item)
+				yield new MenuItem($item);
+		}
 
 		public function getMenus() : array {
-			global $app;
-
-			$dbmenus = $app->database->readRows("menus");
-
 			$menus = array();
-
-			foreach ($dbmenus as $menu)
-				array_push($menus, $this->getMenu($menu["id"]));
+		
+			foreach ($this->gMenus() as $menu)
+				$menus[] = $menu;
 
 			return $menus;
 		}
 
 		public function getMenuItems(string $menu = null) : array {
-			global $app;
-
-			if ($menu) $dbitems = $app->database->readRows("menuitems", array("menu" => $menu));
-			else $dbitems = $app->database->readRows("menuitems");
-
 			$items = array();
 
-			foreach ($dbitems as $item)
-				array_push($items, $this->getMenuItem($item["id"]));
+			foreach ($this->gMenuItems($menu) as $item)
+				$items[] = $item;
 
 			return $items;
 		}

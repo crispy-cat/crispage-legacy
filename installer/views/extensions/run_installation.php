@@ -1,7 +1,7 @@
 <?php
 	/*
 		Crispage - A lightweight CMS for developers
-		installer/views/extensions/run_installation.php - Extension installation run view
+		installer/views/extensions/run_installation.php - Extension installation script
 
 		Author: crispycat <the@crispy.cat> <https://crispy.cat>
 		Since: 0.4.0
@@ -46,19 +46,12 @@
 	try {
 		if (!isset($app->request->files["extension_pack"])) throw new Exception("No extension pack uploaded");
 		$file = $app->request->files["extension_pack"];
-		$zfile = Config::APPROOT . "/installer/files/package_tmp/upload_" . Randomizer::randomString(16, 36);
+		$zfile = Config::APPROOT . "/installer/files/package_tmp/" . Randomizer::randomString(8, 36) . "_" . basename($file["name"]);
 		if ($file["error"] == UPLOAD_ERR_OK) move_uploaded_file($file["tmp_name"], $zfile);
 		else throw new Exception("Could not upload extension pack!");
 
-		$zip = new ZipArchive();
-		if ($zip->open($zfile)) {
-			define("TMPEXT", Config::APPROOT . "/installer/files/package_tmp/extension_" . Randomizer::randomString(16, 36));
-			mkdir(TMPEXT);
-			$zip->extractTo(TMPEXT);
-			$zip->close();
-		} else {
-			throw new Exception("Invalid extension pack");
-		}
+		define("TMPEXT", Config::APPROOT . "/installer/files/package_tmp/extension_" . Randomizer::randomString(16, 36));
+		if (!FileHelper::uncompress($zfile, TMPEXT)) throw new Exception("Invalid extension pack format");
 
 		require_once TMPEXT . "/installation_scripts/install.php";
 		installer_message("Installation complete!", IMSG_SUCCESS);

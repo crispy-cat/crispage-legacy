@@ -16,7 +16,7 @@
 ?>
 	<h1>Install Extension</h1>
 
-	<p>Please upload the extension package. Extension packs should be in .zip format.</p>
+	<p>Please upload the extension package. Extension packs should be in .tar.gz or .zip format.</p>
 
 	<form action="<?php echo Config::WEBROOT; ?>/installer/extensions/run_installation" method="post" enctype="multipart/form-data">
 		<label for="extension_pack">Extension Pack:</label>

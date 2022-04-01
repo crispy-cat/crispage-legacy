@@ -15,7 +15,7 @@
 	$app->vars["show"] = $app->request->query["show"] ?? 15;
 	$app->vars["page"] = $app->request->query["page"] ?? 1;
 
-	$modules = $app->modules->getModules();
+	$modules = $app->extensions->getModules();
 
 	$app->vars["npages"] = Paginator::numPages($modules, (is_numeric($app->vars["show"])) ? $app->vars["show"] : 0);
 
