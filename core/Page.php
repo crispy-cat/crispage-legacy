@@ -164,6 +164,7 @@
 		}
 
 		public function deleteCookie(string $id) {
+			setcookie($id, "_", time());
 			unset($_COOKIE[$id]);
 		}
 	}

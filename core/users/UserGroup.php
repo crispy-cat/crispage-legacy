@@ -12,6 +12,7 @@
 	class UserGroup extends Asset {
 		public string $name;
 		public ?string $parent;
+		public int $rank;
 		public int $permissions;
 
 		public function __construct(array $data) {
@@ -19,6 +20,7 @@
 			if (!is_array($data)) return;
 			$this->name = $data["name"] ?? "";
 			$this->parent = $data["parent"] ?? "";
+			$this->rank = $data["rank"] ?? 0;
 			$this->permissions = $data["permissions"] ?? 0;
 		}
 	}

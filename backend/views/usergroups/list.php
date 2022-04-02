@@ -58,6 +58,7 @@
 							<thead>
 								<tr>
 									<th>Id</th>
+									<th>Rank</th>
 									<th>Name</th>
 									<th>Parent</th>
 									<th>Created</th>
@@ -69,6 +70,7 @@
 								<?php foreach ($app->vars["groups"] as $group) { ?>
 									<tr>
 										<td><code><?php echo $group->id; ?></code></td>
+										<td><?php echo htmlentities($group->rank); ?></td>
 										<td><?php echo htmlentities($group->name); ?></td>
 										<td><?php echo ($app->users->getUserGroup($group->parent)) ? htmlentities($app->users->GetUserGroup($group->parent)->name) : "none"; ?></td>
 										<td><?php echo date($app->getSetting("date_format", "Y-m-d"), $group->created); ?></td>

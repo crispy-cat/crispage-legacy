@@ -19,12 +19,14 @@
 		return	isset($app->request->query["group_name"]) &&
 				isset($app->request->query["group_id"]) &&
 				isset($app->request->query["group_permissions"]) &&
+				isset($app->request->query["group_rank"]) &&
 				isset($app->request->query["group_parent"]);
 	}
 
 	$app->vars["group_name"]		= "";
 	$app->vars["group_id"]			= "";
 	$app->vars["group_permissions"]	= 0;
+	$app->vars["group_rank"]		= 0;
 	$app->vars["group_parent"]		= null;
 
 	if (isset($app->request->query["edit_id"])) {
@@ -32,6 +34,9 @@
 			$app->redirectWithMessages("/backend/usergroups/list", array("type" => "error", "content" => "Group does not exist"));
 
 		$group = $app->users->getUserGroup($app->request->query["edit_id"]);
+
+		if ($app->users->compareUserRank($app->session->getCurrentSession()->user, $group->rank) !== 1)
+			$app->redirectWithMessages("/backend/usergroups/list", array("type" => "error", "content" => "Group rank must be less than your own"));
 
 		if (checkQuery()) {
 			$id = $app->request->query["edit_id"];
@@ -57,6 +62,7 @@
 			$group->name	= $app->request->query["group_name"];
 			$group->id		= $id;
 			$group->permissions= $app->request->query["group_permissions"];
+			$group->rank	= $app->request->query["group_rank"];
 			$group->modified	= time();
 			$group->parent	= $parent;
 
@@ -79,6 +85,7 @@
 		$app->vars["group_name"]	= htmlentities($group->name);
 		$app->vars["group_id"]		= $group->id;
 		$app->vars["group_permissions"] = htmlentities($group->permissions);
+		$app->vars["group_rank"]	= $group->rank;
 		$app->vars["group_parent"]	= htmlentities($group->parent);
 	} else {
 		$app->vars["title"] = "New Group";
@@ -102,6 +109,7 @@
 				"id"		=> $id,
 				"name"		=> $app->request->query["group_name"],
 				"permissions"=> $app->request->query["group_permissions"],
+				"rank"		=> $app->request->query["group_rank"],
 				"created"	=> time(),
 				"modified"	=> time(),
 				"parent"	=> $parent
@@ -306,6 +314,9 @@
 
 						<label for="group_parent">Group Parent:</label>
 						<?php RenderHelper::renderUserGroupPicker("group_parent", $app->vars["group_parent"], array("title" => "[none]", "value" => "")); ?>
+
+						<label for="group_rank">Group Rank:</label>
+						<input type="number" class="form-control" name="group_rank" placeholder="auto-generate" value="<?php echo $app->vars["group_rank"]; ?>" min="-1" />
 
 						<a class="btn btn-secondary btn-lg mt-3 pe-2" href="<?php echo Config::WEBROOT; ?>/backend/usergroups/list" style="width: calc(50% - 0.375rem);">Back</a>
 						<button class="btn btn-success btn-lg mt-3" type="submit" style="width: calc(50% - 0.375rem);">Save</button>

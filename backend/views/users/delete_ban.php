@@ -21,6 +21,9 @@
 	if (!$app->users->userHasPermissions($app->session->getCurrentSession()->user, UserPermissions::BAN_USERS))
 		$app->redirectWithMessages("/backend/users/list_bans?user_id={$ban->user}", array("type" => "error", "content" => "You do not have permission to delete bans"));
 
+	if ($app->users->compareUserRank($app->session->getCurrentSession()->user, $ban->user) !== 1)
+		$app->redirectWithMessages("/backend/users/list_bans?user_id={$user->id}", array("type" => "error", "content" => "Target user's group rank must be less than your own"));
+
 	if (isset($app->request->query["confirm"]) && $app->request->query["confirm"]) {
 		$app->bans->deleteBan($ban->id);
 		$app->redirectWithMessages("/backend/users/list_bans?user_id={$ban->user}", array("type" => "success", "content" => "Ban deleted."));

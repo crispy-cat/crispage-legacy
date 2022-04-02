@@ -23,6 +23,9 @@
 	} else {
 		if (!$app->users->userHasPermissions($app->session->getCurrentSession()->user, UserPermissions::BAN_USERS))
 			$app->redirectWithMessages("/backend/users/list_bans?user_id={$user->id}", array("type" => "error", "content" => "You do not have permission to ban users"));
+
+		if ($app->users->compareUserRank($app->session->getCurrentSession()->user, $app->request->query["user_id"]) !== 1)
+			$app->redirectWithMessages("/backend/users/list_bans?user_id={$user->id}", array("type" => "error", "content" => "Target user's group rank must be less than your own"));
 	}
 
 	if (isset($app->request->query["ban_expires"])) {

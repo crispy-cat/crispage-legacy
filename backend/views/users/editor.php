@@ -37,6 +37,9 @@
 		} else {
 			if (!$app->users->userHasPermissions($app->session->getCurrentSession()->user, UserPermissions::MODIFY_USERS))
 				$app->redirectWithMessages("/backend/users/list", array("type" => "error", "content" => "You do not have permission to modify other users"));
+
+				if ($app->users->compareUserRank($app->session->getCurrentSession()->user, $user->id) !== 1)
+					$app->redirectWithMessages("/backend/users/list", array("type" => "error", "content" => "Target user's group rank must be less than your own"));
 		}
 
 		if (checkQuery()) {
@@ -54,10 +57,16 @@
 				}
 			}
 
+			$group = $app->request->query["user_group"];
+			if ($app->users->compareUserRank($app->session->getCurrentSession()->user, $app->users->getGroupRank($group)) !== 1) {
+				$group = $app->getSetting("users.default_group");
+				$app->page->alerts["group_lower"] = array("class" => "warning", "content" => "Target user's group rank must be less than your own, using default group");
+			}
+
 			$user->name		= $app->request->query["user_name"];
 			$user->email	= $app->request->query["user_email"];
 			$user->id		= $id;
-			$user->group	= $app->request->query["user_group"];
+			$user->group	= $group;
 			$user->modified	= time();
 
 			$app->users->setUser($id, $user);
@@ -90,11 +99,17 @@
 
 			$id = $app->nameToId($id);
 
+			$group = $app->request->query["user_group"];
+			if ($app->users->compareUserRank($app->session->getCurrentSession()->user, $app->users->getGroupRank($group)) !== 1) {
+				$group = $app->getSetting("users.default_group");
+				$app->page->alerts["group_lower"] = array("class" => "warning", "content" => "Target user's group rank must be less than your own, using default group");
+			}
+
 			$user = new User(array(
 				"id"		=> $id,
 				"name"		=> $app->request->query["user_name"],
 				"email"		=> $app->request->query["user_email"],
-				"group"		=> $app->request->query["user_group"],
+				"group"		=> $group,
 				"created"	=> time(),
 				"modified"	=> time(),
 				"loggedin"	=> 0,

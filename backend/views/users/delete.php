@@ -23,6 +23,9 @@
 	} else {
 		if (!$app->users->userHasPermissions($app->session->getCurrentSession()->user, UserPermissions::MODIFY_USERS))
 			$app->redirectWithMessages("/backend/users/list", array("type" => "error", "content" => "You do not have permission to delete other users"));
+
+		if ($app->users->compareUserRank($app->session->getCurrentSession()->user, $app->request->query["delete_id"]) !== 1)
+			$app->redirectWithMessages("/backend/users/list", array("type" => "error", "content" => "Target user's group rank must be less than your own"));
 	}
 
 	if (isset($app->request->query["confirm"]) && $app->request->query["confirm"]) {

@@ -28,7 +28,7 @@
 			"group": "admin",
 			"created": 1645890939,
 			"modified": 1645890939,
-			"loggedin": 0,
+			"loggedin": 1648905838,
 			"activated": 2
 		},
 		{
@@ -38,7 +38,7 @@
 			"group": "moderator",
 			"created": 1645890952,
 			"modified": 1645890952,
-			"loggedin": 0,
+			"loggedin": 1648905714,
 			"activated": 2
 		},
 		{
@@ -58,7 +58,7 @@
 			"group": "super-user",
 			"created": 1646600677,
 			"modified": 1646600677,
-			"loggedin": 1648825465,
+			"loggedin": 1648902015,
 			"activated": 2
 		},
 		{
@@ -67,7 +67,7 @@
 			"email": "banned@crispy.cat",
 			"group": "member",
 			"created": 1647263044,
-			"modified": 1647263044,
+			"modified": 1648906841,
 			"loggedin": 0,
 			"activated": 2
 		}

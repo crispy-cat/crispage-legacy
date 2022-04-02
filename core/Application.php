@@ -35,7 +35,7 @@
 				else
 					throw new Exception("No view '{$request->route["view"]}' exists!");
 			} catch (Throwable $e) {
-				throw new Exception(500, "An error occurred", "A server error has occurred and the page you requested is not available. Please try again later.", $e);
+				throw new ApplicationException(500, "An error occurred", "A server error has occurred and the page you requested is not available. Please try again later.", null, $e);
 			}
 		}
 	}

@@ -20,6 +20,9 @@
 		$app->redirectWithMessages("/backend/usergroups/list", array("type" => "error", "content" => "Group does not exist"));
 
 	if (isset($app->request->query["confirm"]) && $app->request->query["confirm"]) {
+		if ($app->users->compareUserRank($app->session->getCurrentSession()->user, $app->users->getGroupRank($app->request->query["delete_id"])) !== 1)
+			$app->redirectWithMessages("/backend/usergroups/list", array("type" => "error", "content" => "Group rank must be less than your own"));
+
 		if (count($app->users->getUserGroups()) < 2)
 			$app->redirectWithMessages("/backend/usergroups/list", array("type" => "error", "content" => "There must be at least one usergroup"));
 

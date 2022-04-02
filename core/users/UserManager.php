@@ -59,6 +59,7 @@
 			$app->database->writeRow("usergroups", $id, array(
 				"name" => $data->name,
 				"parent" => $data->parent,
+				"rank" => $data->rank,
 				"permissions" => $data->permissions,
 				"created" => $data->created,
 				"modified" => $data->modified
@@ -93,17 +94,17 @@
 			global $app;
 			return $app->database->existsRow("usergroups", $id);
 		}
-		
+
 		public function gUsers(string $group = null) : Generator {
 			global $app;
 
 			if ($group) $dbusers = $app->database->readRows("users", array("group" => $group));
 			else $dbusers = $app->database->readRows("users");
-			
+
 			foreach ($dbusers as $user)
 				yield new User($user);
 		}
-		
+
 		public function gUserGroups(string $parent = null) : Generator {
 			global $app;
 
@@ -153,17 +154,37 @@
 		}
 
 		public function getGroupPermissions(string $id = null) : int {
-			if ($id == null) return 0;
 			$group = $this->getUserGroup($id);
-			if (!$group) return 0;
+			if (!$group) return UserPermissions::NO_PERMISSIONS;
 			if ($group->parent) return $group->permissions | $this->getGroupPermissions($group->parent);
 			else return $group->permissions;
 		}
 
+		public function getGroupRank(string $id = null) : int {
+			$group = $this->getUserGroup($id);
+			if (!$group) return 0;
+			if ($group->rank < 0) $group->rank = PHP_INT_MAX;
+			if ($group->parent) return max($group->rank, $this->getGroupRank($group->parent));
+			else return $group->rank;
+		}
+
 		public function userHasPermissions(string $id = null, int $perm = 0) : bool {
-			if ($id == null) return false;
 			$user = $this->getUser($id);
+			if (!$user) return false;
 			return ($this->getGroupPermissions($user->group) & $perm) == $perm;
+		}
+
+		public function getUserRank(string $id = null) {
+			$user = $this->getUser($id);
+			if (!$user) return 0;
+			return $this->getGroupRank($user->group);
+		}
+
+		public function compareUserRank(string $user = null, string|int $target = null) {
+			if (!$user) return -1;
+			if ($target === null) return 1;
+			if (is_int($target)) return ($this->getUserRank($user) - $target) <=> 0;
+			else return ($this->getUserRank($user) - $this->getUserRank($target)) <=> 0;
 		}
 	}
 ?>

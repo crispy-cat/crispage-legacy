@@ -122,13 +122,13 @@
 				$title = "Internal Server Error";
 			}
 			$body = $e->getMessage();
-			
+
 			$this->events->trigger("app.error", $e);
 			http_response_code($http);
 			$this->request = new Request(array("route" => array(), "slug" => Router::getSlug(get_called_class() == "Backend")));
-			
+
 			$this->events->trigger("app.error.pre_render", $e);
-			
+
 			if (!$this->pageRendered) {
 				if ($e instanceof ApplicationException && $e->loadPlugins()) {
 					$this->events->trigger("app.plugins.pre_load");
@@ -138,17 +138,19 @@
 					$this->page->loadModules();
 					$this->events->trigger("app.modules.post_load");
 				}
-	
+
 				$this->page->setTitle($title);
 				$this->page->metas["charset"] = array("charset" => $this->getSetting("charset", "UTF-8"));
 				$this->page->metas["description"] = array("name" => "description", "content" => $this->getSetting("meta_desc", ""));
 				$this->page->metas["keywords"] = array("name" => "keywords", "content" => $this->getSetting("meta_keys", ""));
-	
+
 				$content = "<div id=\"main\" class=\"page-content\">\n";
 				$content .= "<p>$body</p>\n";
-				if ($e->getPrevious()) $content .= "<pre>\n" . $e->getPrevious() . "\n</pre>";
+				$content .= "<pre>" . $e->getTraceAsString() . "</pre>";
+
+				if ($e->getPrevious()) $content .= "<pre>Previous Error:\n" . $e->getPrevious() . "\n</pre>";
 				$content .= "</div>";
-	
+
 				$this->page->setContent($content);
 				$this->renderPage();
 			} else {
