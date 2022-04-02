@@ -141,6 +141,7 @@
 		"id" => "string",
 		"name" => "string",
 		"parent" => "string",
+		"rank" => "integer",
 		"permissions" => "integer",
 		"created" => "integer",
 		"modified" => "integer",
@@ -179,6 +180,7 @@
 	$app->database->writeRow("usergroups", "super-user", array(
 		"name" => "Super User",
 		"parent" => "",
+		"rank" => -1,
 		"permissions" => UserPermissions::ALL_PERMISSIONS,
 		"created" => time(),
 		"modified" => time(),

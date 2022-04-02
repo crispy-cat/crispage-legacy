@@ -14,48 +14,5 @@
 		"created": "integer",
 		"modified": "integer"
 	},
-	"TableData": [
-		{
-			"id": "sUBsdCTDDdemhcvYGIrGVVoxZiTHMLxwqXNEHvsjhDQPqMDXxxBXHLUcCRoXDk2n",
-			"user": "super-user",
-			"ip": "127.0.0.1",
-			"created": 1648825465,
-			"modified": 1648828597
-		},
-		{
-			"id": "LMaWlyqoiokwhnCajIXyiAYvgsZvVWlYPFd159SJEmsFF4Jgzl8EFSXGqtB3RPEn",
-			"user": "super-user",
-			"ip": "127.0.0.1",
-			"created": 1648855083,
-			"modified": 1648855089
-		},
-		{
-			"id": "rZ1ZwQgUhiPLUikJ8ktHOIEGG.W9rEmq2aOLvn.eIBPEETZX\/Ltq0u4cZ2mWNlPQ",
-			"user": "super-user",
-			"ip": "127.0.0.1",
-			"created": 1648860881,
-			"modified": 1648861723
-		},
-		{
-			"id": "O.p8JnlcSWdq5.jnMjYdAP61DZ6pQAdB8QIVFjwXuVbrFt6d4Si3g\/dWdv\/h9.zT",
-			"user": "super-user",
-			"ip": "127.0.0.1",
-			"created": 1648901464,
-			"modified": 1648901725
-		},
-		{
-			"id": "CKHskuTLQH5AeXX0xLSE3iEiWfgcN\/0nmnxiMiw3J8QenkYhyLnbSG9RJ6Rez6H5",
-			"user": "super-user",
-			"ip": "127.0.0.1",
-			"created": 1648902015,
-			"modified": 1648905710
-		},
-		{
-			"id": "BAfapBZKSjrXHHfEDJmLCgpd7tgZvL.lyPvTfJe0FaOwhbn6KoD7UBbrKg8IOVnk",
-			"user": "admin",
-			"ip": "127.0.0.1",
-			"created": 1648905838,
-			"modified": 1648907509
-		}
-	]
+	"TableData": []
 }
