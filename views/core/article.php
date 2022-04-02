@@ -14,7 +14,7 @@
 
 	$session = $app->session->getCurrentSession();
 	if ($app->vars["article"]->state != "published" && (!$session || !$app->users->userHasPermissions($session->user, UserPermissions::VIEW_UNPUBLISHED)))
-		$app->error(404, "Page not found", "The page you requested could not be found. Please check the URL or try searching for it.", null, false);
+		$app->error(new ApplicationException(404, "Page not found", "The page you requested could not be found. Please check the URL or try searching for it."));
 
 	$app->page->options["show_title"] = $app->vars["article"]->options["show_title"] ?? $app->getSetting("articles.show_title", "yes");
 	$app->page->options["show_sidebar"] = $app->vars["article"]->options["show_sidebar"] ?? $app->getSetting("articles.show_sidebar", "yes");

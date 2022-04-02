@@ -180,7 +180,7 @@
 			return $this->getGroupRank($user->group);
 		}
 
-		public function compareUserRank(string $user = null, string|int $target = null) {
+		public function compareUserRank(string $user = null, $target = null) {
 			if (!$user) return -1;
 			if ($target === null) return 1;
 			if (is_int($target)) return ($this->getUserRank($user) - $target) <=> 0;

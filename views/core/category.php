@@ -14,7 +14,7 @@
 
 	$session = $app->session->getCurrentSession();
 	if ($app->vars["category"]->state != "published" && (!$session || !$app->users->userHasPermissions($session->user, UserPermissions::VIEW_UNPUBLISHED)))
-		$app->error(404, "Page not found", "The page you requested could not be found. Please check the URL or try searching for it.");
+		$app->error(new ApplicationException(404, "Page not found", "The page you requested could not be found. Please check the URL or try searching for it."));
 
 	$app->vars["articles"] = $app->content->getArticles($app->request->route["item_id"]);
 	$app->vars["subcategories"] = $app->content->getCategories($app->request->route["item_id"]);
