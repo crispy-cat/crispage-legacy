@@ -37,7 +37,7 @@
 						"slug" => $slug
 					)));
 				} else {
-					$app->error(404, "Page not found", "The page you requested could not be found. Please check the URL or try searching for it.");
+					$app->error(new ApplicationException(404, "Page not found", "The page you requested could not be found. Please check the URL or try searching for it."));
 				}
 			}
 		}

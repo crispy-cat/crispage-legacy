@@ -14,5 +14,13 @@
 		"created": "integer",
 		"modified": "integer"
 	},
-	"TableData": []
+	"TableData": [
+		{
+			"id": "ZQlOEzvX196fa2W9ulR1MY2KsaxNm6K0rtMDe7j4KbUOmBHgyVUHq3AAKCVbrF0F",
+			"user": "super-user",
+			"ip": "127.0.0.1",
+			"created": 1649431612,
+			"modified": 1649431672
+		}
+	]
 }
