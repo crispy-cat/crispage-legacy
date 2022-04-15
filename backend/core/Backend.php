@@ -13,6 +13,8 @@
 	require_once Config::APPROOT . "/backend/core/BackendMenuItem.php";
 
 	class Backend extends ApplicationBase {
+		private array $menuItems = array();
+		
 		public function __construct() {
 			parent::__construct();
 
@@ -41,14 +43,18 @@
 			parent::loadPlugins($scope);
 		}
 		
-		public function getBackendMenuItems() {
+		public function getBackendMenuItems() : array {
 			$dbitems = $this->database->readRows("backend_menu");
 			
 			$items = array();
 			foreach ($dbitems as $item)
 				array_push($items, new BackendMenuItem($item));
 				
-			return $items;
+			return $items + $this->menuItems;
+		}
+		
+		public function addBackendMenuItem(BackendMenuItem $item) {
+			$this->menuItems[] = $item;
 		}
 	}
 ?>

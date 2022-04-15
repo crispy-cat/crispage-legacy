@@ -19,11 +19,15 @@
 		public function render() {
 			global $app;
 			if (file_exists($this->directory . "/index.php")) {
-				include_once $this->directory . "/index.php";
+				try {
+					include $this->directory . "/index.php";
+				} catch (Throwable $e) {
+					$app->error($e);
+				}
 			} else {
 				$dir = $this->directory;
 				$this->directory = Config::APPROOT . "/templates/system";
-				throw new Exception("Template '$dir' does not exist!");
+				$app->error(new ApplicationException(500, "Missing template", "Template '$dir' does not exist!", null, null, false));
 			}
 		}
 	}

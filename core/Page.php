@@ -46,7 +46,7 @@
 				elseif (is_callable($this->content)) ($this->content)($app);
 				else throw new Exception("Page is misconfigured! (Not string or callable)");
 			} catch (Throwable $e) {
-				$app->error(500, "An error occurred", "This page could not be rendered by the server. Please try again later.", $e);
+				$app->error(new ApplicationException(500, "An error occurred", "This page could not be rendered by the server. Please try again later.", null, $e, true));
 			}
 		}
 
@@ -125,7 +125,7 @@
 				));
 				$app->events->trigger("page.modules.post_load", $module);
 			} catch (Throwable $e) {
-				$app->error(500, "An error occurred", "Module <code>$module->id</code> could not be loaded: ", $e, false);
+				$app->error(new ApplicationException(500, "Module Error", "Module <code>$module->id</code> could not be loaded: ", null, $e, false));
 			}
 		}
 
@@ -154,7 +154,7 @@
 				try {
 					$module->render();
 				} catch (Throwable $e) {
-					$app->error(500, "Module Error", "Module failed to render:", $e, false);
+					$app->error(new ApplicationException(500, "Module Error", "Module failed to render:", null, $e, false));
 				}
 			}
 		}

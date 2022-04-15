@@ -72,7 +72,7 @@
 									<tr>
 										<td><code><?php echo $user->id; ?></code></td>
 										<td><?php echo htmlentities($user->name); ?></td>
-										<td><?php echo htmlentities($app->users->getUserGroup($user->group)->name); ?></td>
+										<td><?php echo @htmlentities($app->users->getUserGroup($user->group)->name); ?></td>
 										<td><?php echo date($app->getSetting("date_format", "Y-m-d"), $user->created); ?></td>
 										<td><?php echo date($app->getSetting("date_format", "Y-m-d"), $user->modified); ?></td>
 										<td>

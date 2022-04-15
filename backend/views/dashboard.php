@@ -117,6 +117,22 @@
 					</div>
 				</div>
 				<div class="col col-md-6 col-lg-4">
+				<div class="card mb-3">
+						<div class="card-header">Online users</div>
+						<div class="card-body">
+							<?php
+								$online = array();
+								foreach ($app->database->readRows("sessions") as $session) {
+									if (
+										!in_array($session["user"], $online) &&
+										(time() - $session["modified"]) <= $app->getSetting("users.session_max")
+									) $online[] = $session["user"];
+								}
+								
+								echo count($online) . " &ndash; " . implode(", ", $online);
+							?>	
+						</div>
+					</div>
 				</div>
 			</div>
 		</div>

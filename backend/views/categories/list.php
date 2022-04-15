@@ -71,7 +71,7 @@
 									<tr>
 										<td><code><?php echo $category->id; ?></code></td>
 										<td><?php echo htmlentities($category->title); ?></td>
-										<td><?php echo ($app->content->getCategory($category->parent)) ? htmlentities($app->content->getCategory($category->parent)->title) : "none"; ?></td>
+										<td><?php echo @htmlentities($app->content->getCategory($category->parent)->title); ?></td>
 										<td><?php echo date($app->getSetting("date_format", "Y-m-d"), $category->created); ?></td>
 										<td><?php echo date($app->getSetting("date_format", "Y-m-d"), $category->modified); ?></td>
 										<td><?php echo htmlentities($category->state); ?></td>

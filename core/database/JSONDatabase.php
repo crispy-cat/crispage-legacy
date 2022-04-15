@@ -177,14 +177,19 @@
 			$app->events->trigger("database.write_changes");
 			foreach ($this->dbdata as $table => $data) {
 				$file = "$this->dbfpre$table.db.json";
-				$fc = fopen($file, "w");
+				$fc = fopen($file, "r+");
 				if (!$fc) throw new Exception("Could not open database file for writing $file");
 				if (!flock($fc, LOCK_EX)) throw new Exception("Could not get lock on database file $file");
 				if ($this->pretty)
 					$json = preg_replace("/    /", "\t", json_encode($data, JSON_PRETTY_PRINT));
 				else
 					$json = json_encode($data);
-				if (!fwrite($fc, $json)) throw new Exception("Could not write database file $file");
+				if (ftruncate($fc, 0)) {
+					fseek($fc, 0);
+					if (!fwrite($fc, $json)) throw new Exception("Could not write database file $file");
+				} else {
+					throw new Exception("Could not truncate database file $file before write");
+				}
 				if (!flock($fc, LOCK_UN)) throw new Exception("Could not release lock on database file $file");
 				fclose($fc);
 			}

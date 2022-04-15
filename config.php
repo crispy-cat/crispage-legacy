@@ -37,9 +37,10 @@
 
 	// == Do not edit below this line ==
 
-	define("CRISPAGE", "0.7.3 alpha");
+	define("CRISPAGE", "0.8.0 alpha");
 
 	ini_set("display_errors", "1");
 	ini_set("display_startup_errors", "1");
 	error_reporting(Config::ERRORLVL);
+	ob_start(null, null, PHP_OUTPUT_HANDLER_CLEANABLE);
 ?>

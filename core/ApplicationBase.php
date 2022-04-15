@@ -47,7 +47,6 @@
 		public Template $template;
 		public array $loadedPlugins	= array();
 		public array $vars			= array();
-		protected bool $pageRendered = false;
 
 		public function __construct() {
 			try {
@@ -117,49 +116,48 @@
 			if ($e instanceof ApplicationException) {
 				$http = $e->getHttpStatus();
 				$title = $e->getPageTitle();
+				$lp = $e->loadPlugins();
 			} else {
 				$http = 500;
 				$title = "Internal Server Error";
+				$lp = true;
 			}
 			$body = $e->getMessage();
 
 			$this->events->trigger("app.error", $e);
 			http_response_code($http);
-			$this->request = new Request(array("route" => array(), "slug" => Router::getSlug(get_called_class() == "Backend")));
+			$this->request = new Request(array("route" => array(), "slug" => Router::getSlug()));
 
 			$this->events->trigger("app.error.pre_render", $e);
 
-			if (!$this->pageRendered) {
-				if ($e instanceof ApplicationException && $e->loadPlugins()) {
-					$this->events->trigger("app.plugins.pre_load");
-					$this->loadPlugins();
-					$this->events->trigger("app.plugins.post_load");
-					$this->events->trigger("app.modules.pre_load");
-					$this->page->loadModules();
-					$this->events->trigger("app.modules.post_load");
-				}
-
-				$this->page->setTitle($title);
-				$this->page->metas["charset"] = array("charset" => $this->getSetting("charset", "UTF-8"));
-				$this->page->metas["description"] = array("name" => "description", "content" => $this->getSetting("meta_desc", ""));
-				$this->page->metas["keywords"] = array("name" => "keywords", "content" => $this->getSetting("meta_keys", ""));
-
-				$content = "<div id=\"main\" class=\"page-content\">\n";
-				$content .= "<p>$body</p>\n";
-				$content .= "<pre>" . $e->getTraceAsString() . "</pre>";
-
-				if ($e->getPrevious()) $content .= "<pre>Previous Error:\n" . $e->getPrevious() . "\n</pre>";
-				$content .= "</div>";
-
-				$this->page->setContent($content);
-				$this->renderPage();
-			} else {
-				die($e);
+			if ($lp) {
+				$this->events->trigger("app.plugins.pre_load");
+				$this->loadPlugins();
+				$this->events->trigger("app.plugins.post_load");
+				$this->events->trigger("app.modules.pre_load");
+				$this->page->loadModules();
+				$this->events->trigger("app.modules.post_load");
 			}
+			
+			$this->page->setTitle($title);
+			$this->page->metas["charset"] = array("charset" => $this->getSetting("charset", "UTF-8"));
+			$this->page->metas["description"] = array("name" => "description", "content" => $this->getSetting("meta_desc", ""));
+			$this->page->metas["keywords"] = array("name" => "keywords", "content" => $this->getSetting("meta_keys", ""));
+			
+			$content = "<div id=\"main\" class=\"page-content\">\n";
+			$content .= "<p>$body</p>\n";
+			if ($http >= 500) $content .= "<pre>" . $e->getTraceAsString() . "</pre>";
+			if ($e->getPrevious()) $content .= "<pre>Previous Error:\n" . $e->getPrevious() . "\n</pre>";
+			$content .= "</div>";
+			
+			$this->page->setContent($content);
+			$this->renderPage();
+			die();
 		}
 
 		public function redirect(string $url, bool $permanent = false) {
-			$this->events->trigger("redirect", $url, $permanent);
+			$this->events->trigger("redirect", $url, $permanent, null);
+			ob_clean();
 			if ($permanent) http_response_code(301);
 			else http_response_code(302);
 			header("Location: $url");
@@ -167,6 +165,8 @@
 		}
 
 		public function redirectWithMessages(string $url, array $messages) {
+			$this->events->trigger("redirect", $url, false, $messages);
+			ob_clean();
 			if (isset($messages["type"]) && isset($messages["content"])) {
 				$this->events->trigger("message", $messages);
 				$this->page->setCookie("msg_" . $messages["type"], $messages["content"]);
@@ -182,10 +182,9 @@
 		}
 
 		public function renderPage() {
-			if ($this->pageRendered) return;
-			$this->pageRendered = true;
 			$this->events->trigger("app.page.pre_render");
 			try {
+				ob_clean();
 				$this->template->render();
 			} catch (Throwable $e) {
 				throw new ApplicationException(500, "An error occurred", "The page could not be rendered: ", null, $e);
@@ -206,6 +205,7 @@
 
 		public function nameToId(string $name = null) : string {
 			if ($name == null) return null;
+			if (empty($name)) return null;
 			$name = strtolower($name);
 			$name = preg_replace("/[^a-z0-9_]/", "-", $name);
 			$name = preg_replace("/--/", "-", $name);

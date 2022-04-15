@@ -2,17 +2,22 @@
 	defined("CRISPAGE") or die("Application must be started from index.php!");
 
 	$logopath = $app->getSetting("logopath", null);
-	$uselogo = $logopath != null && $logopath != "";
+	$uselogo = !empty($logopath);
 	$sitename = $app->getSetting("sitename", null);
+	$primary = $app->getSetting("colors.primary", "#002060");
+	$secondary = $app->getSetting("colors.secondary", "#0d6efd");
+	$iconsloc = $app->getSetting("icons_location", Config::WEBROOT . "/media/icons");
+	$showtitle = $app->page->options["show_title"] ?? "yes";
+	$showsidebar = $app->page->options["show_sidebar"] ?? "yes";
 
 	$app->page->metas["viewport"] = array("name" => "viewport", "content" => "width=device-width, initial-scale=1");
 
-	$app->page->links["apple-touch-icon"] = array("rel" => "apple-touch-icon", "sizes" => "180x180", "href" => Config::WEBROOT . "/media/icons/apple-touch-icon.png");
-	$app->page->links["favicon-16"] = array("rel" => "icon", "type" => "image/png", "sizes" => "16x16", "href" => Config::WEBROOT . "/media/icons/favicon-16x16.png");
-	$app->page->links["favicon-32"] = array("rel" => "icon", "type" => "image/png", "sizes" => "32x32", "href" => Config::WEBROOT . "/media/icons/favicon-32x32.png");
-	$app->page->links["favicon-194"] = array("rel" => "icon", "type" => "image/png", "sizes" => "194x194", "href" => Config::WEBROOT . "/media/icons/favicon-194x194.png");
-	$app->page->links["android-chrome-icon"] = array("rel" => "icon", "type" => "image/png", "sizes" => "192x192", "href" => Config::WEBROOT . "/media/icons/android-chrome-192x192.png");
-	$app->page->links["shortcut-icon"] = array("rel" => "shortcut icon","href" => Config::WEBROOT . "/media/icons/favicon.ico");
+	$app->page->links["apple-touch-icon"] = array("rel" => "apple-touch-icon", "sizes" => "180x180", "href" => $iconsloc . "/apple-touch-icon.png");
+	$app->page->links["favicon-16"] = array("rel" => "icon", "type" => "image/png", "sizes" => "16x16", "href" => $iconsloc . "/favicon-16x16.png");
+	$app->page->links["favicon-32"] = array("rel" => "icon", "type" => "image/png", "sizes" => "32x32", "href" => $iconsloc . "/favicon-32x32.png");
+	$app->page->links["favicon-194"] = array("rel" => "icon", "type" => "image/png", "sizes" => "194x194", "href" => $iconsloc . "/favicon-194x194.png");
+	$app->page->links["android-chrome-icon"] = array("rel" => "icon", "type" => "image/png", "sizes" => "192x192", "href" => $iconsloc . "/android-chrome-192x192.png");
+	$app->page->links["shortcut-icon"] = array("rel" => "shortcut icon","href" => $iconsloc . "/favicon.ico");
 
 	$app->page->styles["bootstrap"] = array("content" => file_get_contents(Config::APPROOT . "/media/system/css/bootstrap.min.css"));
 	$app->page->styles["fonts"] = array("content" => file_get_contents(__DIR__ . "/css/fonts.css"));
@@ -32,7 +37,7 @@
 		<?php $app->page->renderScripts(); ?>
 	</head>
 	<body>
-		<nav class="navbar navbar-expand-xl navbar-dark bg-crispycat mb-3">
+		<nav class="navbar navbar-expand-lg navbar-dark" style="background: <?php echo $primary; ?>;">
 			<div class="container-fluid">
 				<a class="navbar-brand" href="<?php echo Config::WEBROOT; ?>/backend"><?php echo ($uselogo) ? "<img src=\"$logopath\" alt=\"$sitename\" height=\"30\" />" : $sitename; ?></a>
 				<button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar">

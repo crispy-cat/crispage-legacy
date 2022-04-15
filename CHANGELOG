@@ -1,3 +1,11 @@
+# 0.8.0 alpha
+- Added output buffering
+- Added Backend->addBackendMenuItem
+- Added online users panel in dashboard
+- Improved error handling
+- Fixed a major issue with writing to database
+- Bug fixes
+
 # 0.7.3 alpha
 - Bug fixes
 

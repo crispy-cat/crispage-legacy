@@ -72,7 +72,7 @@
 									<tr>
 										<td><code><?php echo $comment->id; ?></code></td>
 										<td><?php echo $comment->author; ?></td>
-										<td><?php echo ($app->content->getArticle($comment->article)) ? htmlentities($app->content->getArticle($comment->article)->title) : "[deleted article]"; ?></td>
+										<td><?php echo @htmlentities($app->content->getArticle($comment->article)->title); ?></td>
 										<td><?php echo htmlentities($comment->content); ?></td>
 										<td><?php echo date($app->getSetting("date_format", "Y-m-d"), $comment->created); ?></td>
 										<td><?php echo date($app->getSetting("date_format", "Y-m-d"), $comment->modified); ?></td>

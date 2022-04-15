@@ -76,8 +76,8 @@
 										<td><code><?php echo $item->id; ?></code></td>
 										<td><?php echo htmlentities($item->label); ?></td>
 										<td><?php echo htmlentities($item->type); ?></td>
-										<td><?php echo htmlentities($app->menus->getMenu($item->menu)->title); ?></td>
-										<td><?php echo ($item->parent) ? htmlentities($app->menus->getMenuItem($item->parent)->label) : "none"; ?></td>
+										<td><?php echo @htmlentities($app->menus->getMenu($item->menu)->title); ?></td>
+										<td><?php echo @htmlentities($app->menus->getMenuItem($item->parent)->label); ?></td>
 										<td><?php echo htmlentities($item->ord); ?></td>
 										<td><?php echo date($app->getSetting("date_format", "Y-m-d"), $item->created); ?></td>
 										<td><?php echo date($app->getSetting("date_format", "Y-m-d"), $item->modified); ?></td>

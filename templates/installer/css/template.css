@@ -5,19 +5,3 @@ body {
 h1, h2, h3 {
 	font-weight: 300;
 }
-
-.bg-crispycat {
-	background: #002060;
-}
-
-.ban {
-	border: 2px solid #f00;
-	padding: 10px;
-	margin-bottom: 10px;
-}
-
-.breadcrumb {
-	background: #eee;
-	padding: 10px;
-	border-radius: 0.25em;
-}

@@ -22,12 +22,10 @@
 			"id": "ExamplePlugin",
 			"class": "example\/ExamplePlugin",
 			"priority": 0,
-			"created": 1647271094,
-			"modified": 1647271136,
+			"created": 1647335096,
+			"modified": 1647335096,
 			"scope": "frontend",
-			"options": {
-				"test_string": "Hello world"
-			}
+			"options": []
 		}
 	]
 }
