@@ -73,7 +73,7 @@
 
 		public function loadPlugin(Plugin $plugin) {
 			global $app;
-			$app->events->trigger("page.plugins.pre_load", $plugin);
+			$app->events->trigger("app.plugins.pre_load", $plugin);
 			try {
 				if (!file_exists(Config::APPROOT . "/plugins/$plugin->class.php")) return;
 				include_once Config::APPROOT . "/plugins/$plugin->class.php";

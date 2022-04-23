@@ -43,6 +43,16 @@
 		"id" => "string",
 		"token" => "string"
 	));
+	$app->database->createTable("backend_menu", array(
+		"id" => "string",
+		"label" => "string",
+		"url" => "string",
+		"parent" => "string",
+		"ord" => "integer",
+		"created" => "integer",
+		"modified" => "integer",
+		"options" => "array"
+	));
 	$app->database->createTable("bans", array(
 		"id" => "string",
 		"user" => "string",
@@ -242,7 +252,27 @@
 	$app->database->writeRow("routes", "acivate_account", array("view" => "core/activate_account", "item_id" => ""));
 	$app->database->writeRow("routes", "reset_password", array("view" => "core/reset_password", "item_id" => ""));
 	$app->database->writeRow("routes", "post_comment", array("view" => "core/post_comment", "item_id" => ""));
-
+	
+	$app->database->writeRow("backend_menu", "dashboard", array("label" => "<i class=\"bi bi-clipboard-data\"></i> Dashboard", "url" => "/backend/dashboard", "parent" => "", "ord" => 0));
+	$app->database->writeRow("backend_menu", "h_content", array("label" => "<i class=\"bi bi-file-richtext\"></i> Content", "url" => "#", "parent" => "", "ord" => 16));
+	$app->database->writeRow("backend_menu", "articles", array("label" => "<i class=\"bi bi-files\"></i> Articles", "url" => "/backend/articles/list", "parent" => "h_content", "ord" => 0));
+	$app->database->writeRow("backend_menu", "categories", array("label" => "<i class=\"bi bi-folder\"></i> Categories", "url" => "/backend/categories/list", "parent" => "h_content", "ord" => 16));
+	$app->database->writeRow("backend_menu", "media", array("label" => "<i class=\"bi bi-images\"></i> Media", "url" => "/backend/media", "parent" => "h_content", "ord" => 32));
+	$app->database->writeRow("backend_menu", "comments", array("label" => "<i class=\"bi bi-chat-left-dots\"></i> Comments", "url" => "/backend/comments/list", "parent" => "h_content", "ord" => 48));
+	$app->database->writeRow("backend_menu", "h_menus", array("label" => "<i class=\"bi bi-menu-app\"></i> Menus", "url" => "#", "parent" => "", "ord" => 32));
+	$app->database->writeRow("backend_menu", "menus", array("label" => "<i class=\"bi bi-menu-app\"></i> Menus", "url" => "/backend/menus/list", "parent" => "h_menus", "ord" => 0));
+	$app->database->writeRow("backend_menu", "menu_items", array("label" => "<i class=\"bi bi-three-dots-vertical\"></i> Menu Items", "url" => "/backend/menu_items/list", "parent" => "h_menus", "ord" => 16));
+	$app->database->writeRow("backend_menu", "h_users", array("label" => "<i class=\"bi bi-people\"></i> Users", "url" => "#", "parent" => "", "ord" => 48));
+	$app->database->writeRow("backend_menu", "users", array("label" => "<i class=\"bi bi-person\"></i> Users", "url" => "/backend/users/list", "parent" => "h_users", "ord" => 0));
+	$app->database->writeRow("backend_menu", "usergroups", array("label" => "<i class=\"bi bi-people\"></i>Usergroups", "url" => "/backend/usergroups/list", "parent" => "h_users", "ord" => 16));
+	$app->database->writeRow("backend_menu", "h_extensions", array("label" => "<i class=\"bi bi-plug\"></i> Extensions", "url" => "#", "parent" => "", "ord" => 64));
+	$app->database->writeRow("backend_menu", "modules", array("label" => "<i class=\"bi bi-grid-1x2\"></i> Modules", "url" => "/backend/modules/list", "parent" => "h_extensions", "ord" => 0));
+	$app->database->writeRow("backend_menu", "plugins", array("label" => "<i class=\"bi bi-code\"></i> Plugins", "url" => "/backend/plugins/list", "parent" => "h_extensions", "ord" => 16));
+	$app->database->writeRow("backend_menu", "settings", array("label" => "<i class=\"bi bi-sliders\"></i> Settings", "url" => "/backend/settings", "parent" => "", "ord" => 80));
+	$app->database->writeRow("backend_menu", "h_help", array("label" => "<i class=\"bi bi-question-circle\"></i> Help", "url" => "#", "parent" => "", "ord" => 96));
+	$app->database->writeRow("backend_menu", "about", array("label" => "<i class=\"bi bi-info-circle\"></i> About Crispage", "url" => "/backend/about", "parent" => "h_help", "ord" => 0));
+	$app->database->writeRow("backend_menu", "support", array("label" => "<i class=\"bi bi-life-preserver\"></i> Support</a>", "url" => "/backend/support", "parent" => "h_help", "ord" => 16));
+	
 	$app->database->writeChanges();
 
 	installer_message("Wrote database files")

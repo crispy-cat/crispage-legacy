@@ -49,8 +49,7 @@
 			$items = array();
 			foreach ($dbitems as $item)
 				array_push($items, new BackendMenuItem($item));
-				
-			return $items + $this->menuItems;
+			return array(...$items, ...$this->menuItems);
 		}
 		
 		public function addBackendMenuItem(BackendMenuItem $item) {

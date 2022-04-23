@@ -16,7 +16,7 @@
 	}
 
 	require_once Config::APPROOT . "/installer/core/Installer.php";
-	include_once Config::APPROOT . "/core/Router.php";
+	require_once Config::APPROOT . "/core/Router.php";
 	$app = new Installer();
 	set_exception_handler(function($e) {
 		global $app;

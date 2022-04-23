@@ -177,7 +177,7 @@
 			$app->events->trigger("database.write_changes");
 			foreach ($this->dbdata as $table => $data) {
 				$file = "$this->dbfpre$table.db.json";
-				$fc = fopen($file, "r+");
+				$fc = fopen($file, "c+");
 				if (!$fc) throw new Exception("Could not open database file for writing $file");
 				if (!flock($fc, LOCK_EX)) throw new Exception("Could not get lock on database file $file");
 				if ($this->pretty)

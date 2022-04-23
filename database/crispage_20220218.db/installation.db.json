@@ -138,6 +138,18 @@
 			"type": "module",
 			"class": "core\/breadcrumbs\/BreadcrumbModule",
 			"scope": "frontend"
+		},
+		{
+			"id": 1000,
+			"type": "plugin",
+			"class": "PluginSandbox\/PluginSandboxFrontend",
+			"scope": "frontend"
+		},
+		{
+			"id": 1001,
+			"type": "plugin",
+			"class": "PluginSandbox\/PluginSandboxBackend",
+			"scope": "backend"
 		}
 	]
 }

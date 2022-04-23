@@ -16,6 +16,8 @@
 
 		if (!$app->users->userHasPermissions($session->user, UserPermissions::USE_INSTALLER))
 			$app->redirectWithMessages("/", array("type" => "error", "content" => "You do not have permission to use the installer"));
+		
+		$app->session->refreshCurrentSession();
 	}
 
 	if (defined("IS_INSTALL_PAGE") && IS_INSTALL_PAGE) {
@@ -25,8 +27,6 @@
 		if ((!defined("IS_INSTALL_PAGE")) && !file_exists(Config::APPROOT . "/config.php"))
 			$app->redirect(Config::WEBROOT . "/installer/install/install");
 	}
-
-	$app->session->refreshCurrentSession();
 
 	$app->page->metas["charset"] = array("charset" => $this->getSetting("charset", "UTF-8"));
 	$app->page->metas["robots"] = array("name" => "robots", "content" => "noindex, follow");

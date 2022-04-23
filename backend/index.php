@@ -10,7 +10,7 @@
 	require_once __DIR__ . "/../config.php";
 
 	require_once Config::APPROOT . "/backend/core/Backend.php";
-	include_once Config::APPROOT . "/core/Router.php";
+	require_once Config::APPROOT . "/core/Router.php";
 	$app = new Backend();
 	set_exception_handler(function($e) {
 		global $app;

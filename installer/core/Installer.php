@@ -50,9 +50,9 @@
 
 		public function error(Throwable $e) {
 			if ($e instanceof ApplicationException)
-				parent::error(new ApplicationException($e->getHttpStatus(), $e->getTitle(), $e->getMessage(), $e, false));
+				parent::error(new ApplicationException($e->getHttpStatus(), $e->getPageTitle(), $e->getMessage(), null, $e, false));
 			else
-				parent::error(500, "Internal Server Error", $e->getMessage(), $e, false);
+				parent::error(new ApplicationException(500, "Internal Server Error", $e->getMessage(), null, $e, false));
 		}
 	}
 ?>
