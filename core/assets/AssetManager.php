@@ -33,7 +33,8 @@
 			$asset = $app->database->readRow($this->table, $id);
 			if (!$asset) return null;
 
-			return new ($this->class)($asset);
+			$class = $this->class;
+			return new $class($asset);
 		}
 
 		public function set(string $id, Asset $asset) : void {
@@ -60,17 +61,19 @@
 
 		public function getAll(array $filter = null, string $order = null, bool $desc = false) {
 			global $app;
+			$class = $this->class;
 
 			foreach ($app->database->readRows($this->table, $filter ?? array(), $order, $desc) as $asset)
-				yield new ($this->class)($asset);
+				yield new $class($asset);
 		}
 
 		public function getAllArr(array $filter = null, string $order = null, bool $desc = false) {
 			global $app;
+			$class = $this->class;
 
 			$assets = array();
 			foreach ($app->database->readRows($this->table, $filter ?? array(), $order, $desc) as $asset)
-				$assets[] = new ($this->class)($asset);
+				$assets[] = new $class($asset);
 
 			return $assets;
 		}
