@@ -13,7 +13,7 @@
 		public static function loadClass(string $file) : ?string {
 			if (!file_exists($file)) return null;
 			include_once $file;
-			@$name = array_pop(explode("/", explode(".", $file)[0]));
+			@$name = array_pop(explode("/", basename($file, ".php")));
 			if (!class_exists($name)) return null;
 			return $name;
 		}
