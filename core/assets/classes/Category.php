@@ -31,5 +31,25 @@
 			$this->meta_keys= $data["meta_keys"] ?? "";
 			$this->meta_robots=$data["meta_robots"] ?? "";
 		}
+
+		public static function categoryParentLoop(string $id = null) : bool {
+			global $app;
+			if ($id == null) return false;
+
+			$names = array();
+
+			$parent = ($app->assets)("categories")->get($id)->parent;
+			if ($parent == null) return false;
+
+			while ($parent !== null) {
+				if (in_array($parent, $names)) return true;
+				array_push($names, $parent);
+				$category = ($app->assets)("categories")->get($parent);
+				if (!$category) return false;
+				$parent = $category->parent;
+			}
+
+			return false;
+		}
 	}
 ?>

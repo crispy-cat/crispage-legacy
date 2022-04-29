@@ -12,14 +12,13 @@
 
 	$app->page->setTitle("Plugins");
 
-	$app->vars["show"] = $app->request->query["show"] ?? 15;
-	$app->vars["page"] = $app->request->query["page"] ?? 1;
+	$app->vars["show"] = (is_numeric($app->request->query["show"])) ?  $app->request->query["show"] : 15;
+	$app->vars["page"] = (is_numeric($app->request->query["page"])) ? $app->request->query["page"] : 1;
 
-	$plugins = $app->extensions->getPlugins();
+	$plugins = $app("plugins")->getAllArr(null, "class");
 
-	$app->vars["npages"] = Paginator::numPages($plugins, (is_numeric($app->vars["show"])) ? $app->vars["show"] : 0);
-
-	$app->vars["plugins"] = Paginator::sPaginate($plugins, $app->vars["show"], $app->vars["page"]);
+	$app->vars["npages"] = Paginator::numPages($plugins, $app->vars["show"]);
+	$app->vars["plugins"] = Paginator::Paginate($plugins, $app->vars["show"], $app->vars["page"]);
 
 	$app->page->setContent(function($app) {
 ?>

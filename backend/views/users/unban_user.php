@@ -13,26 +13,26 @@
 	if (!isset($app->request->query["user_id"]))
 		$app->redirectWithMessages("/backend/users/list", array("type" => "error", "content" => "No ID Specified"));
 
-	if (!$app->users->existsUser($app->request->query["user_id"]))
+	if (!$app("users")->exists($app->request->query["user_id"]))
 		$app->redirectWithMessages("/backend/users/list", array("type" => "error", "content" => "User does not exist"));
 
-	$user = $app->users->getUser($app->request->query["user_id"]);
+	$user = $app("users")->get($app->request->query["user_id"]);
 
-	if ($app->request->query["user_id"] == $app->session->getCurrentSession()->user) {
+	if ($app->request->query["user_id"] == Session::getCurrentSession()->user) {
 		$app->redirectWithMessages("/backend/users/list_bans?user_id={$user->id}", array("type" => "error", "content" => "The current user cannot be banned"));
 	} else {
-		if (!$app->users->userHasPermissions($app->session->getCurrentSession()->user, UserPermissions::BAN_USERS))
+		if (!User::userHasPermissions(Session::getCurrentSession()->user, UserPermissions::BAN_USERS))
 			$app->redirectWithMessages("/backend/users/list_bans?user_id={$user->id}", array("type" => "error", "content" => "You do not have permission to ban users"));
 
-			if ($app->users->compareUserRank($app->session->getCurrentSession()->user, $app->request->query["reset_id"]) !== 1)
+			if (User::compareUserRank(Session::getCurrentSession()->user, $app->request->query["reset_id"]) !== 1)
 				$app->redirectWithMessages("/backend/users/list_bans?user_id={$user->id}", array("type" => "error", "content" => "Target user's group rank must be less than your own"));
 	}
 
 	if (isset($app->request->query["confirm"]) && $app->request->query["confirm"]) {
-		foreach ($app->bans->getBans($user->id) as $ban) {
+		foreach ($app("bans")->getAll(array("user" => $user->id)) as $ban) {
 			$ban->expires = time();
 			$ban->modified = time();
-			$app->bans->setBan($ban->id, $ban);
+			$app("bans")->set($ban->id, $ban);
 		}
 
 		$app->redirectWithMessages("/backend/users/list_bans?user_id={$user->id}", array("type" => "success", "content" => "User unbanned"));

@@ -12,15 +12,14 @@
 
 	$app->page->setTitle("Menus");
 
-	$app->vars["show"] = $app->request->query["show"] ?? 15;
-	$app->vars["page"] = $app->request->query["page"] ?? 1;
+	$app->vars["show"] = (is_numeric($app->request->query["show"])) ?  $app->request->query["show"] : 15;
+	$app->vars["page"] = (is_numeric($app->request->query["page"])) ? $app->request->query["page"] : 1;
 
-	$menus = $app->menus->getMenus();
+	$menus = $app("menus")->getAllArr(null, "title");
 
-	$app->vars["npages"] = Paginator::numPages($menus, (is_numeric($app->vars["show"])) ? $app->vars["show"] : 0);
+	$app->vars["npages"] = Paginator::numPages($menus, $app->vars["show"]);
+	$app->vars["menus"] = Paginator::Paginate($menus, $app->vars["show"], $app->vars["page"]);
 
-	$app->vars["menus"] = Paginator::sPaginate($menus, $app->vars["show"], $app->vars["page"]);
-	
 	$app->page->setContent(function($app) {
 ?>
 		<div id="main" class="page-content">
@@ -70,7 +69,7 @@
 									<tr>
 										<td><code><?php echo $menu->id; ?></code></td>
 										<td><?php echo htmlentities($menu->title); ?></td>
-										<td><?php echo count($app->menus->getMenuItems($menu->id)); ?></td>
+										<td><?php echo count($app("menu_items")->getAllArr(array("menu" => $menu->id))); ?></td>
 										<td><?php echo date($app->getSetting("date_format", "Y-m-d"), $menu->created); ?></td>
 										<td><?php echo date($app->getSetting("date_format", "Y-m-d"), $menu->modified); ?></td>
 										<td>

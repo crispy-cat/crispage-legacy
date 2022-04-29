@@ -8,6 +8,8 @@
 	*/
 
 	defined("CRISPAGE") or die("Application must be started from index.php!");
+	
+	require_once Config::APPROOT . "/core/assets/Asset.php";
 
 	class BackendMenuItem extends Asset {
 		public string $label;

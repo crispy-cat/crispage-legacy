@@ -8,28 +8,28 @@
 	*/
 
 	defined("CRISPAGE") or die("Application must be started from index.php!");
-	require_once Config::APPROOT . "/core/header.php";
+	require_once Config::APPROOT . "/header.php";
 
-	$app->vars["category"] = $app->content->getCategory($app->request->route["item_id"]);
+	$app->vars["category"] = $app("categories")->get($app->request->route["item_id"]);
 
-	$session = $app->session->getCurrentSession();
-	if ($app->vars["category"]->state != "published" && (!$session || !$app->users->userHasPermissions($session->user, UserPermissions::VIEW_UNPUBLISHED)))
+	$session = Session::getCurrentSession();
+	if ($app->vars["category"]->state != "published" && (!$session || !User::userHasPermissions($session->user, UserPermissions::VIEW_UNPUBLISHED)))
 		$app->error(new ApplicationException(404, "Page not found", "The page you requested could not be found. Please check the URL or try searching for it."));
 
-	$app->vars["articles"] = $app->content->getArticles($app->request->route["item_id"]);
-	$app->vars["subcategories"] = $app->content->getCategories($app->request->route["item_id"]);
+	$app->vars["articles"] = $app("articles")->getAllArr(array("category" => $app->request->route["item_id"]), "modified");
+	$app->vars["subcategories"] = $app("categories")->getAllArr(array("parent" => $app->request->route["item_id"]), "title");
 
-	if (!$session || !$app->users->userHasPermissions($session->user, UserPermissions::VIEW_UNPUBLISHED)) {
+	if (!$session || !User::userHasPermissions($session->user, UserPermissions::VIEW_UNPUBLISHED)) {
 		foreach ($app->vars["articles"] as $key => $article)
 			if ($article->state != "published")
 				array_splice($app->vars["articles"], $key, 1);
 	}
 
-	$app->vars["show"] = $app->request->query["show"] ?? 5;
-	$app->vars["page"] = $app->request->query["page"] ?? 1;
+	$app->vars["show"] = (is_numeric($app->request->query["show"])) ? $app->request->query["show"] : 5;
+	$app->vars["page"] = (is_numeric($app->request->query["page"])) ? $app->request->query["page"] : 1;
 
-	$app->vars["npages"] = Paginator::numPages($app->vars["articles"], (is_numeric($app->vars["show"])) ? $app->vars["show"] : 0);
-	$app->vars["articles"] = Paginator::sPaginate($app->vars["articles"], $app->vars["show"], $app->vars["page"]);
+	$app->vars["npages"] = Paginator::numPages($app->vars["articles"], $app->vars["show"]);
+	$app->vars["articles"] = Paginator::Paginate($app->vars["articles"], $app->vars["show"], $app->vars["page"]);
 
 	$app->page->options["show_title"] = $app->vars["category"]->options["show_title"] ?? $app->getSetting("categories.show_title", "yes");
 	$app->page->options["show_sidebar"] = $app->vars["category"]->options["show_sidebar"] ?? $app->getSetting("categories.show_sidebar", "yes");

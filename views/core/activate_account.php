@@ -8,9 +8,9 @@
 	*/
 
 	defined("CRISPAGE") or die("Application must be started from index.php!");
-	require_once Config::APPROOT . "/core/header.php";
+	require_once Config::APPROOT . "/header.php";
 
-	$session = $app->session->getCurrentSession();
+	$session = Session::getCurrentSession();
 	if ($session)
 		$app->redirectWithMessages("/", array("type" => "error", "content" => "There is an active session"));
 
@@ -21,13 +21,13 @@
 			$app->redirectWithMessages("/activate_account", array("type" => "error", "content" => "Invalid user ID"));
 		if ($app->request->query["token"] != $act["token"])
 			$app->redirectWithMessages("/activate_account", array("type" => "error", "content" => "Invalid token"));
-		$user = $app->users->getUser($id);
+		$user = $app("users")->get($id);
 		if (!$user)
 			$app->redirectWithMessages("/activate_account", array("type" => "error", "content" => "User does not exist"));
 
 		$user->activated = 2;
 		$user->modified = time();
-		$app->users->setUser($id, $user);
+		$app("users")->set($id, $user);
 		$app->database->deleteRow("activation", $id);
 		$app->redirectWithMessages("/login", array("type" => "success", "content" => "Account activated. Please log in."));
 	}

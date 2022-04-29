@@ -10,7 +10,7 @@
 	defined("CRISPAGE") or die("Application must be started from index.php!");
 	require_once Config::APPROOT . "/backend/header.php";
 
-	if (!$app->users->userHasPermissions($app->session->getCurrentSession()->user, UserPermissions::MODIFY_USERGROUPS))
+	if (!User::userHasPermissions(Session::getCurrentSession()->user, UserPermissions::MODIFY_USERGROUPS))
 		$app->redirectWithMessages("/backend/usergroups/list", array("type" => "error", "content" => "You do not have permission to modify usergroups"));
 
 	function checkQuery() {
@@ -30,18 +30,18 @@
 	$app->vars["group_parent"]		= null;
 
 	if (isset($app->request->query["edit_id"])) {
-		if (!$app->users->existsUserGroup($app->request->query["edit_id"]))
+		if (!$app("usergroups")->exists($app->request->query["edit_id"]))
 			$app->redirectWithMessages("/backend/usergroups/list", array("type" => "error", "content" => "Group does not exist"));
 
-		$group = $app->users->getUserGroup($app->request->query["edit_id"]);
+		$group = $app("usergroups")->get($app->request->query["edit_id"]);
 
-		if ($app->users->compareUserRank($app->session->getCurrentSession()->user, $group->rank) !== 1)
+		if (User::compareUserRank(Session::getCurrentSession()->user, $group->rank) !== 1)
 			$app->redirectWithMessages("/backend/usergroups/list", array("type" => "error", "content" => "Group rank must be less than your own"));
 
 		if (checkQuery()) {
 			$id = $app->request->query["edit_id"];
 			if ($app->request->query["edit_id"] != $app->request->query["group_id"]) {
-				if ($app->users->existsUserGroup($app->request->query["group_id"])) {
+				if ($app("usergroups")->exists($app->request->query["group_id"])) {
 					$app->page->alerts["id_taken"] = array("class" => "warning", "content" => "The ID '{$app->request->query["group_id"]}' is taken! Using '$id'.");
 				} else {
 					if ($app->request->query["group_id"] == "")
@@ -49,7 +49,7 @@
 					else
 						$id = $app->nameToId($app->request->query["group_id"]);
 
-					$app->users->deleteUserGroup($app->request->query["edit_id"]);
+					$app("usergroups")->delete($app->request->query["edit_id"]);
 				}
 			}
 
@@ -66,11 +66,11 @@
 			$group->modified	= time();
 			$group->parent	= $parent;
 
-			$app->users->setUserGroup($id, $group);
+			$app("usergroups")->set($id, $group);
 
-			if ($app->users->userGroupParentLoop($id)) {
+			if (UserGroup::userGroupParentLoop($id)) {
 				$group->parent = null;
-				$app->users->setUserGroup($id, $group);
+				$app("usergroups")->set($id, $group);
 				$app->page->alerts["parent_loop"] = array("class" => "warning", "content" => "Parent group cannot cause an infinite loop.");
 			}
 
@@ -96,7 +96,7 @@
 			else
 				$id = $app->nameToId($app->request->query["group_id"]);
 
-			while ($app->users->existsUserGroup($id)) $id .= "_1";
+			while ($app("usergroups")->exists($id)) $id .= "_1";
 
 			$parent = $app->request->query["group_parent"];
 			if ($parent == $id) {
@@ -115,7 +115,7 @@
 				"parent"	=> $parent
 			));
 
-			$app->users->setUserGroup($id, $group);
+			$app("usergroups")->set($id, $group);
 
 			$app->redirectWithMessages("/backend/usergroups/editor?edit_id=$id", array("type" => "success", "content" => "Changes saved."));
 		}

@@ -13,15 +13,14 @@
 	$app->page->setTitle("Comments");
 
 	$app->vars["art"] = $app->request->query["art"] ?? null;
-	$app->vars["show"] = $app->request->query["show"] ?? 15;
-	$app->vars["page"] = $app->request->query["page"] ?? 1;
+	$app->vars["show"] = (is_numeric($app->request->query["show"])) ?  $app->request->query["show"] : 15;
+	$app->vars["page"] = (is_numeric($app->request->query["page"])) ? $app->request->query["page"] : 1;
 
-	$comments = $app->comments->getComments($app->vars["art"]);
+	$comments = $app("comments")->getAllArr(($app->vars["art"]) ? array("article" => $app->vars["art"]) : null, "modified");
 
-	$app->vars["npages"] = Paginator::numPages($comments, (is_numeric($app->vars["show"])) ? $app->vars["show"] : 0);
+	$app->vars["npages"] = Paginator::numPages($comments, $app->vars["show"]);
+	$app->vars["comments"] = Paginator::Paginate($comments, $app->vars["show"], $app->vars["page"]);
 
-	$app->vars["comments"] = Paginator::paginate($comments, $app->vars["show"], $app->vars["page"]);
-	
 	$app->page->setContent(function($app) {
 ?>
 		<div id="main" class="page-content">
@@ -72,7 +71,7 @@
 									<tr>
 										<td><code><?php echo $comment->id; ?></code></td>
 										<td><?php echo $comment->author; ?></td>
-										<td><?php echo @htmlentities($app->content->getArticle($comment->article)->title); ?></td>
+										<td><?php echo @htmlentities($app("articles")->get($comment->article)->title); ?></td>
 										<td><?php echo htmlentities($comment->content); ?></td>
 										<td><?php echo date($app->getSetting("date_format", "Y-m-d"), $comment->created); ?></td>
 										<td><?php echo date($app->getSetting("date_format", "Y-m-d"), $comment->modified); ?></td>

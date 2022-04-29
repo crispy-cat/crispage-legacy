@@ -14,9 +14,9 @@
 		die();
 	}
 
-	require_once Config::APPROOT . "/core/Application.php";
+	require_once Config::APPROOT . "/core/frontend/FrontendApplication.php";
 	require_once Config::APPROOT . "/core/Router.php";
-	$app = new Application();
+	$app = new FrontendApplication();
 	set_exception_handler(function($e) {
 		global $app;
 		$app->error($e);

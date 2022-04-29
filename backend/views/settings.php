@@ -11,7 +11,7 @@
 	require_once Config::APPROOT . "/backend/header.php";
 
 	if (isset($app->request->query["settings"]) && is_array($app->request->query["settings"])) {
-		if (!$app->users->userHasPermissions($app->session->getCurrentSession()->user, UserPermissions::MODIFY_SETTINGS))
+		if (!User::userHasPermissions(Session::getCurrentSession()->user, UserPermissions::MODIFY_SETTINGS))
 			$app->redirectWithMessages("/backend/settings", array("type" => "error", "content" => "You do not have permission to modify settings"));
 
 		foreach ($app->request->query["settings"] as $setting => $value)

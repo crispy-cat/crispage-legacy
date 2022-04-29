@@ -11,16 +11,15 @@
 	require_once Config::APPROOT . "/backend/header.php";
 
 	$app->page->setTitle("Users");
-	
+
 	$app->vars["group"] = $app->request->query["group"] ?? null;
-	$app->vars["show"] = $app->request->query["show"] ?? 15;
-	$app->vars["page"] = $app->request->query["page"] ?? 1;
+	$app->vars["show"] = (is_numeric($app->request->query["show"])) ?  $app->request->query["show"] : 15;
+	$app->vars["page"] = (is_numeric($app->request->query["page"])) ? $app->request->query["page"] : 1;
 
-	$users = $app->users->getUsers($app->vars["group"]);
+	$users = $app("users")->getAllArr(($app->vars["group"]) ? array("group" => $app->vars["group"]) : null, "modified");
 
-	$app->vars["npages"] = Paginator::numPages($users, (is_numeric($app->vars["show"])) ? $app->vars["show"] : 0);
-
-	$app->vars["users"] = Paginator::sPaginate($users, $app->vars["show"], $app->vars["page"]);
+	$app->vars["npages"] = Paginator::numPages($users, $app->vars["show"]);
+	$app->vars["users"] = Paginator::Paginate($users, $app->vars["show"], $app->vars["page"]);
 
 	$app->page->setContent(function($app) {
 ?>
@@ -30,7 +29,7 @@
 					<h1>Users</h1>
 					<span>Show only:</span>
 					<form class="d-flex">
-						<?php RenderHelper::renderUserGroupPicker("group", null, array("title" => "All Categories", "value" => "null")); ?>
+						<?php RenderHelper::renderUserGroupPicker("group", null, array("title" => "All Groups", "value" => "null")); ?>
 						<select class="form-select ms-2" name="show">
 							<option value="15">15</option>
 							<option value="30">30</option>
@@ -72,7 +71,7 @@
 									<tr>
 										<td><code><?php echo $user->id; ?></code></td>
 										<td><?php echo htmlentities($user->name); ?></td>
-										<td><?php echo @htmlentities($app->users->getUserGroup($user->group)->name); ?></td>
+										<td><?php echo @htmlentities($app("usergroups")->get($user->group)->name); ?></td>
 										<td><?php echo date($app->getSetting("date_format", "Y-m-d"), $user->created); ?></td>
 										<td><?php echo date($app->getSetting("date_format", "Y-m-d"), $user->modified); ?></td>
 										<td>

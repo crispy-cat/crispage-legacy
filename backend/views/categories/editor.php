@@ -10,7 +10,7 @@
 	defined("CRISPAGE") or die("Application must be started from index.php!");
 	require_once Config::APPROOT . "/backend/header.php";
 
-	if (!$app->users->userHasPermissions($app->session->getCurrentSession()->user, UserPermissions::MODIFY_CATEGORIES))
+	if (!User::userHasPermissions(Session::getCurrentSession()->user, UserPermissions::MODIFY_CATEGORIES))
 		$app->redirectWithMessages("/backend/categories/list", array("type" => "error", "content" => "You do not have permission to modify categories"));
 
 	function checkQuery() {
@@ -41,15 +41,15 @@
 	$app->vars["category_options"]		= array();
 
 	if (isset($app->request->query["edit_id"])) {
-		if (!$app->content->existsCategory($app->request->query["edit_id"]))
+		if (!$app("categories")->exists($app->request->query["edit_id"]))
 			$app->redirectWithMessages("/backend/categories/list", array("type" => "error", "content" => "Category does not exist"));
 
-		$category = $app->content->getCategory($app->request->query["edit_id"]);
+		$category = $app("categories")->get($app->request->query["edit_id"]);
 
 		if (checkQuery()) {
 			$id = $app->request->query["edit_id"];
 			if ($app->request->query["edit_id"] != $app->request->query["category_id"]) {
-				if ($app->content->existsCategory($app->request->query["category_id"])) {
+				if ($app("categories")->exists($app->request->query["category_id"])) {
 					$app->page->alerts["id_taken"] = array("class" => "warning", "content" => "The ID '{$app->request->query["category_id"]}' is taken! Using '$id'.");
 				} else {
 					if ($app->request->query["category_id"] == "")
@@ -57,7 +57,7 @@
 					else
 						$id = $app->nameToId($app->request->query["category_id"]);
 
-					$app->content->deleteCategory($app->request->query["edit_id"]);
+					$app("categories")->delete($app->request->query["edit_id"]);
 				}
 			}
 
@@ -79,11 +79,11 @@
 			$category->meta_robots= ($app->request->query["category_meta_robots"] != "") ? $app->request->query["category_meta_robots"] : $app->getSetting("meta_robots", "");
 			$category->options	= $app->request->query["category_options"];
 
-			$app->content->setCategory($id, $category);
+			$app("categories")->set($id, $category);
 
-			if ($app->content->categoryParentLoop($id)) {
+			if (Category::categoryParentLoop($id)) {
 				$category->parent = null;
-				$app->content->setCategory($id, $category);
+				$app("categories")->set($id, $category);
 				$app->page->alerts["parent_loop"] = array("class" => "warning", "content" => "Parent category cannot cause an infinite loop.");
 			}
 
@@ -114,7 +114,7 @@
 			else
 				$id = $app->nameToId($app->request->query["category_id"]);
 
-			while ($app->content->existsCategory($id)) $id .= "_1";
+			while ($app("categories")->exists($id)) $id .= "_1";
 
 			$parent = $app->request->query["category_parent"];
 			if ($parent == $id) {
@@ -140,7 +140,7 @@
 				"options"	=> $app->request->query["category_options"]
 			));
 
-			$app->content->setCategory($id, $category);
+			$app("categories")->set($id, $category);
 
 			$app->redirectWithMessages("/backend/categories/editor?edit_id=$id", array("type" => "success", "content" => "Changes saved."));
 		}

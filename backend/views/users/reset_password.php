@@ -13,17 +13,17 @@
 	if (!isset($app->request->query["reset_id"]))
 		$app->redirectWithMessages("/backend/users/list", array("type" => "error", "content" => "No ID Specified"));
 
-	if (!$app->users->existsUser($app->request->query["reset_id"]))
+	if (!$app("users")->exists($app->request->query["reset_id"]))
 		$app->redirectWithMessages("/backend/users/list", array("type" => "error", "content" => "User does not exist"));
 
-	if ($app->request->query["reset_id"] == $app->session->getCurrentSession()->user) {
-		if (!$app->users->userHasPermissions($app->session->getCurrentSession()->user, UserPermissions::MODIFY_SELF))
+	if ($app->request->query["reset_id"] == Session::getCurrentSession()->user) {
+		if (!User::userHasPermissions(Session::getCurrentSession()->user, UserPermissions::MODIFY_SELF))
 			$app->redirectWithMessages("/backend/users/list", array("type" => "error", "content" => "You do not have permission to modify yourself"));
 	} else {
-		if (!$app->users->userHasPermissions($app->session->getCurrentSession()->user, UserPermissions::MODIFY_USERS))
+		if (!User::userHasPermissions(Session::getCurrentSession()->user, UserPermissions::MODIFY_USERS))
 			$app->redirectWithMessages("/backend/users/list", array("type" => "error", "content" => "You do not have permission to modify other users"));
 
-		if ($app->users->compareUserRank($app->session->getCurrentSession()->user, $app->request->query["reset_id"]) !== 1)
+		if (User::compareUserRank(Session::getCurrentSession()->user, $app->request->query["reset_id"]) !== 1)
 			$app->redirectWithMessages("/backend/users/list", array("type" => "error", "content" => "Target user's group rank must be less than your own"));
 	}
 
@@ -32,7 +32,7 @@
 		$app->redirectWithMessages("/backend/users/list", array("type" => "success", "content" => "Password reset."));
 	}
 
-	$app->vars["user_name"] = $app->users->getUser($app->request->query["reset_id"])->name;
+	$app->vars["user_name"] = $app("users")->get($app->request->query["reset_id"])->name;
 
 	$app->page->setTitle("Reset password for {$app->vars["user_name"]}");
 

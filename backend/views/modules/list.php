@@ -12,14 +12,13 @@
 
 	$app->page->setTitle("Modules");
 
-	$app->vars["show"] = $app->request->query["show"] ?? 15;
-	$app->vars["page"] = $app->request->query["page"] ?? 1;
+	$app->vars["show"] = (is_numeric($app->request->query["show"])) ?  $app->request->query["show"] : 15;
+	$app->vars["page"] = (is_numeric($app->request->query["page"])) ? $app->request->query["page"] : 1;
 
-	$modules = $app->extensions->getModules();
+	$modules = $app("modules")->getAllArr(null, "pos");
 
-	$app->vars["npages"] = Paginator::numPages($modules, (is_numeric($app->vars["show"])) ? $app->vars["show"] : 0);
-
-	$app->vars["modules"] = Paginator::sPaginate($modules, $app->vars["show"], $app->vars["page"]);
+	$app->vars["npages"] = Paginator::numPages($modules, $app->vars["show"]);
+	$app->vars["modules"] = Paginator::Paginate($modules, $app->vars["show"], $app->vars["page"]);
 
 	$app->page->setContent(function($app) {
 ?>
@@ -59,6 +58,7 @@
 								<tr>
 									<th>Id</th>
 									<th>Title</th>
+									<th>Position</th>
 									<th>Created</th>
 									<th>Modified</th>
 									<th>Actions</th>
@@ -69,6 +69,7 @@
 									<tr>
 										<td><code><?php echo $module->id; ?></code></td>
 										<td><?php echo htmlentities($module->title); ?></td>
+										<td><?php echo htmlentities($module->pos); ?></td>
 										<td><?php echo date($app->getSetting("date_format", "Y-m-d"), $module->created); ?></td>
 										<td><?php echo date($app->getSetting("date_format", "Y-m-d"), $module->modified); ?></td>
 										<td>

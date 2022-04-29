@@ -18,7 +18,7 @@
 
 	if ($action == "upload") {
 		if (isset($app->request->files["upload_file"])) {
-			if ($app->users->userHasPermissions($app->session->getCurrentSession()->user, UserPermissions::MODIFY_MEDIA)) {
+			if (User::userHasPermissions(Session::getCurrentSession()->user, UserPermissions::MODIFY_MEDIA)) {
 				foreach ($app->request->files["upload_file"]["error"] as $file => $err) {
 					if ($err == UPLOAD_ERR_OK)
 						move_uploaded_file($app->request->files["upload_file"]["tmp_name"][$file], $path . basename($app->request->files["upload_file"]["name"][$file]));
@@ -34,7 +34,7 @@
 		}
 	} elseif ($action == "delete") {
 		if (isset($app->request->query["delete_name"])) {
-			if ($app->users->userHasPermissions($app->session->getCurrentSession()->user, UserPermissions::MODIFY_MEDIA)) {
+			if (User::userHasPermissions(Session::getCurrentSession()->user, UserPermissions::MODIFY_MEDIA)) {
 				$dname = $path . preg_replace("/[\\/\\\\]/", "", basename($app->request->query["delete_name"]));
 				if (file_exists($dname)) FileHelper::deleteRecurs($dname);
 				$app->page->alerts["delete_success"] = array("class" => "success", "content" => "File deleted.");
@@ -44,7 +44,7 @@
 		}
 	} elseif ($action == "mkdir") {
 		if (isset($app->request->query["dir_name"])) {
-			if ($app->users->userHasPermissions($app->session->getCurrentSession()->user, UserPermissions::MODIFY_MEDIA)) {
+			if (User::userHasPermissions(Session::getCurrentSession()->user, UserPermissions::MODIFY_MEDIA)) {
 				$dname = $path . preg_replace("/[\\/\\\\]/", "", basename($app->request->query["dir_name"]));
 				if (!file_exists($dname)) mkdir($dname);
 				$app->page->alerts["mkdir_success"] = array("class" => "success", "content" => "Directory created.");

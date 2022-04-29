@@ -13,14 +13,14 @@
 	$app->page->setTitle("Articles");
 
 	$app->vars["cat"] = $app->request->query["cat"] ?? null;
-	$app->vars["show"] = $app->request->query["show"] ?? 15;
-	$app->vars["page"] = $app->request->query["page"] ?? 1;
+	$app->vars["show"] = (is_numeric($app->request->query["show"])) ?  $app->request->query["show"] : 15;
+	$app->vars["page"] = (is_numeric($app->request->query["page"])) ? $app->request->query["page"] : 1;
 
-	$articles = $app->content->getArticles($app->vars["cat"]);
+	$articles = $app("articles")->getAllArr(($app->vars["cat"]) ? array("category" => $app->vars["cat"]) : null, "title");
 
-	$app->vars["npages"] = Paginator::numPages($articles, (is_numeric($app->vars["show"])) ? $app->vars["show"] : 0);
-	$app->vars["articles"] = Paginator::sPaginate($articles, $app->vars["show"], $app->vars["page"]);
-	
+	$app->vars["npages"] = Paginator::numPages($articles, $app->vars["show"]);
+	$app->vars["articles"] = Paginator::Paginate($articles, $app->vars["show"], $app->vars["page"]);
+
 	$app->page->setContent(function($app) {
 ?>
 		<div id="main" class="page-content">
@@ -74,7 +74,7 @@
 									<tr>
 										<td><code><?php echo $article->id; ?></code></td>
 										<td><?php echo htmlentities($article->title); ?></td>
-										<td><?php echo @htmlentities($app->content->getCategory($article->category)->title); ?></td>
+										<td><?php echo @htmlentities($app("categories")->get($article->category)->title); ?></td>
 										<td><?php echo $article->author; ?></td>
 										<td><?php echo date($app->getSetting("date_format", "Y-m-d"), $article->created); ?></td>
 										<td><?php echo date($app->getSetting("date_format", "Y-m-d"), $article->modified); ?></td>

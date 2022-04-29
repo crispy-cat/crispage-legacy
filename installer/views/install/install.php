@@ -96,16 +96,16 @@
 
 		<hr />
 
-		<label for="super_user_name">Root User Name:</label>
+		<label for="super_user_name">Super User Name:</label>
 		<input type="text" class="form-control" name="super_user_name" required />
 
-		<label for="super_user_id">Root User ID:</label>
+		<label for="super_user_id">Super User ID:</label>
 		<input type="text" class="form-control" name="super_user_id" required />
 
-		<label for="super_user_email">Root User Email:</label>
+		<label for="super_user_email">Super User Email:</label>
 		<input type="email" class="form-control" name="super_user_email" required />
 
-		<label for="super_user_password">Root User Password:</label>
+		<label for="super_user_password">Super User Password:</label>
 		<input type="password" class="form-control" name="super_user_password" required />
 
 		<hr />

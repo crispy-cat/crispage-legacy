@@ -26,26 +26,26 @@
 	$app->vars["user_group"]	= null;
 
 	if (isset($app->request->query["edit_id"])) {
-		if (!$app->users->existsUser($app->request->query["edit_id"]))
+		if (!$app("users")->exists($app->request->query["edit_id"]))
 			$app->redirectWithMessages("/backend/users/list", array("type" => "error", "content" => "Menu user does not exist"));
 
-		$user = $app->users->getUser($app->request->query["edit_id"]);
+		$user = $app("users")->get($app->request->query["edit_id"]);
 
-		if ($user->id == $app->session->getCurrentSession()->user) {
-			if (!$app->users->userHasPermissions($app->session->getCurrentSession()->user, UserPermissions::MODIFY_SELF))
+		if ($user->id == Session::getCurrentSession()->user) {
+			if (!User::userHasPermissions(Session::getCurrentSession()->user, UserPermissions::MODIFY_SELF))
 				$app->redirectWithMessages("/backend/users/list", array("type" => "error", "content" => "You do not have permission to modify yourself"));
 		} else {
-			if (!$app->users->userHasPermissions($app->session->getCurrentSession()->user, UserPermissions::MODIFY_USERS))
+			if (!User::userHasPermissions(Session::getCurrentSession()->user, UserPermissions::MODIFY_USERS))
 				$app->redirectWithMessages("/backend/users/list", array("type" => "error", "content" => "You do not have permission to modify other users"));
 
-				if ($app->users->compareUserRank($app->session->getCurrentSession()->user, $user->id) !== 1)
+				if (User::compareUserRank(Session::getCurrentSession()->user, $user->id) !== 1)
 					$app->redirectWithMessages("/backend/users/list", array("type" => "error", "content" => "Target user's group rank must be less than your own"));
 		}
 
 		if (checkQuery()) {
 			$id = $app->request->query["edit_id"];
 			if ($app->request->query["edit_id"] != $app->request->query["user_id"]) {
-				if ($app->users->existsUser($app->request->query["user_id"])) {
+				if ($app("users")->exists($app->request->query["user_id"])) {
 					$app->page->alerts["id_taken"] = array("class" => "warning", "content" => "The ID '{$app->request->query["user_id"]}' is taken! Using '$id'.");
 				} else {
 					if ($app->request->query["user_id"] == "")
@@ -53,12 +53,12 @@
 					else
 						$id = $app->nameToId($app->request->query["user_id"]);
 
-					$app->users->deleteUser($app->request->query["edit_id"]);
+					$app("users")->delete($app->request->query["edit_id"]);
 				}
 			}
 
 			$group = $app->request->query["user_group"];
-			if ($app->users->compareUserRank($app->session->getCurrentSession()->user, $app->users->getGroupRank($group)) !== 1) {
+			if (User::compareUserRank(Session::getCurrentSession()->user, UserGroup::getGroupRank($group)) !== 1) {
 				$group = $app->getSetting("users.default_group");
 				$app->page->alerts["group_lower"] = array("class" => "warning", "content" => "Target user's group rank must be less than your own, using default group");
 			}
@@ -69,7 +69,7 @@
 			$user->group	= $group;
 			$user->modified	= time();
 
-			$app->users->setUser($id, $user);
+			$app("users")->set($id, $user);
 
 			if ($app->request->query["user_id"] == "")
 				$app->redirectWithMessages("/backend/users/editor?edit_id=$id", array("type" => "success", "content" => "Changes saved."));
@@ -87,7 +87,7 @@
 		$app->vars["title"] = "New User";
 
 		if (checkQuery()) {
-			if (!$app->users->userHasPermissions($app->session->getCurrentSession()->user, UserPermissions::MODIFY_USERS))
+			if (!User::userHasPermissions(Session::getCurrentSession()->user, UserPermissions::MODIFY_USERS))
 				$app->redirectWithMessages("/backend/users/list", array("type" => "error", "content" => "You do not have permission to create users"));
 
 			if ($app->request->query["user_id"] == "")
@@ -95,12 +95,12 @@
 			else
 				$id = $app->nameToId($app->request->query["user_id"]);
 
-			while ($app->users->existsUser($id)) $id .= "_1";
+			while ($app("users")->exists($id)) $id .= "_1";
 
 			$id = $app->nameToId($id);
 
 			$group = $app->request->query["user_group"];
-			if ($app->users->compareUserRank($app->session->getCurrentSession()->user, $app->users->getGroupRank($group)) !== 1) {
+			if (User::compareUserRank(Session::getCurrentSession()->user, UserGroup::getGroupRank($group)) !== 1) {
 				$group = $app->getSetting("users.default_group");
 				$app->page->alerts["group_lower"] = array("class" => "warning", "content" => "Target user's group rank must be less than your own, using default group");
 			}
@@ -116,7 +116,7 @@
 				"activated"	=> 2
 			));
 
-			$app->users->setUser($id, $user);
+			$app("users")->set($id, $user);
 
 			$app->redirectWithMessages("/backend/users/editor?edit_id=$id", array("type" => "success", "content" => "Changes saved."));
 		}

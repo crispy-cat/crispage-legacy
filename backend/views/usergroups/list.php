@@ -12,14 +12,13 @@
 
 	$app->page->setTitle("Usergroups");
 
-	$app->vars["show"] = $app->request->query["show"] ?? 15;
-	$app->vars["page"] = $app->request->query["page"] ?? 1;
+	$app->vars["show"] = (is_numeric($app->request->query["show"])) ?  $app->request->query["show"] : 15;
+	$app->vars["page"] = (is_numeric($app->request->query["page"])) ? $app->request->query["page"] : 1;
 
-	$groups = $app->users->getUserGroups();
+	$groups = $app("usergroups")->getAllArr(null, "rank");
 
-	$app->vars["npages"] = Paginator::numPages($groups, (is_numeric($app->vars["show"])) ? $app->vars["show"] : 0);
-
-	$app->vars["groups"] = Paginator::sPaginate($groups, $app->vars["show"], $app->vars["page"]);
+	$app->vars["npages"] = Paginator::numPages($groups, $app->vars["show"]);
+	$app->vars["groups"] = Paginator::Paginate($groups, $app->vars["show"], $app->vars["page"]);
 
 	$app->page->setContent(function($app) {
 ?>
@@ -72,7 +71,7 @@
 										<td><code><?php echo $group->id; ?></code></td>
 										<td><?php echo htmlentities($group->rank); ?></td>
 										<td><?php echo htmlentities($group->name); ?></td>
-										<td><?php echo @htmlentities($app->users->GetUserGroup($group->parent)->name); ?></td>
+										<td><?php echo @htmlentities($app("usergroups")->get($group->parent)->name); ?></td>
 										<td><?php echo date($app->getSetting("date_format", "Y-m-d"), $group->created); ?></td>
 										<td><?php echo date($app->getSetting("date_format", "Y-m-d"), $group->modified); ?></td>
 										<td>

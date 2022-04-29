@@ -17,33 +17,5 @@
 		"modified": "integer",
 		"options": "array"
 	},
-	"TableData": [
-		{
-			"id": "ExamplePlugin",
-			"class": "example\/ExamplePlugin",
-			"priority": 0,
-			"created": 1647335096,
-			"modified": 1647335096,
-			"scope": "frontend",
-			"options": []
-		},
-		{
-			"id": "PluginSandboxFrontend",
-			"class": "PluginSandbox\/PluginSandboxFrontend",
-			"priority": 0,
-			"created": 1647343054,
-			"modified": 1647343054,
-			"scope": "frontend",
-			"options": []
-		},
-		{
-			"id": "PluginSandboxBackend",
-			"class": "PluginSandbox\/PluginSandboxBackend",
-			"priority": 0,
-			"created": 1647343058,
-			"modified": 1647343058,
-			"scope": "backend",
-			"options": []
-		}
-	]
+	"TableData": []
 }

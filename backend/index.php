@@ -9,9 +9,9 @@
 
 	require_once __DIR__ . "/../config.php";
 
-	require_once Config::APPROOT . "/backend/core/Backend.php";
+	require_once Config::APPROOT . "/core/backend/BackendApplication.php";
 	require_once Config::APPROOT . "/core/Router.php";
-	$app = new Backend();
+	$app = new BackendApplication();
 	set_exception_handler(function($e) {
 		global $app;
 		$app->error($e);

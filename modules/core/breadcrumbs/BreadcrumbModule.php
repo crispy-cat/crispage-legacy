@@ -28,13 +28,13 @@
 						$crumb["url"] .= "/" . $slug[$i];
 					if (isset($app->request->route["view"]) && $key == count($slug) - 1) {
 						if ($app->request->route["view"] == "article")
-							$crumb["label"] = $app->content->getArticle($part)->title;
+							$crumb["label"] = $app("articles")->get($part)->title;
 						elseif ($app->request->route["view"] == "category")
-							$crumb["label"] = $app->content->getCategory($part)->title;
+							$crumb["label"] = $app("categories")->get($part)->title;
 						else
 							$crumb["label"] = ucfirst(preg_replace("/[_-]/", " ", $part));
 					} else {
-						$cat = $app->content->getCategory($part);
+						$cat = $app("categories")->get($part);
 						if ($cat)
 							$crumb["label"] = $cat->title;
 						else

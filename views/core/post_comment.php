@@ -8,19 +8,19 @@
 	*/
 
 	defined("CRISPAGE") or die("Application must be started from index.php!");
-	require_once Config::APPROOT . "/core/header.php";
+	require_once Config::APPROOT . "/header.php";
 
 	$ploc = preg_replace("/\/\//", "/", "/" . ($app->request->query["ploc"] ?? "/"));
 
 	if (!isset($app->request->query["article_id"]))
 		$app->redirectWithMessages($ploc, array("type" => "error", "content" => "Article ID not specified"));
 
-	$session = $app->session->getCurrentSession();
+	$session = Session::getCurrentSession();
 	if (!$session)
 		$app->redirectWithMessages($ploc, array("type" => "error", "content" => "You must be logged in to post comments"));
 
-	$user = $app->users->getUser($session->user);
-	if (!$app->users->userHasPermissions($user->id, UserPermissions::POST_COMMENTS))
+	$user = $app("users")->get($session->user);
+	if (!User::userHasPermissions($user->id, UserPermissions::POST_COMMENTS))
 		$app->redirectWithMessages($ploc, array("type" => "error", "content" => "You do not have permission to post comments"));
 
 	$content = $app->request->query["comment"] ?? "";
@@ -38,7 +38,7 @@
 		"content" => $content
 	));
 
-	$app->comments->setComment($id, $comment);
+	$app("comments")->set($id, $comment);
 
 	$app->events->trigger("comments.post_comment", $id);
 

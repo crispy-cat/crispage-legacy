@@ -10,17 +10,17 @@
 	defined("CRISPAGE") or die("Application must be started from index.php!");
 	require_once Config::APPROOT . "/backend/header.php";
 
-	if (!$app->users->userHasPermissions($app->session->getCurrentSession()->user, UserPermissions::MODIFY_COMMENTS))
+	if (!User::userHasPermissions(Session::getCurrentSession()->user, UserPermissions::MODIFY_COMMENTS))
 		$app->redirectWithMessages("/backend/comments/list", array("type" => "error", "content" => "You do not have permission to delete comments"));
 
 	if (!isset($app->request->query["delete_id"]))
 		$app->redirectWithMessages("/backend/comments/list", array("type" => "error", "content" => "No ID Specified"));
 
-	if (!$app->comments->existsComment($app->request->query["delete_id"]))
+	if (!$app("comments")->exists($app->request->query["delete_id"]))
 		$app->redirectWithMessages("/backend/comments/list", array("type" => "error", "content" => "Comment does not exist"));
 
 	if (isset($app->request->query["confirm"]) && $app->request->query["confirm"]) {
-		$app->comments->deleteComment($app->request->query["delete_id"]);
+		$app("comments")->delete($app->request->query["delete_id"]);
 		$app->redirectWithMessages("/backend/comments/list", array("type" => "success", "content" => "Comment deleted."));
 	}
 

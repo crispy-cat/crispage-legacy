@@ -16,7 +16,7 @@
 
 	$ext = $app->database->readRow("installation", $id);
 
-	$app->extensions->unregisterExtensionByID($app->request->query["uninstall_id"]);
+	ExtensionHelper::unregisterExtensionByID($app->request->query["uninstall_id"]);
 
 	switch ($ext["type"]) {
 		case "view":
@@ -30,7 +30,7 @@
 			unlink(Config::APPROOT . "/modules/" . $ext["class"] . ".php");
 			break;
 		case "plugin":
-			foreach ($app->plugins->getPlugins() as $plugin) if ($plugin->class == $ext["class"]) $app->plugins->deletePlugin($plugin->id);
+			foreach ($app("plugins")->getAll() as $plugin) if ($plugin->class == $ext["class"]) $app("plugins")->delete($plugin->id);
 			unlink(Config::APPROOT . "/plugins/" . $ext["class"] . ".json");
 			unlink(Config::APPROOT . "/plugins/" . $ext["class"] . ".php");
 			break;

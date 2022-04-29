@@ -13,26 +13,26 @@
 	if (!isset($app->request->query["delete_id"]))
 		$app->redirectWithMessages("/backend/users/list", array("type" => "error", "content" => "No ID Specified"));
 
-	if (!$app->users->existsUser($app->request->query["delete_id"]))
+	if (!$app("users")->exists($app->request->query["delete_id"]))
 		$app->redirectWithMessages("/backend/users/list", array("type" => "error", "content" => "User does not exist"));
 
-	$user = $app->users->getUser($app->request->query["delete_id"]);
+	$user = $app("users")->get($app->request->query["delete_id"]);
 
-	if ($user->id == $app->session->getCurrentSession()->user) {
+	if ($user->id == Session::getCurrentSession()->user) {
 		$app->redirectWithMessages("/backend/users/list", array("type" => "error", "content" => "The active user cannot be deleted"));
 	} else {
-		if (!$app->users->userHasPermissions($app->session->getCurrentSession()->user, UserPermissions::MODIFY_USERS))
+		if (!User::userHasPermissions(Session::getCurrentSession()->user, UserPermissions::MODIFY_USERS))
 			$app->redirectWithMessages("/backend/users/list", array("type" => "error", "content" => "You do not have permission to delete other users"));
 
-		if ($app->users->compareUserRank($app->session->getCurrentSession()->user, $app->request->query["delete_id"]) !== 1)
+		if (User::compareUserRank(Session::getCurrentSession()->user, $app->request->query["delete_id"]) !== 1)
 			$app->redirectWithMessages("/backend/users/list", array("type" => "error", "content" => "Target user's group rank must be less than your own"));
 	}
 
 	if (isset($app->request->query["confirm"]) && $app->request->query["confirm"]) {
-		if (count($app->users->getUsers()) < 2)
+		if (count($app("users")->getAllArr()) < 2)
 			$app->redirectWithMessages("/backend/users/list", array("type" => "error", "content" => "There must be at least one user"));
 
-		$app->users->deleteUser($user->id);
+		$app("users")->delete($user->id);
 		$app->redirectWithMessages("/backend/users/list", array("type" => "success", "content" => "User deleted."));
 	}
 

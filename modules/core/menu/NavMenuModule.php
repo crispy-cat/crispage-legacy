@@ -15,7 +15,7 @@
 
 			echo "<ul class=\"module NavMenuModule module-$this->id {$this->options["classes"]}\">\n";
 
-			$menuitems = $app->menus->getMenuItems($this->options["menu"]);
+			$menuitems = $app("menu_items")->getAllArr(array("menu" => $this->options["menu"]));
 			usort($menuitems, function($a, $b) {
 				if ($a->ord == $b->ord) return 0;
 				return ($a->ord < $b->ord) ? -1 : 1;
@@ -24,11 +24,11 @@
 			foreach ($menuitems as $item) {
 				if ($item->parent) continue;
 
-				if ($item->type == "login" && $app->session->getCurrentSession()) continue;
-				if ($item->type == "register" && $app->session->getCurrentSession()) continue;
-				if ($item->type == "logout" && !$app->session->getCurrentSession()) continue;
-				if ($item->type == "reset_password" && $app->session->getCurrentSession()) continue;
-				if ($item->type == "user_profile" && !$app->session->getCurrentSession()) continue;
+				if ($item->type == "login" && Session::getCurrentSession()) continue;
+				if ($item->type == "register" && Session::getCurrentSession()) continue;
+				if ($item->type == "logout" && !Session::getCurrentSession()) continue;
+				if ($item->type == "reset_password" && Session::getCurrentSession()) continue;
+				if ($item->type == "user_profile" && !Session::getCurrentSession()) continue;
 
 				$children = array();
 				foreach ($menuitems as $citem) {
@@ -49,11 +49,11 @@
 				if (count($children)) {
 					echo "<ul class=\"dropdown-menu\">\n";
 					foreach ($children as $child) {
-						if ($child->type == "login" && $app->session->getCurrentSession()) continue;
-						if ($child->type == "register" && $app->session->getCurrentSession()) continue;
-						if ($child->type == "logout" && !$app->session->getCurrentSession()) continue;
-						if ($child->type == "reset_password" && $app->session->getCurrentSession()) continue;
-						if ($child->type == "user_profile" && !$app->session->getCurrentSession()) continue;
+						if ($child->type == "login" && Session::getCurrentSession()) continue;
+						if ($child->type == "register" && Session::getCurrentSession()) continue;
+						if ($child->type == "logout" && !Session::getCurrentSession()) continue;
+						if ($child->type == "reset_password" && Session::getCurrentSession()) continue;
+						if ($child->type == "user_profile" && !Session::getCurrentSession()) continue;
 						echo "<li><a class=\"dropdown-item\" href=\"" . (($child->type == "url") ? "" : Config::WEBROOT . "/") . $child->getUrl() . "\">$child->label</a></li>\n";
 					}
 					echo "</ul>\n";

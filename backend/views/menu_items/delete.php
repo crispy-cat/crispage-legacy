@@ -10,21 +10,21 @@
 	defined("CRISPAGE") or die("Application must be started from index.php!");
 	require_once Config::APPROOT . "/backend/header.php";
 
-	if (!$app->users->userHasPermissions($app->session->getCurrentSession()->user, UserPermissions::MODIFY_MENUS))
+	if (!User::userHasPermissions(Session::getCurrentSession()->user, UserPermissions::MODIFY_MENUS))
 		$app->redirectWithMessages("/backend/menu_items/list", array("type" => "error", "content" => "You do not have permission to delete menu items"));
 
 	if (!isset($app->request->query["delete_id"]))
 		$app->redirectWithMessages("/backend/menu_items/list", array("type" => "error", "content" => "No ID Specified"));
 
-	if (!$app->menus->existsMenuItem($app->request->query["delete_id"]))
+	if (!$app("menu_items")->exists($app->request->query["delete_id"]))
 		$app->redirectWithMessages("/backend/menu_items/list", array("type" => "error", "content" => "Menu does not exist"));
 
 	if (isset($app->request->query["confirm"]) && $app->request->query["confirm"]) {
-		$app->menus->deleteMenuItem($app->request->query["delete_id"]);
+		$app("menu_items")->delete($app->request->query["delete_id"]);
 		$app->redirectWithMessages("/backend/menu_items/list", array("type" => "success", "content" => "Menu deleted."));
 	}
 
-	$app->vars["item_label"] = htmlentities($app->menus->getMenuItem($app->request->query["delete_id"])->label);
+	$app->vars["item_label"] = htmlentities($app("menu_items")->get($app->request->query["delete_id"])->label);
 
 	$app->page->setTitle("Delete {$app->vars["item_label"]}");
 

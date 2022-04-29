@@ -12,7 +12,7 @@
 
 	$app->page->setTitle("New Module");
 
-	$app->vars["infos"] = $app->extensions->getAvailableModules();
+	$app->vars["infos"] = ExtensionHelper::getAvailableModules();
 
 	$app->page->setContent(function($app) {
 ?>

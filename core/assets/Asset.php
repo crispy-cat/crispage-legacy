@@ -1,7 +1,7 @@
 <?php
 	/*
 		Crispage - A lightweight CMS for developers
-		core/Asset.php - Asset class
+		core/assets/Asset.php - Asset class
 
 		Author: crispycat <the@crispy.cat> <https://crispy.cat>
 		Since: 0.1.0
@@ -25,5 +25,11 @@
 			$this->created = $data["created"] ?? time();
 			$this->modified = $data["modified"] ?? time();
 			$this->options = $data["options"] ?? array();
+		}
+		
+		public function toDatabaseObject() : array {
+			$props = array();
+			foreach ($this as $k => $v) $props[$k] = $v;
+			return $props;
 		}
 	}

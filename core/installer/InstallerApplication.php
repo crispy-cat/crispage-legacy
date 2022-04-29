@@ -1,33 +1,37 @@
 <?php
 	/*
 		Crispage - A lightweight CMS for developers
-		installer/core/Installer.php - Installer application class
+		core/installer/InstallerApplication.php - Installer application class
 
 		Author: crispycat <the@crispy.cat> <https://crispy.cat>
-		Since: 0.2.0
+		Since: 0.9.0
 	*/
 
 	defined("CRISPAGE") or die("Application must be started from index.php!");
 
-	require_once Config::APPROOT . "/core/ApplicationBase.php";
+	require_once Config::APPROOT . "/core/Application.php";
 
-	class Installer extends ApplicationBase {
-		public ExtensionManager $extensions;
-
+	class InstallerApplication extends Application {
 		public function __construct() {
-			$this->events = new EventManager();
 			$this->page = new Page();
-			$this->extensions = new ExtensionManager();
-			$this->content = new ContentManager();
-			$this->comments = new CommentManager();
-			$this->menus = new MenuManager();
-			$this->users = new UserManager();
-			$this->session = new SessionManager();
+			$this->events = new EventManager();
 			$this->auth = new Authenticator();
-			$this->bans = new BanManager();
+
+			$this->assets = new ApplicationAssetManagers();
+			$this->assets->addAssetManager("articles",		new AssetManager("articles", "Article"));
+			$this->assets->addAssetManager("categories",	new AssetManager("categories", "Category"));
+			$this->assets->addAssetManager("comments",		new AssetManager("comments", "Comment"));
+			$this->assets->addAssetManager("menus",			new AssetManager("menus", "Menu"));
+			$this->assets->addAssetManager("menu_items",	new AssetManager("menuitems", "MenuItem"));
+			$this->assets->addAssetManager("modules",		new AssetManager("modules", "Module"));
+			$this->assets->addAssetManager("plugins",		new AssetManager("plugins", "Plugin"));
+			$this->assets->addAssetManager("users",			new AssetManager("users", "User"));
+			$this->assets->addAssetManager("usergroups",	new AssetManager("usergroups", "UserGroup"));
+			$this->assets->addAssetManager("bans",			new AssetManager("bans", "Ban"));
+			$this->assets->addAssetManager("sessions",		new AssetManager("sessions", "Session"));
 
 			$this->template = new Template(array("backend" => true, "template_name" => "installer"));
-			$this->extensions = new ExtensionManager();
+			require_once Config::APPROOT . "/core/events/defaultevents.php";
 		}
 
 		public function initDatabase(string $type, array $options) {

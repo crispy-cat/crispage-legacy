@@ -42,17 +42,17 @@
 			}
 		}
 
-		public static function getCategoryRoute(string $route) : ?string {
+		public static function getCategoryRoute(?string $route) : ?string {
 			global $app;
-			$cat = $app->content->getCategory($route);
+			$cat = $app("categories")->get($route);
 			if (!$cat) return null;
 			if ($cat->parent) $route = Router::getCategoryRoute($cat->parent) . "/" . $route;
 			return $route;
 		}
 
-		public static function getArticleRoute(string $route) : ?string {
+		public static function getArticleRoute(?string $route) : ?string {
 			global $app;
-			$art = $app->content->getArticle($route);
+			$art = $app("articles")->get($route);
 			if (!$art) return null;
 			if ($art->category) $route = Router::getCategoryRoute($art->category) . "/" . $route;
 			return $route;

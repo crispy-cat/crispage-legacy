@@ -1,20 +1,20 @@
 <?php
 	/*
 		Crispage - A lightweight CMS for developers
-		backend/core/Backend.php - Backend application class
+		core/backend/BackendApplication.php - Backend application class
 
 		Author: crispycat <the@crispy.cat> <https://crispy.cat>
-		Since: 0.0.1
+		Since: 0.9.0
 	*/
 
 	defined("CRISPAGE") or die("Application must be started from index.php!");
 
-	require_once Config::APPROOT . "/core/ApplicationBase.php";
-	require_once Config::APPROOT . "/backend/core/BackendMenuItem.php";
+	require_once Config::APPROOT . "/core/Application.php";
+	require_once Config::APPROOT . "/core/backend/BackendMenuItem.php";
 
-	class Backend extends ApplicationBase {
+	class BackendApplication extends Application {
 		private array $menuItems = array();
-		
+
 		public function __construct() {
 			parent::__construct();
 
@@ -27,6 +27,7 @@
 			$this->request = $request;
 			$this->events->trigger("app.plugins.pre_load");
 			$this->loadPlugins();
+			$this->executePlugins();
 			$this->events->trigger("app.plugins.post_load");
 			try {
 				$app = $this;
@@ -42,16 +43,16 @@
 		public function loadPlugins(string $scope = "backend") {
 			parent::loadPlugins($scope);
 		}
-		
+
 		public function getBackendMenuItems() : array {
 			$dbitems = $this->database->readRows("backend_menu");
-			
+
 			$items = array();
 			foreach ($dbitems as $item)
 				array_push($items, new BackendMenuItem($item));
 			return array(...$items, ...$this->menuItems);
 		}
-		
+
 		public function addBackendMenuItem(BackendMenuItem $item) {
 			$this->menuItems[] = $item;
 		}

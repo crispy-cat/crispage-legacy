@@ -9,9 +9,9 @@
 
 
 	defined("CRISPAGE") or die("Application must be started from index.php!");
-	require_once Config::APPROOT . "/core/header.php";
+	require_once Config::APPROOT . "/header.php";
 
-	$session = $app->session->getCurrentSession();
+	$session = Session::getCurrentSession();
 	if ($session)
 		$app->redirectWithMessages("/", array("type" => "error", "content" => "There is an active session"));
 
@@ -31,7 +31,7 @@
 		$password = $app->request->query["user_password"];
 		$confirm = $app->request->query["user_confirm"];
 
-		if ($app->users->existsUser($id))
+		if ($app("users")->exists($id))
 			$app->redirectWithMessages("/register", array("type" => "error", "content" => "User with ID '$id' already exists"));
 
 		if ($password != $confirm)
@@ -63,7 +63,7 @@
 		if ($sent === true) {
 			$app->database->writeRow("activation", $id, array("token" => $token));
 
-			$app->users->setUser($id, new User(array(
+			$app("users")->set($id, new User(array(
 				"id"	=> $id,
 				"name"	=> $name,
 				"email" => $email,

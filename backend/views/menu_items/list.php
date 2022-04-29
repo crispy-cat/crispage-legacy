@@ -13,14 +13,13 @@
 	$app->page->setTitle("Menu Items");
 
 	$app->vars["menu"] = $app->request->query["menu"] ?? null;
-	$app->vars["show"] = $app->request->query["show"] ?? 15;
-	$app->vars["page"] = $app->request->query["page"] ?? 1;
+	$app->vars["show"] = (is_numeric($app->request->query["show"])) ?  $app->request->query["show"] : 15;
+	$app->vars["page"] = (is_numeric($app->request->query["page"])) ? $app->request->query["page"] : 1;
 
-	$items = $app->menus->getMenuItems($app->vars["menu"]);
+	$items = $app("menu_items")->getAllArr(($app->vars["menu"]) ? array("menu" => $app->vars["menu"]) : null, "menu");
 
-	$app->vars["npages"] = Paginator::numPages($items, (is_numeric($app->vars["show"])) ? $app->vars["show"] : 0);
-
-	$app->vars["items"] = Paginator::sPaginate($items, $app->vars["show"], $app->vars["page"]);
+	$app->vars["npages"] = Paginator::numPages($items, $app->vars["show"]);
+	$app->vars["items"] = Paginator::Paginate($items, $app->vars["show"], $app->vars["page"]);
 
 	$app->page->setContent(function($app) {
 ?>
@@ -47,7 +46,7 @@
 					<div style="float: right;">
 						<a class="btn btn-success mt-4 mb-2 d-block ms-auto" href="<?php echo Config::WEBROOT; ?>/backend/menu_items/editor" style="width: 130px;">New Menu Item</a>
 						<?php
-							$baseurl = Config::WEBROOT . "/backend/articles/list?menu=" . (($app->vars["menu"]) ? $app->vars["menu"] : "") . "&show=" . (($app->vars["show"]) ? $app->vars["show"] : "all") . "&page=";
+							$baseurl = Config::WEBROOT . "/backend/menu_items/list?menu=" . (($app->vars["menu"]) ? $app->vars["menu"] : "") . "&show=" . (($app->vars["show"]) ? $app->vars["show"] : "all") . "&page=";
 							RenderHelper::renderPagination($baseurl, $app->vars["npages"], $app->vars["page"] ?? 1);
 						?>
 					</div>
@@ -76,8 +75,8 @@
 										<td><code><?php echo $item->id; ?></code></td>
 										<td><?php echo htmlentities($item->label); ?></td>
 										<td><?php echo htmlentities($item->type); ?></td>
-										<td><?php echo @htmlentities($app->menus->getMenu($item->menu)->title); ?></td>
-										<td><?php echo @htmlentities($app->menus->getMenuItem($item->parent)->label); ?></td>
+										<td><?php echo @htmlentities($app("menus")->get($item->menu)->title); ?></td>
+										<td><?php echo @htmlentities($app("menu_items")->get($item->parent)->label); ?></td>
 										<td><?php echo htmlentities($item->ord); ?></td>
 										<td><?php echo date($app->getSetting("date_format", "Y-m-d"), $item->created); ?></td>
 										<td><?php echo date($app->getSetting("date_format", "Y-m-d"), $item->modified); ?></td>

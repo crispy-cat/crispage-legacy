@@ -40,23 +40,23 @@
 	$app->vars["article_options"]	= array();
 
 	if (isset($app->request->query["edit_id"])) {
-		if (!$app->content->existsArticle($app->request->query["edit_id"]))
+		if (!$app("articles")->exists($app->request->query["edit_id"]))
 			$app->redirectWithMessages("/backend/articles/list", array("type" => "error", "content" => "Article does not exist"));
 
-		$article = $app->content->getArticle($app->request->query["edit_id"]);
+		$article = $app("articles")->get($app->request->query["edit_id"]);
 
-		if ($article->author == $app->session->getCurrentSession()->user) {
-			if (!$app->users->userHasPermissions($app->session->getCurrentSession()->user, UserPermissions::MODIFY_ARTICLES_OWN))
+		if ($article->author == Session::getCurrentSession()->user) {
+			if (!User::userHasPermissions(Session::getCurrentSession()->user, UserPermissions::MODIFY_ARTICLES_OWN))
 				$app->redirectWithMessages("/backend/articles/list", array("type" => "error", "content" => "You do not have permission to modify articles"));
 		} else {
-			if (!$app->users->userHasPermissions($app->session->getCurrentSession()->user, UserPermissions::MODIFY_ARTICLES))
+			if (!User::userHasPermissions(Session::getCurrentSession()->user, UserPermissions::MODIFY_ARTICLES))
 				$app->redirectWithMessages("/backend/articles/list", array("type" => "error", "content" => "You do not have permission to modify others' articles"));
 		}
 
 		if (checkQuery()) {
 			$id = $app->request->query["edit_id"];
 			if ($app->request->query["edit_id"] != $app->request->query["article_id"]) {
-				if ($app->content->existsArticle($app->request->query["article_id"])) {
+				if ($app("articles")->exists($app->request->query["article_id"])) {
 					$app->page->alerts["id_taken"] = array("class" => "warning", "content" => "The ID '{$app->request->query["article_id"]}' is taken! Using '$id'.");
 				} else {
 					if ($app->request->query["article_id"] == "")
@@ -64,7 +64,7 @@
 					else
 						$id = $app->nameToId($app->request->query["article_id"]);
 
-					$app->content->deleteArticle($app->request->query["edit_id"]);
+					$app("articles")->delete($app->request->query["edit_id"]);
 				}
 			}
 
@@ -74,14 +74,14 @@
 			$article->id		= $id;
 			$article->state		= $app->request->query["article_state"];
 			$article->modified	= time();
-			$article->category	= $app->content->getCategory($app->request->query["article_category"])->id;
+			$article->category	= $app("categories")->get($app->request->query["article_category"])->id;
 			$article->tags		= $app->request->query["article_tags"];
 			$article->meta_desc	= ($app->request->query["article_meta_desc"] != "") ? $app->request->query["article_meta_desc"] : $app->getSetting("meta_desc", "");
 			$article->meta_keys	= ($app->request->query["article_meta_keys"] != "") ? $app->request->query["article_meta_keys"] : $app->getSetting("meta_keys", "");
 			$article->meta_robots	= ($app->request->query["article_meta_robots"] != "") ? $app->request->query["article_meta_robots"] : $app->getSetting("meta_robots", "");
 			$article->options	= $app->request->query["article_options"];
 
-			$app->content->setArticle($id, $article);
+			$app("articles")->set($id, $article);
 
 			if ($app->request->query["article_id"] == "")
 				$app->redirectWithMessages("/backend/articles/editor?edit_id=$id", array("type" => "success", "content" => "Changes saved."));
@@ -106,7 +106,7 @@
 		$app->vars["title"] = "New Article";
 
 		if (checkQuery()) {
-			if (!$app->users->userHasPermissions($app->session->getCurrentSession()->user, UserPermissions::MODIFY_ARTICLES_OWN))
+			if (!User::userHasPermissions(Session::getCurrentSession()->user, UserPermissions::MODIFY_ARTICLES_OWN))
 				$app->redirectWithMessages("/backend/articles/list", array("type" => "error", "content" => "You do not have permission to create articles"));
 
 			if ($app->request->query["article_id"] == "")
@@ -114,7 +114,7 @@
 			else
 				$id = $app->nameToId($app->request->query["article_id"]);
 
-			while ($app->content->existsArticle($id)) $id .= "_1";
+			while ($app("articles")->exists($id)) $id .= "_1";
 
 			$article = new Article(array(
 				"id"		=> $id,
@@ -122,7 +122,7 @@
 				"content"	=> $app->request->query["article_content"],
 				"summary"	=> $app->request->query["article_summary"],
 				"state"		=> $app->request->query["article_state"],
-				"author" 	=> $app->session->getCurrentSession()->user, // TODO: Change to active user
+				"author" 	=> Session::getCurrentSession()->user, // TODO: Change to active user
 				"created"	=> time(),
 				"modified"	=> time(),
 				"category"	=> $app->request->query["article_category"],
@@ -134,7 +134,7 @@
 				"options"	=> $app->request->query["article_options"]
 			));
 
-			$app->content->setArticle($id, $article);
+			$app("articles")->set($id, $article);
 
 			$app->redirectWithMessages("/backend/articles/editor?edit_id=$id", array("type" => "success", "content" => "Changes saved."));
 		}

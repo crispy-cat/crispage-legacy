@@ -10,7 +10,7 @@
 	defined("CRISPAGE") or die("Application must be started from index.php!");
 	require_once Config::APPROOT . "/backend/header.php";
 
-	if (!$app->users->userHasPermissions($app->session->getCurrentSession()->user, UserPermissions::MODIFY_PLUGINS))
+	if (!User::userHasPermissions(Session::getCurrentSession()->user, UserPermissions::MODIFY_PLUGINS))
 		$app->redirectWithMessages("/backend/plugins/list", array("type" => "error", "content" => "You do not have permission to modify plugins"));
 
 	function checkQuery() {
@@ -27,7 +27,7 @@
 	if (!isset($app->request->query["class"]))
 		$app->redirectWithMessages("/backend/plugins/select", array("type" => "info", "content" => "Please select a plugin type first"));
 
-	$plugininfo = $app->extensions->getPluginInfo($app->request->query["class"]);
+	$plugininfo = ExtensionHelper::getPluginInfo($app->request->query["class"]);
 
 	if (!$plugininfo)
 		$app->redirectWithMessages("/backend/plugins/list", array("type" => "error", "content" => "Invalid plugin type"));
@@ -36,10 +36,10 @@
 	$app->vars["plugin_class_options"] = $plugininfo["options"];
 
 	if (isset($app->request->query["edit_id"])) {
-		if (!$app->extensions->existsPlugin($app->request->query["edit_id"]))
+		if (!$app("plugins")->exists($app->request->query["edit_id"]))
 			$app->redirectWithMessages("/backend/plugins/list", array("type" => "error", "content" => "Plugin does not exist"));
 
-		$plugin = $app->extensions->getPlugin($app->request->query["edit_id"]);
+		$plugin = $app("plugins")->get($app->request->query["edit_id"]);
 
 		if (checkQuery()) {
 			$options = array();
@@ -50,7 +50,7 @@
 			$plugin->modified	= time();
 			$plugin->options	= $options;
 
-			$app->extensions->setPlugin($plugin->id, $plugin);
+			$app("plugins")->set($plugin->id, $plugin);
 
 			$app->page->alerts["edit_success"] = array("class" => "success", "content" => "Changes saved.");
 		}

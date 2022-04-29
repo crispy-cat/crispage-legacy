@@ -9,14 +9,14 @@
 
 	defined("CRISPAGE") or die("Application must be started from index.php!");
 
-	$session = $app->session->getCurrentSession();
+	$session = Session::getCurrentSession();
 	if (!$session)
 		$app->redirect(Config::WEBROOT . "/login?ploc=/backend");
 
-	if (!$app->users->userHasPermissions($session->user, UserPermissions::LOGIN_BACKEND))
+	if (!User::userHasPermissions($session->user, UserPermissions::LOGIN_BACKEND))
 		$app->redirectWithMessages("/", array("type" => "error", "content" => "You do not have permission to use the backend"));
 
-	$app->session->refreshCurrentSession();
+	Session::refreshCurrentSession();
 
 	$app->page->metas["charset"] = array("charset" => $this->getSetting("charset", "UTF-8"));
 	$app->page->metas["robots"] = array("name" => "robots", "content" => "noindex, follow");

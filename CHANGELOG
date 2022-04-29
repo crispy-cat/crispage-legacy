@@ -1,3 +1,12 @@
+# 0.9.0 alpha
+- Renamed ApplicationBase to Application, Application to
+	FrontendApplication, Backend to BackendApplication,
+	Installer to InstallerApplication
+- Replaced *Manager with AssetManager
+- Added ApplicationAssetManagers
+- Added ExtensionHelper
+- Bug fixes
+
 # 0.8.1 alpha
 - Bug fixes
 

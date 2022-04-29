@@ -13,23 +13,19 @@
 	if (!isset($app->request->query["user_id"]))
 		$app->redirectWithMessages("/backend/users/list", array("type" => "error", "content" => "No ID specified"));
 
-	$user = $app->users->getUser($app->request->query["user_id"]);
+	$user = $app("users")->get($app->request->query["user_id"]);
 	if (!$user)
 		$app->redirectWithMessages("/backend/users/list", array("type" => "error", "content" => "User does not exist"));
 
 	$app->page->setTitle("Bans");
 
-	$app->vars["show"] = $app->request->query["show"] ?? 15;
-	$app->vars["page"] = $app->request->query["page"] ?? 1;
+	$app->vars["show"] = (is_numeric($app->request->query["show"])) ?  $app->request->query["show"] : 15;
+	$app->vars["page"] = (is_numeric($app->request->query["page"])) ? $app->request->query["page"] : 1;
 
-	$bans = $app->bans->getBans($user->id);
+	$bans = $app("bans")->getAllArr(array("user" => $app->request->query["user_id"]), "modified");
 
-	$app->vars["npages"] = Paginator::numPages($bans, (is_numeric($app->vars["show"])) ? $app->vars["show"] : 0);
-
-	if (is_numeric($app->vars["show"]))
-		$app->vars["bans"] = Paginator::paginate($bans, $app->vars["show"], (is_numeric($app->vars["page"])) ? $app->vars["page"] : 1);
-	else
-		$app->vars["bans"] = $bans;
+	$app->vars["npages"] = Paginator::numPages($bans, $app->vars["show"]);
+	$app->vars["bans"] = Paginator::Paginate($bans, $app->vars["show"], $app->vars["page"]);
 
 	$app->page->setContent(function($app) {
 ?>
@@ -93,7 +89,7 @@
 							</tbody>
 						</table>
 					<?php } else { ?>
-						<p>No users match your criteria!</p>
+						<p>No bans match your criteria!</p>
 					<?php } ?>
 				</div>
 			</div>

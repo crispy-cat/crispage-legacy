@@ -9,12 +9,12 @@
 
 
 	defined("CRISPAGE") or die("Application must be started from index.php!");
-	require_once Config::APPROOT . "/core/header.php";
+	require_once Config::APPROOT . "/header.php";
 
-	$session = $app->session->getCurrentSession();
+	$session = Session::getCurrentSession();
 	if (!$session)
 		$app->redirectWithMessages("/", array("type" => "error", "content" => "You are not logged in"));
-	$user = $app->users->getUser($session->user);
+	$user = $app("users")->get($session->user);
 
 	$app->vars["user_id"] = $user->id;
 	$app->vars["user_name"] = $user->name;
@@ -58,7 +58,7 @@
 			$app->auth->setPassword($user->id, $password);
 		}
 
-		$app->users->setUser($user->id, $user);
+		$app("users")->set($user->id, $user);
 		$app->page->alerts["edit_success"] = array("class" => "success", "content" => "Changes saved.");
 	}
 

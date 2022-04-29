@@ -10,7 +10,7 @@
 	defined("CRISPAGE") or die("Application must be started from index.php!");
 	require_once Config::APPROOT . "/backend/header.php";
 
-	if (!$app->users->userHasPermissions($app->session->getCurrentSession()->user, UserPermissions::MODIFY_MENUS))
+	if (!User::userHasPermissions(Session::getCurrentSession()->user, UserPermissions::MODIFY_MENUS))
 		$app->redirectWithMessages("/backend/menu_items/list", array("type" => "error", "content" => "You do not have permission to modify menu items"));
 
 	function checkQuery() {
@@ -33,15 +33,15 @@
 	$app->vars["item_ord"]		= 0;
 
 	if (isset($app->request->query["edit_id"])) {
-		if (!$app->menus->existsMenuItem($app->request->query["edit_id"]))
+		if (!$app("menu_items")->exists($app->request->query["edit_id"]))
 			$app->redirectWithMessages("/backend/menu_items/list", array("type" => "error", "content" => "Menu item does not exist"));
 
-		$item = $app->menus->getMenuItem($app->request->query["edit_id"]);
+		$item = $app("menu_items")->get($app->request->query["edit_id"]);
 
 		if (checkQuery()) {
 			$id = $app->request->query["edit_id"];
 			if ($app->request->query["edit_id"] != $app->request->query["item_id"]) {
-				if ($app->menus->existsMenuItem($app->request->query["item_id"])) {
+				if ($app("menu_items")->exists($app->request->query["item_id"])) {
 					$app->page->alerts["id_taken"] = array("class" => "warning", "content" => "The ID '{$app->request->query["item_id"]}' is taken! Using '$id'.");
 				} else {
 					if ($app->request->query["item_id"] == "")
@@ -49,7 +49,7 @@
 					else
 						$id = $app->nameToId($app->request->query["item_id"]);
 
-					$app->menus->deleteMenuItem($app->request->query["edit_id"]);
+					$app("menu_items")->delete($app->request->query["edit_id"]);
 				}
 			}
 
@@ -68,7 +68,7 @@
 			$item->ord		= $app->request->query["item_ord"];
 			$item->modified	= time();
 
-			$app->menus->setMenuItem($id, $item);
+			$app("menu_items")->set($id, $item);
 
 			if ($app->request->query["item_id"] == "")
 				$app->redirectWithMessages("/backend/menu_items/editor?edit_id=$id", array("type" => "success", "content" => "Changes saved."));
@@ -94,7 +94,7 @@
 			else
 				$id = $app->nameToId($app->request->query["item_id"]);
 
-			while ($app->menus->existsMenuItem($id)) $id .= "_1";
+			while ($app("menu_items")->exists($id)) $id .= "_1";
 
 			$id = $app->nameToId($id);
 
@@ -110,7 +110,7 @@
 				"modified"	=> time()
 			));
 
-			$app->menus->setMenuItem($id, $item);
+			$app("menu_items")->set($id, $item);
 
 			$app->redirectWithMessages("/backend/menu_items/editor?edit_id=$id", array("type" => "success", "content" => "Changes saved."));
 		}

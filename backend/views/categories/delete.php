@@ -10,24 +10,24 @@
 	defined("CRISPAGE") or die("Application must be started from index.php!");
 	require_once Config::APPROOT . "/backend/header.php";
 
-	if (!$app->users->userHasPermissions($app->session->getCurrentSession()->user, UserPermissions::MODIFY_CATEGORIES))
+	if (!User::userHasPermissions(Session::getCurrentSession()->user, UserPermissions::MODIFY_CATEGORIES))
 		$app->redirectWithMessages("/backend/categories/list", array("type" => "error", "content" => "You do not have permission to delete categories"));
 
 	if (!isset($app->request->query["delete_id"]))
 		$app->redirectWithMessages("/backend/categories/list", array("type" => "error", "content" => "No ID Specified"));
 
-	if (!$app->content->existsCategory($app->request->query["delete_id"]))
+	if (!$app("categories")->exists($app->request->query["delete_id"]))
 		$app->redirectWithMessages("/backend/categories/list", array("type" => "error", "content" => "Category does not exist"));
 
 	if (isset($app->request->query["confirm"]) && $app->request->query["confirm"]) {
-		if (count($app->content->getCategories()) < 2)
+		if (count($app("categories")->getAllArr()) < 2)
 			$app->redirectWithMessages("/backend/categories/list", array("type" => "error", "content" => "There must be at least one category"));
 
-		$app->content->deleteCategory($app->request->query["delete_id"]);
+		$app("categories")->delete($app->request->query["delete_id"]);
 		$app->redirectWithMessages("/backend/categories/list", array("type" => "success", "content" => "Category deleted."));
 	}
 
-	$app->vars["category_title"] = htmlentities($app->content->getCategory($app->request->query["delete_id"])->title);
+	$app->vars["category_title"] = htmlentities($app("categories")->get($app->request->query["delete_id"])->title);
 
 	$app->page->setTitle("Delete {$app->vars["category_title"]}");
 

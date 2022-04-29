@@ -37,7 +37,7 @@
 			$this->title = $title;
 		}
 
-		public function renderContent() {
+		public function renderContent() : void {
 			global $app;
 			$app->events->trigger("page.pre_render");
 			try {
@@ -50,11 +50,11 @@
 			}
 		}
 
-		public function setContent($content) {
+		public function setContent($content) : void {
 			$this->content = $content;
 		}
 
-		public function renderMetas() {
+		public function renderMetas() : void {
 			global $app;
 			$app->events->trigger("page.pre_render.metas");
 			foreach ($this->metas as $meta) {
@@ -66,7 +66,7 @@
 			}
 		}
 
-		public function renderLinks() {
+		public function renderLinks() : void {
 			global $app;
 			$app->events->trigger("page.pre_render.links");
 			foreach ($this->links as $link) {
@@ -78,14 +78,14 @@
 			}
 		}
 
-		public function renderStyles() {
+		public function renderStyles() : void {
 			global $app;
 			$app->events->trigger("page.pre_render.styles");
 			foreach ($this->styles as $style)
 				echo "<style>{$style["content"]}</style>\n";
 		}
 
-		public function renderScripts() {
+		public function renderScripts() : void {
 			global $app;
 			$app->events->trigger("page.pre_render.scripts");
 			foreach ($this->scripts as $script) {
@@ -97,21 +97,18 @@
 			}
 		}
 
-		public function renderAlerts() {
+		public function renderAlerts() : void {
 			global $app;
 			$app->events->trigger("page.pre_render.alerts");
 			foreach ($this->alerts as $alert)
 				echo "<div class=\"alert alert-{$alert["class"]}\">{$alert["content"]}</div>\n";
 		}
 
-		public function loadModule(Module $module) {
+		public function loadModule(Module $module) : void {
 			global $app;
 			$app->events->trigger("page.modules.pre_load", $module);
 			try {
-				if (!file_exists(Config::APPROOT . "/modules/$module->class.php")) return;
-				include_once Config::APPROOT . "/modules/$module->class.php";
-				@$classname = array_pop(explode("/", $module->class));
-				if (!class_exists($classname)) return;
+				$classname = ExtensionHelper::loadClass(Config::APPROOT . "/modules/$module->class.php");
 				if (!isset($this->modules[$module->pos])) $this->modules[$module->pos] = array();
 				$this->modules[$module->pos][] = new $classname(array(
 					"id"	=> $module->id,
@@ -129,10 +126,10 @@
 			}
 		}
 
-		public function loadModules() {
+		public function loadModules() : void {
 			global $app;
 			if (count($this->modules)) return;
-			foreach ($app->extensions->getModules("frontend") as $module) {
+			foreach ($app("modules")->getAll(array("scope" => "frontend")) as $module) {
 				$this->loadModule($module);
 				usort($this->modules[$module->pos], function($a, $b) {
 					if ($a->ord == $b->ord) return 0;
@@ -140,13 +137,17 @@
 				});
 			}
 		}
+		
+		public function clearModules() : void {
+			$this->modules = array();
+		}
 
 		public function countModules(string $pos) : int {
 			if (!isset($this->modules[$pos])) return 0;
 			return count($this->modules[$pos]);
 		}
 
-		public function renderModules(string $pos) {
+		public function renderModules(string $pos) : void {
 			global $app;
 			$app->events->trigger("page.modules.pre_render", $pos);
 			if (!isset($this->modules[$pos])) return;
@@ -163,7 +164,7 @@
 			return setcookie($id, $content, $expires, $path, $domain);
 		}
 
-		public function deleteCookie(string $id) {
+		public function deleteCookie(string $id) : void {
 			setcookie($id, "_", time());
 			unset($_COOKIE[$id]);
 		}

@@ -10,21 +10,21 @@
 	defined("CRISPAGE") or die("Application must be started from index.php!");
 	require_once Config::APPROOT . "/backend/header.php";
 
-	if (!$app->users->userHasPermissions($app->session->getCurrentSession()->user, UserPermissions::MODIFY_MODULES))
+	if (!User::userHasPermissions(Session::getCurrentSession()->user, UserPermissions::MODIFY_MODULES))
 		$app->redirectWithMessages("/backend/modules/list", array("type" => "error", "content" => "You do not have permission to delete modules"));
 
 	if (!isset($app->request->query["delete_id"]))
 		$app->redirectWithMessages("/backend/modules/list", array("type" => "error", "content" => "No ID Specified"));
 
-	if (!$app->extensions->existsModule($app->request->query["delete_id"]))
+	if (!$app("modules")->exists($app->request->query["delete_id"]))
 		$app->redirectWithMessages("/backend/modules/list", array("type" => "error", "content" => "Module does not exist"));
 
 	if (isset($app->request->query["confirm"]) && $app->request->query["confirm"]) {
-		$app->extensions->deleteModule($app->request->query["delete_id"]);
+		$app("modules")->delete($app->request->query["delete_id"]);
 		$app->redirectWithMessages("/backend/modules/list", array("type" => "success", "content" => "Module deleted."));
 	}
 
-	$app->vars["module_title"] = htmlentities($app->extensions->getModule($app->request->query["delete_id"])->title);
+	$app->vars["module_title"] = htmlentities($app("modules")->get($app->request->query["delete_id"])->title);
 
 	$app->page->setTitle("Delete {$app->vars["module_title"]}");
 

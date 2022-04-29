@@ -13,14 +13,14 @@
 		public function render() {
 			global $app;
 
-			$session = $app->session->getCurrentSession();
+			$session = Session::getCurrentSession();
 ?>
 			<div class="module CustomModule module-<?php echo $this->id; ?> <?php echo $this->options["classes"]; ?>">
 				<h3><?php echo $this->title; ?></h3>
 <?php
 			if ($session) {
 ?>
-				<p>Welcome, <?php echo $app->users->getUser($session->user)->name; ?></p>
+				<p>Welcome, <?php echo $app("users")->get($session->user)->name; ?></p>
 				<a class="btn btn-primary" href="<?php echo Config::WEBROOT; ?>/logout?ploc=<?php echo $app->request->slug; ?>">Log out</a>
 <?php
 			} else {

@@ -10,17 +10,17 @@
 	defined("CRISPAGE") or die("Application must be started from index.php!");
 	require_once Config::APPROOT . "/backend/header.php";
 
-	if (!$app->users->userHasPermissions($app->session->getCurrentSession()->user, UserPermissions::MODIFY_PLUGINS))
+	if (!User::userHasPermissions(Session::getCurrentSession()->user, UserPermissions::MODIFY_PLUGINS))
 		$app->redirectWithMessages("/backend/plugins/list", array("type" => "error", "content" => "You do not have permission to deactivate plugins"));
 
 	if (!isset($app->request->query["deactivate_id"]))
 		$app->redirectWithMessages("/backend/plugins/list", array("type" => "error", "content" => "No ID Specified"));
 
-	if (!$app->extensions->existsplugin($app->request->query["deactivate_id"]))
+	if (!$app("plugins")->exists($app->request->query["deactivate_id"]))
 		$app->redirectWithMessages("/backend/plugins/list", array("type" => "error", "content" => "Plugin does not exist"));
 
 	if (isset($app->request->query["confirm"]) && $app->request->query["confirm"]) {
-		$app->extensions->deleteplugin($app->request->query["deactivate_id"]);
+		$app("plugins")->delete($app->request->query["deactivate_id"]);
 		$app->redirectWithMessages("/backend/plugins/list", array("type" => "success", "content" => "Plugin deactivated"));
 	}
 

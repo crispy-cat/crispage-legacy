@@ -12,14 +12,13 @@
 
 	$app->page->setTitle("Categories");
 
-	$app->vars["show"] = $app->request->query["show"] ?? 15;
-	$app->vars["page"] = $app->request->query["page"] ?? 1;
+	$app->vars["show"] = (is_numeric($app->request->query["show"])) ?  $app->request->query["show"] : 15;
+	$app->vars["page"] = (is_numeric($app->request->query["page"])) ? $app->request->query["page"] : 1;
 
-	$categories = $app->content->getCategories();
+	$categories = $app("categories")->getAllArr(null, "title");
 
-	$app->vars["npages"] = Paginator::numPages($categories, (is_numeric($app->vars["show"])) ? $app->vars["show"] : 0);
-
-	$app->vars["categories"] = Paginator::sPaginate($categories, $app->vars["show"], $app->vars["page"]);
+	$app->vars["npages"] = Paginator::numPages($categories, $app->vars["show"]);
+	$app->vars["categories"] = Paginator::Paginate($categories, $app->vars["show"], $app->vars["page"]);
 
 	$app->page->setContent(function($app) {
 ?>
@@ -71,7 +70,7 @@
 									<tr>
 										<td><code><?php echo $category->id; ?></code></td>
 										<td><?php echo htmlentities($category->title); ?></td>
-										<td><?php echo @htmlentities($app->content->getCategory($category->parent)->title); ?></td>
+										<td><?php echo @htmlentities($app("categories")->get($category->parent)->title); ?></td>
 										<td><?php echo date($app->getSetting("date_format", "Y-m-d"), $category->created); ?></td>
 										<td><?php echo date($app->getSetting("date_format", "Y-m-d"), $category->modified); ?></td>
 										<td><?php echo htmlentities($category->state); ?></td>

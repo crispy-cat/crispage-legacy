@@ -162,10 +162,14 @@
 			} else {
 				$rdata = $data["TableData"];
 			}
-			if ($ordby !== null && $data["Columns"][$ordby]) {
+
+			if ($ordby !== null && in_array($ordby, $data["Columns"])) {
+				global $o;
+				$o = $ordby;
 				usort($rdata, function($a, $b) {
-					if ($a == $b) return 0;
-					if ($a > $b) return ($desc) ? -1 : 1;
+					global $o;
+					if ($a[$o] == $b[$o]) return 0;
+					if ($a[$o] > $b[$o]) return ($desc) ? -1 : 1;
 					return ($desc) ? 1 : -1;
 				});
 			}

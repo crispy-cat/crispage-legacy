@@ -48,7 +48,7 @@
 					<option value="<?php echo $extra["value"]; ?>"><?php echo $extra["title"]; ?></option>
 				<?php } ?>
 				<?php
-					foreach ($app->content->getArticles() as $art) {
+					foreach ($app("articles")->getAll() as $art) {
 						if ($selart) {
 				?>
 							<option value="<?php echo $art->id; ?>" <?php if ($art->id == $selart) echo "selected"; ?>><?php echo $art->title; ?></option>
@@ -73,7 +73,7 @@
 					<option value="<?php echo $extra["value"]; ?>"><?php echo $extra["title"]; ?></option>
 				<?php } ?>
 				<?php
-					foreach ($app->content->getCategories() as $cat) {
+					foreach ($app("categories")->getAll() as $cat) {
 						if ($selcat) {
 				?>
 							<option value="<?php echo $cat->id; ?>" <?php if ($cat->id == $selcat) echo "selected"; ?>><?php echo $cat->title; ?></option>
@@ -97,7 +97,7 @@
 					<option value="<?php echo $extra["value"]; ?>"><?php echo $extra["title"]; ?></option>
 				<?php } ?>
 				<?php
-					foreach ($app->menus->getMenus() as $menu) {
+					foreach ($app("menus")->getAll() as $menu) {
 						if ($selmenu) {
 				?>
 							<option value="<?php echo $menu->id; ?>" <?php if ($menu->id == $selmenu) echo "selected"; ?>><?php echo $menu->title; ?></option>
@@ -122,7 +122,7 @@
 					<option value="<?php echo $extra["value"]; ?>"><?php echo $extra["title"]; ?></option>
 				<?php } ?>
 				<?php
-					foreach ($app->menus->getMenuItems() as $item) {
+					foreach ($app("menu_items")->getAll() as $item) {
 						if ($selitem) {
 				?>
 							<option value="<?php echo $item->id; ?>" <?php if ($item->id == $selitem) echo "selected"; ?>><?php echo $item->label; ?></option>
@@ -146,7 +146,7 @@
 					<option value="<?php echo $extra["value"]; ?>"><?php echo $extra["title"]; ?></option>
 				<?php } ?>
 				<?php
-					foreach ($app->modules->getModule() as $mod) {
+					foreach ($app("modules")->getAll() as $mod) {
 						if ($selmod) {
 				?>
 							<option value="<?php echo $mod->id; ?>" <?php if ($mod->id == $selmod) echo "selected"; ?>><?php echo $mod->title; ?></option>
@@ -170,7 +170,7 @@
 					<option value="<?php echo $extra["value"]; ?>"><?php echo $extra["title"]; ?></option>
 				<?php } ?>
 				<?php
-					foreach ($app->users->getUser() as $user) {
+					foreach ($app("users")->getAll() as $user) {
 						if ($seluser) {
 				?>
 							<option value="<?php echo $user->id; ?>" <?php if ($user->id == $seluser) echo "selected"; ?>><?php echo $user->name; ?></option>
@@ -195,7 +195,7 @@
 					<option value="<?php echo $extra["value"]; ?>"><?php echo $extra["title"]; ?></option>
 				<?php } ?>
 				<?php
-					foreach ($app->users->getUserGroups() as $group) {
+					foreach ($app("usergroups")->getAll() as $group) {
 						if ($selgroup) {
 				?>
 							<option value="<?php echo $group->id; ?>" <?php if ($group->id == $selgroup) echo "selected"; ?>><?php echo $group->name; ?></option>

@@ -13,8 +13,8 @@
 		public function render() {
 			global $app;
 
-			if ($this->options["filter"]) $articles = $app->content->getArticles($this->options["filtercat"]);
-			else $articles = $app->content->getArticles();
+			if ($this->options["filter"]) $articles = $app("articles")->getAllArr(array("category" => $this->options["filtercat"]));
+			else $articles = $app("articles")->getAllArr();
 
 			foreach ($articles as $key => $article)
 				if ($article->state != "published")

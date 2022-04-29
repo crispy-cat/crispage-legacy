@@ -22,7 +22,7 @@
 				try {
 					include $this->directory . "/index.php";
 				} catch (Throwable $e) {
-					$app->error($e);
+					$app->error(new ApplicationException(500, "Failed to render", "Failed to render", null, $e, false));
 				}
 			} else {
 				$dir = $this->directory;

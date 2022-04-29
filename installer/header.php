@@ -10,14 +10,14 @@
 	defined("CRISPAGE") or die("Application must be started from index.php!");
 
 	if (defined("IS_INSTALLED") && IS_INSTALLED) {
-		$session = $app->session->getCurrentSession();
+		$session = Session::getCurrentSession();
 		if (!$session)
 			$app->redirect(Config::WEBROOT . "/login?ploc=/installer");
 
-		if (!$app->users->userHasPermissions($session->user, UserPermissions::USE_INSTALLER))
+		if (!User::userHasPermissions($session->user, UserPermissions::USE_INSTALLER))
 			$app->redirectWithMessages("/", array("type" => "error", "content" => "You do not have permission to use the installer"));
-		
-		$app->session->refreshCurrentSession();
+
+		Session::refreshCurrentSession();
 	}
 
 	if (defined("IS_INSTALL_PAGE") && IS_INSTALL_PAGE) {

@@ -13,19 +13,19 @@
 	if (!isset($app->request->query["delete_id"]))
 		$app->redirectWithMessages("/backend/users/list", array("type" => "error", "content" => "No ID Specified"));
 
-	if (!$app->bans->existsBan($app->request->query["delete_id"]))
+	if (!$app("bans")->exists($app->request->query["delete_id"]))
 		$app->redirectWithMessages("/backend/users/list", array("type" => "error", "content" => "Ban does not exist"));
 
-	$ban = $app->bans->getBan($app->request->query["delete_id"]);
+	$ban = $app("bans")->get($app->request->query["delete_id"]);
 
-	if (!$app->users->userHasPermissions($app->session->getCurrentSession()->user, UserPermissions::BAN_USERS))
+	if (!User::userHasPermissions(Session::getCurrentSession()->user, UserPermissions::BAN_USERS))
 		$app->redirectWithMessages("/backend/users/list_bans?user_id={$ban->user}", array("type" => "error", "content" => "You do not have permission to delete bans"));
 
-	if ($app->users->compareUserRank($app->session->getCurrentSession()->user, $ban->user) !== 1)
+	if (User::compareUserRank(Session::getCurrentSession()->user, $ban->user) !== 1)
 		$app->redirectWithMessages("/backend/users/list_bans?user_id={$user->id}", array("type" => "error", "content" => "Target user's group rank must be less than your own"));
 
 	if (isset($app->request->query["confirm"]) && $app->request->query["confirm"]) {
-		$app->bans->deleteBan($ban->id);
+		$app("bans")->delete($ban->id);
 		$app->redirectWithMessages("/backend/users/list_bans?user_id={$ban->user}", array("type" => "success", "content" => "Ban deleted."));
 	}
 

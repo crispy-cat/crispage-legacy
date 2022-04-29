@@ -8,6 +8,5 @@
 		"id": "string",
 		"token": "string"
 	},
-	"TableData": [
-	]
+	"TableData": []
 }

@@ -8,9 +8,9 @@
 	*/
 
 	defined("CRISPAGE") or die("Application must be started from index.php!");
-	require_once Config::APPROOT . "/core/header.php";
+	require_once Config::APPROOT . "/header.php";
 
-	$session = $app->session->getCurrentSession();
+	$session = Session::getCurrentSession();
 	if ($session)
 		$app->redirectWithMessages("/", array("type" => "error", "content" => "There is an active session"));
 
@@ -47,7 +47,7 @@
 	} elseif (isset($app->request->query["user_id"]) && isset($app->request->query["user_email"])) {
 		$id = $app->request->query["user_id"];
 		$email = $app->request->query["user_email"];
-		$user = $app->users->getUser($id);
+		$user = $app("users")->get($id);
 		if (!$user)
 			$app->redirectWithMessages("/reset_password", array("type" => "error", "content" => "User does not exist"));
 		if ($email != $user->email)

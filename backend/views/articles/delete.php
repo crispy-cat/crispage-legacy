@@ -13,22 +13,21 @@
 	if (!isset($app->request->query["delete_id"]))
 		$app->redirectWithMessages("/backend/articles/list", array("type" => "error", "content" => "No ID Specified"));
 
-	if (!$app->content->existsArticle($app->request->query["delete_id"]))
+	if (!$app("articles")->exists($app->request->query["delete_id"]))
 		$app->redirectWithMessages("/backend/articles/list", array("type" => "error", "content" => "Article does not exist"));
 
-	$article = $app->content->getArticle($app->request->query["delete_id"]);
+	$article = $app("articles")->get($app->request->query["delete_id"]);
 
-	if ($article->author == $app->session->getCurrentSession()->user) {
-		if (!$app->users->userHasPermissions($app->session->getCurrentSession()->user, UserPermissions::MODIFY_ARTICLES_OWN))
+	if ($article->author == Session::getCurrentSession()->user) {
+		if (!User::userHasPermissions(Session::getCurrentSession()->user, UserPermissions::MODIFY_ARTICLES_OWN))
 			$app->redirectWithMessages("/backend/articles/list", array("type" => "error", "content" => "You do not have permission to delete articles"));
 	} else {
-		if (!$app->users->userHasPermissions($app->session->getCurrentSession()->user, UserPermissions::MODIFY_ARTICLES))
+		if (!User::userHasPermissions(Session::getCurrentSession()->user, UserPermissions::MODIFY_ARTICLES))
 			$app->redirectWithMessages("/backend/articles/list", array("type" => "error", "content" => "You do not have permission to delete others' articles"));
 	}
 
 	if (isset($app->request->query["confirm"]) && $app->request->query["confirm"]) {
-
-		$app->content->deleteArticle($article->id);
+		$app("articles")->delete($article->id);
 		$app->redirectWithMessages("/backend/articles/list", array("type" => "success", "content" => "Article deleted."));
 	}
 

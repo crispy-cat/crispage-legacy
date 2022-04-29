@@ -8,11 +8,11 @@
 	*/
 
 	defined("CRISPAGE") or die("Application must be started from index.php!");
-	require_once Config::APPROOT . "/core/header.php";
+	require_once Config::APPROOT . "/header.php";
 
 	$ploc = preg_replace("/\/\//", "/", "/" . ($app->request->query["ploc"] ?? "/"));
 
-	$session = $app->session->getCurrentSession();
+	$session = Session::getCurrentSession();
 	if ($session)
 		$app->redirectWithMessages($ploc, array("type" => "error", "content" => "There is an active session"));
 
@@ -20,27 +20,27 @@
 		$id = $app->request->query["user_id"];
 		$password = $app->request->query["user_password"];
 
-		$user = $app->users->getUser($id);
+		$user = $app("users")->get($id);
 		if (!$user)
 			$app->redirectWithMessages("/login?ploc=" . ($app->request->query["ploc"] ?? ""), array("type" => "error", "content" => "User does not exist"));
 
 		if (!$user->activated)
 			$app->redirectWithMessages("/login?ploc=" . ($app->request->query["ploc"] ?? ""), array("type" => "error", "content" => "User is not activated"));
 
-		if (!$app->users->userHasPermissions($user->id, UserPermissions::LOGIN))
+		if (!User::userHasPermissions($user->id, UserPermissions::LOGIN))
 			$app->redirectWithMessages("/login?ploc=" . ($app->request->query["ploc"] ?? ""), array("type" => "error", "content" => "You do not have permission to log in"));
 
 		if (!$app->auth->authenticateUser($id, $password))
 			$app->redirectWithMessages("/login?ploc=" . ($app->request->query["ploc"] ?? ""), array("type" => "error", "content" => "Invalid ID or password"));
 
-		$app->vars["bans"] = $app->bans->getBans($id);
+		$app->vars["bans"] = $app("bans")->getAll(array("user" => $id));
 		$app->vars["banned"] = false;
 		foreach ($app->vars["bans"] as $ban) if ($ban->expires > time()) $app->vars["banned"] = true;
 
 		if (!$app->vars["banned"]) {
-			$app->session->startSession($id);
+			Session::startSession($id);
 			$user->loggedin = time();
-			$app->users->setUser($id, $user);
+			$app("users")->set($id, $user);
 			$app->events->trigger("users.log_in", $id);
 			$app->redirectWithMessages($ploc, array("type" => "success", "content" => "Welcome, $id"));
 		}

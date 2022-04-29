@@ -10,27 +10,27 @@
 	defined("CRISPAGE") or die("Application must be started from index.php!");
 	require_once Config::APPROOT . "/backend/header.php";
 
-	if (!$app->users->userHasPermissions($app->session->getCurrentSession()->user, UserPermissions::MODIFY_USERGROUPS))
+	if (!User::userHasPermissions(Session::getCurrentSession()->user, UserPermissions::MODIFY_USERGROUPS))
 		$app->redirectWithMessages("/backend/usergroups/list", array("type" => "error", "content" => "You do not have permission to delete usergroups"));
 
 	if (!isset($app->request->query["delete_id"]))
 		$app->redirectWithMessages("/backend/usergroups/list", array("type" => "error", "content" => "No ID Specified"));
 
-	if (!$app->users->existsUserGroup($app->request->query["delete_id"]))
+	if (!$app("usergroups")->exists($app->request->query["delete_id"]))
 		$app->redirectWithMessages("/backend/usergroups/list", array("type" => "error", "content" => "Group does not exist"));
 
 	if (isset($app->request->query["confirm"]) && $app->request->query["confirm"]) {
-		if ($app->users->compareUserRank($app->session->getCurrentSession()->user, $app->users->getGroupRank($app->request->query["delete_id"])) !== 1)
+		if (User::compareUserRank(Session::getCurrentSession()->user, UserGroup::getGroupRank($app->request->query["delete_id"])) !== 1)
 			$app->redirectWithMessages("/backend/usergroups/list", array("type" => "error", "content" => "Group rank must be less than your own"));
 
-		if (count($app->users->getUserGroups()) < 2)
+		if (count($app("usergroups")->getAllArr()) < 2)
 			$app->redirectWithMessages("/backend/usergroups/list", array("type" => "error", "content" => "There must be at least one usergroup"));
 
-		$app->users->deleteUserGroup($app->request->query["delete_id"]);
+		$app("usergroups")->delete($app->request->query["delete_id"]);
 		$app->redirectWithMessages("/backend/usergroups/list", array("type" => "success", "content" => "Group deleted."));
 	}
 
-	$app->vars["usergroup_name"] = htmlentities($app->users->getUserGroup($app->request->query["delete_id"])->name);
+	$app->vars["usergroup_name"] = htmlentities($app("usergroups")->get($app->request->query["delete_id"])->name);
 
 	$app->page->setTitle("Delete {$app->vars["usergroup_name"]}");
 
