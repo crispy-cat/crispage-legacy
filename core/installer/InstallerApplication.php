@@ -16,6 +16,7 @@
 			$this->page = new Page();
 			$this->events = new EventManager();
 			$this->auth = new Authenticator();
+			$this->i18n = new I18n();
 
 			$this->assets = new ApplicationAssetManagers();
 			$this->assets->addAssetManager("articles",		new AssetManager("articles", "Article"));

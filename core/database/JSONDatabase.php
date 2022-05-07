@@ -77,7 +77,7 @@
 			$app->events->trigger("database.table_purge", $table);
 			return true;
 		}
-		
+
 		public function addColumn(string $table, string $column, string $type = "string") : bool {
 			global $app;
 			if (empty($column) || !in_array($type, self::COLUMN_TYPES)) return false;
@@ -90,7 +90,7 @@
 			$app->events->trigger("database.column_add", $table, $column, $type);
 			return true;
 		}
-		
+
 		public function removeColumn(string $table, string $column) : bool {
 			global $app;
 			if (empty($column)) return false;
@@ -133,7 +133,7 @@
 			$drow = array("id" => $id);
 			foreach ($data["Columns"] as $col) {
 				if (!array_key_exists($col, $vals)) continue;
-				
+
 				switch ($data["ColumnTypes"][$col]) {
 					case "array":
 						$drow[$col] = (array)$vals[$col];
@@ -154,7 +154,6 @@
 					case "string":
 						$drow[$col] = (string)$vals[$col];
 						break;
-					
 				}
 			}
 			$idrow = count($data["TableData"]);
@@ -214,7 +213,7 @@
 			}
 			return $rdata;
 		}
-		
+
 		public function countRows(string $table) : int {
 			$data = $this->getData($table);
 			if (!is_array($data["TableData"])) throw new Exception("Corrupted table $table");

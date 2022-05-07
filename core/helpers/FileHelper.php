@@ -39,7 +39,7 @@
 			} else {
 				$phar = new PharData($file, RecursiveDirectoryIterator::SKIP_DOTS);
 				$phar->convertToData(Phar::ZIP);
-				$fzip = preg_replace("/\..+/", ".zip", $file);
+				$fzip = preg_replace("/(?:\.tar)?\.[^\.]+$/", ".zip", $file);
 			}
 			$zip = new ZipArchive();
 			if ($zip->open($fzip) === true) {
