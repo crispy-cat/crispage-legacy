@@ -12,15 +12,16 @@
 
 	$session = Session::getCurrentSession();
 	if ($session)
-		$app->redirectWithMessages("/", array("type" => "error", "content" => "There is an active session"));
+		$app->redirectWithMessages("/", array("type" => "error", "content" => $app("i18n")->getString("active_session")));
 
 	if (isset($app->request->query["user_id"]) && isset($app->request->query["token"]) && isset($app->request->query["password"])) {
+		$app->events->trigger("frontend.view.reset_password.submit");
 		$id = $app->request->query["user_id"];
 		$ars = $app->database->readRow("authreset", $id);
 		if (!$ars)
-			$app->redirectWithMessages("/reset_password", array("type" => "error", "content" => "Invalid user ID"));
+			$app->redirectWithMessages("/reset_password", array("type" => "error", "content" => $app("i18n")->getString("invalid_user_id")));
 		if ($app->request->query["token"] != $ars["token"])
-			$app->redirectWithMessages("/reset_password", array("type" => "error", "content" => "Invalid token"));
+			$app->redirectWithMessages("/reset_password", array("type" => "error", "content" => $app("i18n")->getString("invalid_token")));
 
 		$password = $app->request->query["password"];
 		$password_min =  $app->getSetting("users.password_min", 8);
@@ -29,72 +30,75 @@
 		$password_min_special = $app->getSetting("users.password_min_special", 1);
 
 		if (strlen($password) < $password_min)
-			$app->redirectWithMessages("/reset_password", array("type" => "error", "content" => "Password must be $password_min or more characters"));
+			$app->redirectWithMessages("/reset_password", array("type" => "error", "content" => $app("i18n")->getString("password_min_chars", null, $password_min)));
 
 		if (preg_match_all("/[a-z]/i", $password) < $password_min_letters)
-			$app->redirectWithMessages("/reset_password", array("type" => "error", "content" => "Password must have $password_min_letters or more letters"));
+			$app->redirectWithMessages("/reset_password", array("type" => "error", "content" => $app("i18n")->getString("password_min_letters", null, $password_min_letters)));
 
 		if (preg_match_all("/[0-9]/", $password) < $password_min_numbers)
-			$app->redirectWithMessages("/reset_password", array("type" => "error", "content" => "Password must have $password_min_numbers or more numbers"));
+			$app->redirectWithMessages("/reset_password", array("type" => "error", "content" => $app("i18n")->getString("password_min_numbers", null, $password_min_numbers)));
 
 		if (preg_match_all("/[^a-z0-9]/i", $password) < $password_min_special)
-			$app->redirectWithMessages("/reset_password", array("type" => "error", "content" => "Password must have $password_min_special or more special characters"));
+			$app->redirectWithMessages("/reset_password", array("type" => "error", "content" => $app("i18n")->getString("password_min_special", null, $password_min_special)));
 
 		$app->auth->setPassword($id, $password);
 		$app->database->deleteRow("authreset", $id);
 
-		$app->redirectWithMessages("/login", array("type" => "success", "content" => "Password reset. Please log in."));
+		$app->redirectWithMessages("/login", array("type" => "success", "content" => $app("i18n")->getString("password_reset")));
 	} elseif (isset($app->request->query["user_id"]) && isset($app->request->query["user_email"])) {
 		$id = $app->request->query["user_id"];
 		$email = $app->request->query["user_email"];
 		$user = $app("users")->get($id);
 		if (!$user)
-			$app->redirectWithMessages("/reset_password", array("type" => "error", "content" => "User does not exist"));
+			$app->redirectWithMessages("/reset_password", array("type" => "error", "content" => $app("i18n")->getString("user_not_exist")));
 		if ($email != $user->email)
-			$app->redirectWithMessages("/reset_password", array("type" => "error", "content" => "Email does not match"));
+			$app->redirectWithMessages("/reset_password", array("type" => "error", "content" => $app("i18n")->getString("email_not_match")));
 
 		$token = Randomizer::randomString(64, 36);
+		$url = (($_SERVER["HTTPS"]) ? "https://" : "http://") . $_SERVER["SERVER_NAME"] . Config::WEBROOT . "/reset_password";
 
-		$body = "Please reset your password by entering the following token:\n$token\n";
-		$body .= "into the form at:\n";
-		$body .= "http" . (($_SERVER["HTTPS"]) ? "s" : "") . "://" . $_SERVER["SERVER_NAME"] . Config::WEBROOT . "/reset_password";
-
-		$sent = Mailer::sendMail(array($email), "Reset your " . $app->getSetting("sitename") . " password", $body);
+		$sent = Mailer::sendMail(
+			array($email),
+			$app("i18n")->getString("mail_reset_subject", null, $app->getSetting("sitename")),
+			$app("i18n")->getString("mail_reset_body", null, $app->getSetting("sitename"), $url, $token)
+		);
 		if ($sent === true) {
 			$app->database->writeRow("authreset", $id, array("token" => $token));
-			$app->redirectWithMessages("/reset_password", array("type" => "success", "content" => "A reset token has been sent to your email."));
+			$app->redirectWithMessages("/reset_password", array("type" => "success", "content" => $app("i18n")->getString("token_sent")));
 		} else {
-			$app->redirectWithMessages("/reset_password", array("type" => "error", "content" => "Token could not be sent: $sent"));
+			$app->redirectWithMessages("/reset_password", array("type" => "error", "content" => $app("i18n")->getString("token_not_sent", null, $sent)));
 		}
 	}
 
-	$app->page->setTitle("Reset Password");
+	$app->page->setTitle($app("i18n")->getString("reset_password"));
 
 	$app->page->setContent(function($app) {
 ?>
 		<div id="main" class="page-content">
 			<form method="post">
-				<h2>Get reset token</h2>
-				<label for="user_id">User ID:</label>
+				<h2><?php $app("i18n")("get_reset_token"); ?></h2>
+				<label for="user_id"><?php $app("i18n")("user_id_c"); ?></label>
 				<input type="text" class="form-control" name="user_id" required />
-				<label for="user_email">User email:</label>
+				<label for="user_email"><?php $app("i18n")("email_c"); ?></label>
 				<input type="email" class="form-control" name="user_email" required />
-				<button type="submit" class="btn btn-primary mt-3">Get token</button>
+				<button type="submit" class="btn btn-primary mt-3"><?php $app("i18n")("get_token"); ?></button>
 				<hr />
 			</form>
 			<form method="post">
-				<h2>Reset password</h2>
-				<label for="user_id">User ID:</label>
-				<input type="text" class="form-control" name="user_id" required />
-				<label for="token">Token:</label>
-				<input type="text" class="form-control" name="token" required />
-				<label for="password">New password:</label>
+				<h2><?php $app("i18n")("reset_password"); ?></h2>
+				<label for="user_id"><?php $app("i18n")("user_id_c"); ?></label>
+				<input type="text" class="form-control" name="user_id" value="<?php echo $app->request->query["user_id"] ?? null; ?>" required />
+				<label for="token"><?php $app("i18n")("token_c"); ?></label>
+				<input type="text" class="form-control" name="token" value="<?php echo $app->request->query["token"] ?? null; ?>" required />
+				<label for="password"><?php $app("i18n")("password_c"); ?></label>
 				<input type="password" class="form-control" name="password" required />
-				<button type="submit" class="btn btn-primary mt-3">Reset password</button>
+				<button type="submit" class="btn btn-primary mt-3"><?php $app("i18n")("reset_password"); ?></button>
 			</form>
 		</div>
 <?php
 	});
+
+	$app->events->trigger("frontend.view.reset_password");
 
 	$app->renderPage();
 ?>

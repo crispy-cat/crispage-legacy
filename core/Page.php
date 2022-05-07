@@ -41,12 +41,12 @@
 			global $app;
 			$app->events->trigger("page.pre_render");
 			try {
-				if (!isset($this->content)) throw new Exception("Page has no content associated with it");
+				if (!isset($this->content)) throw new Exception("Page->content is null");
 				if (is_string($this->content)) echo $this->content;
 				elseif (is_callable($this->content)) ($this->content)($app);
-				else throw new Exception("Page is misconfigured! (Not string or callable)");
+				else throw new Exception("Page->content not callable|string");
 			} catch (Throwable $e) {
-				$app->error(new ApplicationException(500, "An error occurred", "This page could not be rendered by the server. Please try again later.", null, $e, true));
+				$app->error(new ApplicationException(500, $app("i18n")->getString("render_error"), $app("i18n")->getString("render_error_ex2"), null, $e, true));
 			}
 		}
 
@@ -122,7 +122,7 @@
 				));
 				$app->events->trigger("page.modules.post_load", $module);
 			} catch (Throwable $e) {
-				$app->error(new ApplicationException(500, "Module Error", "Module <code>$module->id</code> could not be loaded: ", null, $e, false));
+				$app->error(new ApplicationException(500, $app("i18n")->getString("module_error"), $app("i18n")->getString("module_error_ex", null, $module->id), null, $e, false));
 			}
 		}
 
@@ -137,7 +137,7 @@
 				});
 			}
 		}
-		
+
 		public function clearModules() : void {
 			$this->modules = array();
 		}
@@ -155,7 +155,7 @@
 				try {
 					$module->render();
 				} catch (Throwable $e) {
-					$app->error(new ApplicationException(500, "Module Error", "Module failed to render:", null, $e, false));
+					$app->error(new ApplicationException(500, $app("i18n")->getString("module_error"), $app("i18n")->getString("module_error_ex2", null, $module->id), null, $e, false));
 				}
 			}
 		}

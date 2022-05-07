@@ -29,6 +29,7 @@
 
 	require_once Config::APPROOT . "/core/users/UserPermissions.php";
 	require_once Config::APPROOT . "/core/users/Authenticator.php";
+	require_once Config::APPROOT . "/core/i18n/I18n.php";
 
 	require_once Config::APPROOT . "/core/assets/classes/Article.php";
 	require_once Config::APPROOT . "/core/assets/classes/Category.php";
@@ -52,7 +53,11 @@
 
 		public ApplicationAssetManagers $assets;
 
+		public Authenticator $auth;
+		public I18n $i18n;
+
 		public array $loadedPlugins	= array();
+		public bool $pluginsExecd	= false;
 		public array $vars			= array();
 
 		public function __construct() {
@@ -66,6 +71,7 @@
 			$this->page = new Page();
 			$this->events = new EventManager();
 			$this->auth = new Authenticator();
+			$this->i18n = new I18n();
 
 			$this->assets = new ApplicationAssetManagers();
 			$this->assets->addAssetManager("articles",		new AssetManager("articles", "Article"));
@@ -92,7 +98,7 @@
 			if (isset($this->database)) $this->database->writeChanges();
 		}
 
-		public function loadPlugin(Plugin $plugin) {
+		public function loadPlugin(Plugin $plugin) : void {
 			global $app;
 			$app->events->trigger("app.plugins.pre_load", $plugin);
 			try {
@@ -105,12 +111,13 @@
 					"modified" => $plugin->modified,
 					"options" => $plugin->options
 				));
+				$app->events->trigger("app.plugins.post_load", $plugin);
 			} catch (Throwable $e) {
-				throw new ApplicationException(500, "An error occurred", "Plugin <code>$plugin->id</code> could not be loaded: ", null, $e, false);
+				throw new ApplicationException(500, $app("i18n")->getString("plugin_error"), $app("i18n")->getString("plugin_error_ex", null, $plugin->id), null, $e, false);
 			}
 		}
 
-		public function loadPlugins(string $scope = "frontend") {
+		public function loadPlugins(string $scope = "frontend") : void {
 			if (count($this->loadedPlugins)) return;
 			foreach ($this("plugins")->getAll(array("scope" => $scope)) as $plugin)
 				$this->loadPlugin($plugin);
@@ -120,19 +127,26 @@
 			});
 		}
 
-		public function executePlugins() {
+		public function executePlugins() : void {
+			if ($this->pluginsExecd) return;
+			$this->pluginsExeced = true;
 			foreach ($this->loadedPlugins as $plugin) {
 				try {
 					$plugin->execute();
 				} catch (Throwable $e) {
-					throw new ApplicationException(500, "An error occurred", "Plugin <code>$plugin->id</code> could not be executed: ", null, $e, false);
+					throw new ApplicationException(500, $app("i18n")->getString("plugin_error"), $app("i18n")->getString("plugin_error_ex2", null, $plugin->id), null, $e, false);
 				}
 			}
 		}
 
-		protected abstract function request(Request $request);
+		public function loadLanguages() : void {
+			foreach (glob(Config::APPROOT . "/languages/*") as $file)
+				$this("i18n")->loadLanguageFile($file);
+		}
 
-		public function error(Throwable $e) {
+		protected abstract function request(Request $request) : void;
+
+		public function error(Throwable $e) : void {
 			if ($e instanceof ApplicationException) {
 				$http = $e->getHttpStatus();
 				$title = $e->getPageTitle();
@@ -150,6 +164,9 @@
 
 			$this->events->trigger("app.error.pre_render", $e);
 
+			$this->events->trigger("app.languages.pre_load");
+			$this->loadLanguages();
+			$this->events->trigger("app.languages.post_load");
 			if ($lp) {
 				$this->events->trigger("app.plugins.pre_load");
 				$this->loadPlugins();
@@ -178,7 +195,7 @@
 			die();
 		}
 
-		public function redirect(string $url, bool $permanent = false) {
+		public function redirect(string $url, bool $permanent = false) : void {
 			$this->events->trigger("redirect", $url, $permanent, null);
 			ob_clean();
 			if ($permanent) http_response_code(301);
@@ -187,7 +204,7 @@
 			die("Redirecting...");
 		}
 
-		public function redirectWithMessages(string $url, array $messages) {
+		public function redirectWithMessages(string $url, array $messages) : void {
 			$this->events->trigger("redirect", $url, false, $messages);
 			ob_clean();
 			if (isset($messages["type"]) && isset($messages["content"])) {
@@ -204,13 +221,13 @@
 			die("Redirecting...");
 		}
 
-		public function renderPage() {
+		public function renderPage() : void {
 			$this->events->trigger("app.page.pre_render");
 			try {
 				ob_clean();
 				$this->template->render();
 			} catch (Throwable $e) {
-				throw new ApplicationException(500, "An error occurred", "The page could not be rendered: ", null, $e, false);
+				throw new ApplicationException(500, $app("i18n")->getString("render_error"), $app("i18n")->getString("render_error_ex3"), null, $e, false);
 			}
 			$this->events->trigger("app.page.post_render");
 		}
@@ -220,7 +237,7 @@
 			return $this->database->readRow("settings", $key)["value"] ?? $default;
 		}
 
-		public function setSetting(string $key, string $value) {
+		public function setSetting(string $key, string $value) : void {
 			if (!isset($this->database)) return;
 			$this->database->writeRow("settings", $key, array("value" => $value));
 			$this->events->trigger("app.settings.set", $key, $value);

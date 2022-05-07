@@ -22,12 +22,12 @@
 				try {
 					include $this->directory . "/index.php";
 				} catch (Throwable $e) {
-					$app->error(new ApplicationException(500, "Failed to render", "Failed to render", null, $e, false));
+					$app->error(new ApplicationException(500, $app("i18n")->getString("render_error"), $app("i18n")->getString("render_error_ex"), null, $e, false));
 				}
 			} else {
 				$dir = $this->directory;
 				$this->directory = Config::APPROOT . "/templates/system";
-				$app->error(new ApplicationException(500, "Missing template", "Template '$dir' does not exist!", null, null, false));
+				$app->error(new ApplicationException(500, $app("i18n")->getString("template_not_found"), $app("i18n")->getString("template_does_not_exist", null, $dir), null, null, false));
 			}
 		}
 	}

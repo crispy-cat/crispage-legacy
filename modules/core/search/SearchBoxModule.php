@@ -11,11 +11,15 @@
 
 	class SearchBoxModule extends Module {
 		public function render() {
-			echo "<form class=\"module SearchBoxModule module-$this->id {$this->options["classes"]}\" action=\"" . Config::WEBROOT . "/search\">\n";
-			echo "<div class=\"input-group\">";
-			echo "<input class=\"form-control\" type=\"search\" name=\"q\" placeholder=\"Search...\" />\n";
-			echo "<button class=\"btn btn-primary\" type=\"submit\"><i class=\"bi bi-search\"></i></button>\n";
-			echo "</div></form>";
+			global $app;
+?>
+			<form class="module SearchBoxModule module-<?php echo $this->id . " " . $this->options["classes"]; ?>" action=" <?php echo Config::WEBROOT . "/search"; ?>">
+				<div class="input-group">
+					<input class="form-control" type="search" name="q" placeholder="<?php $app("i18n")("search_ddd"); ?>" />
+					<button class="btn btn-primary" type="submit"><i class="bi bi-search"></i></button>
+				</div>
+			</form>
+<?php
 		}
 	}
 ?>

@@ -34,13 +34,16 @@
 			require_once Config::APPROOT . "/core/events/defaultevents.php";
 		}
 
-		public function initDatabase(string $type, array $options) {
+		public function initDatabase(string $type, array $options) : void {
 			$this->database = new JSONDatabase($options["location"], $options["name"], $options["pretty"]);
 		}
 
-		public function request(Request $request) {
+		public function request(Request $request)  : void {
 			$this->events->trigger("app.installer.request", $request);
 			$this->request = $request;
+			$this->events->trigger("app.languages.pre_load");
+			$this->loadLanguages();
+			$this->events->trigger("app.languages.post_load");
 			try {
 				$app = $this;
 				if (file_exists(Config::APPROOT . "/installer/views/$request->slug.php"))
@@ -52,7 +55,7 @@
 			}
 		}
 
-		public function error(Throwable $e) {
+		public function error(Throwable $e) : void {
 			if ($e instanceof ApplicationException)
 				parent::error(new ApplicationException($e->getHttpStatus(), $e->getPageTitle(), $e->getMessage(), null, $e, false));
 			else

@@ -14,24 +14,25 @@
 
 	$session = Session::getCurrentSession();
 	if ($session)
-		$app->redirectWithMessages($ploc, array("type" => "error", "content" => "There is an active session"));
+		$app->redirectWithMessages($ploc, array("type" => "error", "content" => $app("i18n")->getString("active_session")));
 
 	if (isset($app->request->query["user_id"]) && isset($app->request->query["user_password"])) {
+		$app->events->trigger("frontend.view.login.submit");
 		$id = $app->request->query["user_id"];
 		$password = $app->request->query["user_password"];
 
 		$user = $app("users")->get($id);
 		if (!$user)
-			$app->redirectWithMessages("/login?ploc=" . ($app->request->query["ploc"] ?? ""), array("type" => "error", "content" => "User does not exist"));
+			$app->redirectWithMessages("/login?ploc=" . ($app->request->query["ploc"] ?? ""), array("type" => "error", "content" => $app("i18n")->getString("user_does_not_exist")));
 
 		if (!$user->activated)
-			$app->redirectWithMessages("/login?ploc=" . ($app->request->query["ploc"] ?? ""), array("type" => "error", "content" => "User is not activated"));
+			$app->redirectWithMessages("/login?ploc=" . ($app->request->query["ploc"] ?? ""), array("type" => "error", "content" => $app("i18n")->getString("user_not_activated")));
 
 		if (!User::userHasPermissions($user->id, UserPermissions::LOGIN))
-			$app->redirectWithMessages("/login?ploc=" . ($app->request->query["ploc"] ?? ""), array("type" => "error", "content" => "You do not have permission to log in"));
+			$app->redirectWithMessages("/login?ploc=" . ($app->request->query["ploc"] ?? ""), array("type" => "error", "content" => $app("i18n")->getString("no_permission_login")));
 
 		if (!$app->auth->authenticateUser($id, $password))
-			$app->redirectWithMessages("/login?ploc=" . ($app->request->query["ploc"] ?? ""), array("type" => "error", "content" => "Invalid ID or password"));
+			$app->redirectWithMessages("/login?ploc=" . ($app->request->query["ploc"] ?? ""), array("type" => "error", "content" => $app("i18n")->getString("invalid_id_or_password")));
 
 		$app->vars["bans"] = $app("bans")->getAll(array("user" => $id));
 		$app->vars["banned"] = false;
@@ -42,11 +43,11 @@
 			$user->loggedin = time();
 			$app("users")->set($id, $user);
 			$app->events->trigger("users.log_in", $id);
-			$app->redirectWithMessages($ploc, array("type" => "success", "content" => "Welcome, $id"));
+			$app->redirectWithMessages($ploc, array("type" => "success", "content" => $app("i18n")->getString("welcome_v", null, $id)));
 		}
 	}
 
-	$app->page->setTitle("Log in");
+	$app->page->setTitle($app("i18n")->getString("log_in"));
 
 	$app->page->setContent(function($app) {
 ?>
@@ -57,8 +58,8 @@
 						if ($ban->expires <= time()) continue;
 			?>
 						<div class="ban">
-							<h2>You are banned until <?php echo date($app->getSetting("date_format") . " " . $app->getSetting("time_format"), $ban->expires); ?></h2>
-							<span>Reason: <?php echo $ban->reason; ?><br />Please contact the administrator.</span>
+							<h2><?php $app("i18n")("banned_until", null, date($app->getSetting("date_format") . " " . $app->getSetting("time_format"), $ban->expires)); ?></h2>
+							<span><?php $app("i18n")("ban_reason", null, $ban->reason); ?></span>
 						</div>
 			<?php
 					}
@@ -67,19 +68,21 @@
 			<form method="post">
 				<input type="hidden" name="ploc" value="<?php echo $app->request->query["ploc"] ?? ""; ?>" />
 
-				<label for="user_id">User ID:</label>
+				<label for="user_id"><?php $app("i18n")("user_id_c"); ?></label>
 				<input type="text" class="form-control" name="user_id" required />
 
-				<label for="user_password">Password:</label>
+				<label for="user_password"><?php $app("i18n")("password_c"); ?></label>
 				<input type="password" class="form-control" name="user_password" required />
 
-				<button type="submit" class="btn btn-primary mt-3">Log in</button>
-				<a class="btn btn-link mt-3" href="<?php echo Config::WEBROOT; ?>/reset_password">Reset password</a>
-				<a class="btn btn-link mt-3" href="<?php echo Config::WEBROOT; ?>/register">Register</a>
+				<button type="submit" class="btn btn-primary mt-3"><?php $app("i18n")("log_in"); ?></button>
+				<a class="btn btn-link mt-3" href="<?php echo Config::WEBROOT; ?>/reset_password"><?php $app("i18n")("reset_password"); ?></a>
+				<a class="btn btn-link mt-3" href="<?php echo Config::WEBROOT; ?>/register"><?php $app("i18n")("register"); ?></a>
 			</form>
 		</div>
 <?php
 	});
+
+	$app->events->trigger("frontend.view.login");
 
 	$app->renderPage();
 ?>

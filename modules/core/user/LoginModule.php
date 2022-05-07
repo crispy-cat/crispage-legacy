@@ -20,18 +20,18 @@
 <?php
 			if ($session) {
 ?>
-				<p>Welcome, <?php echo $app("users")->get($session->user)->name; ?></p>
-				<a class="btn btn-primary" href="<?php echo Config::WEBROOT; ?>/logout?ploc=<?php echo $app->request->slug; ?>">Log out</a>
+				<p><?php $app("i18n")("logged_in_as", null, $app("users")->get($session->user)->name); ?></p>
+				<a class="btn btn-primary" href="<?php echo Config::WEBROOT; ?>/logout?ploc=<?php echo $app->request->slug; ?>"><?php $app("i18n")("log_out"); ?></a>
 <?php
 			} else {
 ?>
 				<form method="post" action="<?php echo Config::WEBROOT; ?>/login">
 					<input type="hidden" name="ploc" value="<?php echo $app->request->slug; ?>" />
-					<label for="user_id">User ID:</label>
+					<label for="user_id"><?php $app("i18n")("user_id_c"); ?></label>
 					<input type="text" class="form-control" name="user_id" />
-					<label for="user_password">User Password:</label>
+					<label for="user_password"><?php $app("i18n")("password_c"); ?></label>
 					<input type="password" class="form-control" name="user_password" />
-					<input type="submit" class="btn btn-primary mt-2" value="Log in" />
+					<input type="submit" class="btn btn-primary mt-2" value="<?php $app("i18n")("log_in"); ?>" />
 				</form>
 <?php
 			}

@@ -16,7 +16,7 @@
 		public string $class;
 
 		public function __construct(string $table, string $class) {
-			if (!isset(class_parents($class)["Asset"]))
+			if (!is_subclass_of($class, "Asset"))
 				throw new Exception("$class must be an Asset!");
 			$this->table = $table;
 			$this->class = $class;

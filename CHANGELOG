@@ -1,3 +1,11 @@
+# 0.10.0 alpha
+- Added Database->addColumn, Database->removeColumn,
+	Database->countRows
+- Added I18n
+- Partial multi-language support
+- Renamed some events
+- Bug fixes
+
 # 0.9.1 alpha
 - Bug fixes
 

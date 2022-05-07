@@ -58,7 +58,7 @@
 			<div class="row">
 				<div class="col">
 					<hr />
-					<small class="text-muted">Crispage v<?php echo CRISPAGE; ?> &bull; This software is licensed under the GNU GPL v3 License.</small>
+					<small class="text-muted">Crispage v<?php echo CRISPAGE; ?> &bull; <?php $app("i18n")("software_licensed_under"); ?> &bull; <?php $app("i18n")("rendered_in", null, microtime(true) - STARTTIME); ?></small>
 				</div>
 			</div>
 		</div>

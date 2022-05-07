@@ -1,3 +1,4 @@
+
 <?php
 	/*
 		Crispage - A lightweight CMS for developers
@@ -36,18 +37,18 @@
 				}
 				if ($session && User::userHasPermissions($session->user, UserPermissions::POST_COMMENTS)) {
 ?>
-					<small>Posting as '<?php echo $app("users")->get($session->user)->name; ?>'. HTML will be filtered.</small>
+					<small><?php $app("i18n")("posting_as", null, $app("users")->get($session->user)->name); ?></small>
 					<form method="post" action="<?php echo Config::WEBROOT; ?>/post_comment">
 						<input type="hidden" name="ploc" value="<?php echo $app->request->slug; ?>" />
 						<input type="hidden" name="article_id" value="<?php echo $article->id; ?>" />
-						<label for="comment">Comment:</label>
+						<label for="comment"><?php $app("i18n")("comment_c"); ?></label>
 						<textarea class="form-control" name="comment" required></textarea>
 						<input type="submit" class="btn btn-primary mt-2" value="Post Comment" />
 					</form>
 					<hr />
 <?php
 				} else {
-					echo "<p>You are not logged in or do not have permission to post comments.</p>";
+					$app("i18n")("not_logged_in_comments");
 				}
 
 				for ($i = 0; $i < $this->options["numcomments"]; $i++) {

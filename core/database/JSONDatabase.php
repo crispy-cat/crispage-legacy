@@ -12,15 +12,6 @@
 	class JSONDatabase extends Database {
 		private string $dbfpre;
 		private bool $pretty;
-		private array $inittypes = array(
-			"string" => "",
-			"integer" => 0,
-			"double" => 0,
-			"number" => 0,
-			"boolean" => false,
-			"array" => array(),
-			"null" => null
-		);
 
 		private array $dbdata = array();
 
@@ -52,7 +43,6 @@
 
 		public function createTable(string $table, array $cols) : bool {
 			global $app;
-			if (!$table) return false;
 			$data = array(
 				"#_VERSION_#" => CRISPAGE,
 				"TableName" => $table,
@@ -63,7 +53,7 @@
 			if (!$cols["id"]) $cols["id"] = "string";
 			foreach ($cols as $name => $type) {
 				array_push($data["Columns"], $name);
-				$data["ColumnTypes"][$name] = $type;
+				$data["ColumnTypes"][$name] = self::COLUMN_TYPES[$type];
 			}
 			$this->setData($table, $data);
 			$app->events->trigger("database.table_create", $table);
@@ -72,7 +62,6 @@
 
 		public function dropTable(string $table) : bool {
 			global $app;
-			if (!$table) return false;
 			$file = "$this->dbfpre$table.db.json";
 			if (!file_exists($file)) return true;
 			$res = unlink($file);
@@ -82,26 +71,59 @@
 
 		public function purgeTable(string $table) : bool {
 			global $app;
-			if (!$table) return false;
 			$data = $this->getData($table);
 			$data["TableData"] = array();
 			$this->setData($table, $data);
 			$app->events->trigger("database.table_purge", $table);
 			return true;
 		}
+		
+		public function addColumn(string $table, string $column, string $type = "string") : bool {
+			global $app;
+			if (empty($column) || !in_array($type, self::COLUMN_TYPES)) return false;
+			$data = $this->getData($table);
+			if (!is_array($data["Columns"]) || !is_array($data["ColumnTypes"]))
+				throw new Exception("Corrupted table $table");
+			if (in_array($column, $data["Columns"])) return false;
+			$data["Columns"][] = $column;
+			$data["ColumnTypes"][$column] = self::COLUMN_TYPES[$type];
+			$app->events->trigger("database.column_add", $table, $column, $type);
+			return true;
+		}
+		
+		public function removeColumn(string $table, string $column) : bool {
+			global $app;
+			if (empty($column)) return false;
+			$data = $this->getData($table);
+			if (!is_array($data["Columns"]) || !is_array($data["ColumnTypes"]))
+				throw new Exception("Corrupted table $table");
+			if (in_array($column, $data["Columns"])) return false;
+			array_splice($data["Columns"], array_search($column, $data["Columns"]), 1);
+			unset($data["ColumnTypes"][$column]);
+			$app->events->trigger("database.column_add", $table, $column, $type);
+			return true;
+		}
 
 		public function readRow(string $table, string $id) : ?array {
-			if (!$table) return null;
 			$data = $this->getData($table);
-			if (!is_array($data["TableData"])) throw new Exception("Corrupted table $table");
-			foreach ($data["TableData"] as $row)
-				if ($row["id"] == $id) return $row;
+			if (
+				!is_array($data["Columns"]) ||
+				!is_array($data["ColumnTypes"]) ||
+				!is_array($data["TableData"])
+			) throw new Exception("Corrupted table $table");
+			foreach ($data["TableData"] as $row) {
+				if ($row["id"] == $id) {
+					$nrow = array();
+					foreach ($data["Columns"] as $col)
+						$nrow[$col] = $row[$col] ?? self::COLUMN_INIT[$data["ColumnTypes"][$col]];
+					return $nrow;
+				}
+			}
 			return null;
 		}
 
 		public function writeRow(string $table, string $id, array $vals) : bool {
 			global $app;
-			if (!$table) return false;
 			$data = $this->getData($table);
 			if (
 				!is_array($data["Columns"]) ||
@@ -110,10 +132,30 @@
 			) throw new Exception("Corrupted table $table");
 			$drow = array("id" => $id);
 			foreach ($data["Columns"] as $col) {
-				// TODO: check type matches
-				if (array_key_exists($col, $vals))
-					$drow[$col] = $vals[$col];
-				else continue;
+				if (!array_key_exists($col, $vals)) continue;
+				
+				switch ($data["ColumnTypes"][$col]) {
+					case "array":
+						$drow[$col] = (array)$vals[$col];
+						break;
+					case "bool":
+					case "boolean":
+						$drow[$col] = (bool)$vals[$col];
+						break;
+					case "float":
+					case "double":
+					case "real":
+						$drow[$col] = (float)$vals[$col];
+						break;
+					case "int":
+					case "integer":
+						$drow[$col] = (int)$vals[$col];
+						break;
+					case "string":
+						$drow[$col] = (string)$vals[$col];
+						break;
+					
+				}
 			}
 			$idrow = count($data["TableData"]);
 			foreach ($data["TableData"] as $irow => $row) {
@@ -127,7 +169,6 @@
 
 		public function deleteRow(string $table, string $id) : bool {
 			global $app;
-			if (!$table) return false;
 			$data = $this->getData($table);
 			if (!is_array($data["TableData"])) throw new Exception("Corrupted table $table");
 			foreach ($data["TableData"] as $irow => $row)
@@ -139,7 +180,6 @@
 		}
 
 		public function existsRow(string $table, string $id) : bool {
-			if (!$table) return false;
 			$data = $this->getData($table);
 			if (!is_array($data["TableData"])) throw new Exception("Corrupted table $table");
 			foreach ($data["TableData"] as $row)
@@ -148,7 +188,6 @@
 		}
 
 		public function readRows(string $table, array $filters = array(), $ordby = null, $desc = false) : array {
-			if (!$table) return false;
 			$data = $this->getData($table);
 			if (!is_array($data["Columns"]) || !is_array($data["TableData"])) throw new Exception("Corrupted table $table");
 			$rdata = array();
@@ -174,6 +213,12 @@
 				});
 			}
 			return $rdata;
+		}
+		
+		public function countRows(string $table) : int {
+			$data = $this->getData($table);
+			if (!is_array($data["TableData"])) throw new Exception("Corrupted table $table");
+			return count($data["TableData"]);
 		}
 
 		public function writeChanges() {

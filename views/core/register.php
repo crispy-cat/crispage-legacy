@@ -13,7 +13,7 @@
 
 	$session = Session::getCurrentSession();
 	if ($session)
-		$app->redirectWithMessages("/", array("type" => "error", "content" => "There is an active session"));
+		$app->redirectWithMessages("/", array("type" => "error", "content" => $app("i18n")->getString("active_session")));
 
 	$message = false;
 
@@ -25,6 +25,7 @@
 		isset($app->request->query["user_confirm"]) &&
 		filter_var($app->request->query["user_email"], FILTER_VALIDATE_EMAIL)
 	) {
+		$app->events->trigger("frontend.view.register.submit");
 		$id = $app->request->query["user_id"];
 		$name = $app->request->query["user_name"];
 		$email = $app->request->query["user_email"];
@@ -32,10 +33,10 @@
 		$confirm = $app->request->query["user_confirm"];
 
 		if ($app("users")->exists($id))
-			$app->redirectWithMessages("/register", array("type" => "error", "content" => "User with ID '$id' already exists"));
+			$app->redirectWithMessages("/register", array("type" => "error", "content" => $app("i18n")->getString("user_already_exists", null, $id)));
 
 		if ($password != $confirm)
-			$app->redirectWithMessages("/register", array("type" => "error", "content" => "Passwords do not match"));
+			$app->redirectWithMessages("/register", array("type" => "error", "content" => $app("i18n")->getString("passwords_not_match")));
 
 		$password_min =  $app->getSetting("users.password_min", 8);
 		$password_min_letters = $app->getSetting("users.password_min_letters", 2);
@@ -43,23 +44,26 @@
 		$password_min_special = $app->getSetting("users.password_min_special", 1);
 
 		if (strlen($password) < $password_min)
-			$app->redirectWithMessages("/register", array("type" => "error", "content" => "Password must be $password_min or more characters"));
+			$app->redirectWithMessages("/register", array("type" => "error", "content" => $app("i18n")->getString("password_min_chars", null, $password_min)));
 
 		if (preg_match_all("/[a-z]/i", $password) < $password_min_letters)
-			$app->redirectWithMessages("/register", array("type" => "error", "content" => "Password must have $password_min_letters or more letters"));
+			$app->redirectWithMessages("/register", array("type" => "error", "content" => $app("i18n")->getString("password_min_letters", null, $password_min_letters)));
 
 		if (preg_match_all("/[0-9]/", $password) < $password_min_numbers)
-			$app->redirectWithMessages("/register", array("type" => "error", "content" => "Password must have $password_min_numbers or more numbers"));
+			$app->redirectWithMessages("/register", array("type" => "error", "content" => $app("i18n")->getString("password_min_numbers", null, $password_min_numbers)));
 
 		if (preg_match_all("/[^a-z0-9]/i", $password) < $password_min_special)
-			$app->redirectWithMessages("/register", array("type" => "error", "content" => "Password must have $password_min_special or more special characters"));
+			$app->redirectWithMessages("/register", array("type" => "error", "content" => $app("i18n")->getString("password_min_special", null, $password_min_special)));
 
 		$token = Randomizer::randomString(64, 36);
-		$body = "Your account on " . $app->getSetting("sitename") . " has been registered.\n";
-		$body .= "Please activate it by clicking or pasting the following URL into your browser:\n";
-		$body .= "http" . (($_SERVER["HTTPS"]) ? "s" : "") . "://" . $_SERVER["SERVER_NAME"] . Config::WEBROOT . "/activate_account?user_id=$id&token=$token";
+		$url = (($_SERVER["HTTPS"]) ? "https://" : "http://") . $_SERVER["SERVER_NAME"] . Config::WEBROOT . "/activate_account?user_id=$id&token=$token";
 
-		$sent = Mailer::sendMail(array($email), "Activate your " . $app->getSetting("sitename") . " account", $body);
+		$sent = Mailer::sendMail(
+			array($email),
+			$app("i18n")->getString("mail_register_subject", null, $app->getSetting("sitename")),
+			$app("i18n")->getString("mail_register_body", null, $app->getSetting("sitename"), $url)
+		);
+
 		if ($sent === true) {
 			$app->database->writeRow("activation", $id, array("token" => $token));
 
@@ -77,40 +81,42 @@
 			$app->auth->setPassword($id, $password);
 
 			$message = true;
-			$app->page->setContent("Successful registration. Please check your email to activate the account.");
+			$app->page->setContent($app("i18n")->getString("successful_registration"));
 		} else {
 			$message = true;
-			$app->page->setContent("Activation email could not be sent:\n$sent");
+			$app->page->setContent($app("i18n")->getString("activation_not_sent", null, $sent));
 		}
 	}
 
-	$app->page->setTitle("Register");
+	$app->page->setTitle($app("i18n")->getString("register"));
 
 	if (!$message) $app->page->setContent(function($app) {
 ?>
 		<div id="main" class="page-content">
 			<form method="post">
-				<label for="user_name">Name:</label>
+				<label for="user_name"><?php $app("i18n")("name_c"); ?></label>
 				<input type="text" class="form-control" name="user_name" required />
 
-				<label for="user_id">User ID:</label>
+				<label for="user_id"><?php $app("i18n")("user_id_c"); ?></label>
 				<input type="text" class="form-control" name="user_id" required />
 
-				<label for="user_email">Email:</label>
+				<label for="user_email"><?php $app("i18n")("email_c"); ?></label>
 				<input type="email" class="form-control" name="user_email" required />
 
-				<label for="user_password">Password:</label>
+				<label for="user_password"><?php $app("i18n")("password_c"); ?></label>
 				<input type="password" class="form-control" name="user_password" required />
 
-				<label for="user_confirm">Confirm Password:</label>
+				<label for="user_confirm"><?php $app("i18n")("confirm_password_c"); ?></label>
 				<input type="password" class="form-control" name="user_confirm" required />
 
-				<button type="submit" class="btn btn-primary mt-3">Register</button>
-				<a class="btn btn-link mt-3" href="<?php echo Config::WEBROOT; ?>/login">Log in</a>
+				<button type="submit" class="btn btn-primary mt-3"><?php $app("i18n")("register"); ?></button>
+				<a class="btn btn-link mt-3" href="<?php echo Config::WEBROOT; ?>/login"><?php $app("i18n")("log_in"); ?></a>
 			</form>
 		</div>
 <?php
 	});
+
+	$app->events->trigger("frontend.view.register");
 
 	$app->renderPage();
 ?>

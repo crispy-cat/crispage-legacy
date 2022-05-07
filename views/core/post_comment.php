@@ -13,20 +13,22 @@
 	$ploc = preg_replace("/\/\//", "/", "/" . ($app->request->query["ploc"] ?? "/"));
 
 	if (!isset($app->request->query["article_id"]))
-		$app->redirectWithMessages($ploc, array("type" => "error", "content" => "Article ID not specified"));
+		$app->redirectWithMessages($ploc, array("type" => "error", "content" => $app("i18n")->getString("no_article_id")));
+
+	$app->events->trigger("frontend.view.post_comment.submit");
 
 	$session = Session::getCurrentSession();
 	if (!$session)
-		$app->redirectWithMessages($ploc, array("type" => "error", "content" => "You must be logged in to post comments"));
+		$app->redirectWithMessages($ploc, array("type" => "error", "content" => $app("i18n")->getString("login_post_comments")));
 
 	$user = $app("users")->get($session->user);
 	if (!User::userHasPermissions($user->id, UserPermissions::POST_COMMENTS))
-		$app->redirectWithMessages($ploc, array("type" => "error", "content" => "You do not have permission to post comments"));
+		$app->redirectWithMessages($ploc, array("type" => "error", "content" => $app("i18n")->getString("no_permission_comments")));
 
 	$content = $app->request->query["comment"] ?? "";
 
 	if (!strlen($content))
-		$app->redirectWithMessages($ploc, array("type" => "warning", "content" => "Post is empty"));
+		$app->redirectWithMessages($ploc, array("type" => "warning", "content" => $app("i18n")->getString("post_is_empty")));
 
 	$id = Randomizer::randomString(16, 62);
 	$comment = new Comment(array(
@@ -42,5 +44,5 @@
 
 	$app->events->trigger("comments.post_comment", $id);
 
-	$app->redirectWithMessages($ploc, array("type" => "success", "content" => "Comment posted."));
+	$app->redirectWithMessages($ploc, array("type" => "success", "content" => $app("i18n")->getString("comment_posted")));
 ?>

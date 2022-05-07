@@ -14,7 +14,7 @@
 
 	$session = Session::getCurrentSession();
 	if ($app->vars["category"]->state != "published" && (!$session || !User::userHasPermissions($session->user, UserPermissions::VIEW_UNPUBLISHED)))
-		$app->error(new ApplicationException(404, "Page not found", "The page you requested could not be found. Please check the URL or try searching for it."));
+		$app->error(new ApplicationException(404, $app("i18n")->getString("page_not_found"), $app("i18n")->getString("page_not_found_ex")));
 
 	$app->vars["articles"] = $app("articles")->getAllArr(array("category" => $app->request->route["item_id"]), "modified");
 	$app->vars["subcategories"] = $app("categories")->getAllArr(array("parent" => $app->request->route["item_id"]), "title");
@@ -46,7 +46,7 @@
 			<hr />
 
 			<form class="d-flex w-25 mb-3">
-				<label for="show">Show: </label>
+				<label for="show"><?php $app("i18n")("show_c", null, ""); ?></label>
 				<select class="form-select ms-2" name="show">
 					<option value="5">5</option>
 					<option value="15">15</option>
@@ -55,9 +55,9 @@
 					<option value="120">120</option>
 					<option value="240">240</option>
 					<option value="480">480</option>
-					<option value="all">All</option>
+					<option value="all"><?php $app("i18n")("all"); ?></option>
 				</select>
-				<button class="btn btn-primary ms-2" type="submit">Go</button>
+				<button class="btn btn-primary ms-2" type="submit"><?php $app("i18n")("go"); ?></button>
 			</form>
 			<?php
 				$baseurl = Config::WEBROOT . "/" . Router::getCategoryRoute($app->request->route["item_id"]) . "?show=" . (($app->vars["show"]) ? $app->vars["show"] : "all") . "&page=";
@@ -67,7 +67,7 @@
 			<?php if (count($app->vars["subcategories"])) { ?>
 				<div class="card mt-3">
 					<div class="card-body">
-						<small>Subcategories</small>
+						<small><?php $app("i18n")("subcategories"); ?></small>
 						<?php foreach ($app->vars["subcategories"] as $sub) { ?>
 							<h5><a href="<?php echo Config::WEBROOT . "/" . Router::getCategoryRoute($sub->id); ?>"><?php echo htmlentities($sub->title); ?></a></h5>
 						<?php } ?>
@@ -78,7 +78,7 @@
 			<?php
 				foreach ($app->vars["articles"] as $article) {
 					if ($article->tags != "") {
-						$stags = "Tags: ";
+						$stags = $app("i18n")->getString("tags_v", null, "");
 						foreach (explode(",", $article->tags) as $tag)
 							$stags .= "<span class=\"badge bg-primary me-1\">" . htmlentities($tag) . "</span>";
 					}
@@ -90,7 +90,7 @@
 						</div>
 						<ul class="list-group list-group-flush">
 							<li class="list-group-item">
-								<?php echo (($article->modified > $article->created) ? "Updated" : "Published") . ":" . date($app->getSetting("date_format_long", "Y, F j"), $article->modified); ?>
+								<?php echo $app("i18n")->getString(($article->modified > $article->created) ? "updated" : "published") . ": " . date($app->getSetting("date_format_long", "Y, F j"), $article->modified); ?>
 							</li>
 							<?php if ($article->tags != "") { ?>
 								<li class="list-group-item"><?php echo $stags; ?></li>
@@ -101,13 +101,13 @@
 				}
 
 				if (!count($app->vars["articles"]) && !count($app->vars["subcategories"]))
-					echo "<p>No articles exist in this category.</p>";
+					echo "<p>" . $app("i18n")->getString("no_articles_in_category") . "</p>";
 			?>
 		</div>
 <?php
 	});
 
-	$app->events->trigger("content.category_view", $app->vars["category"]);
+	$app->events->trigger("frontend.view.category", $app->vars["category"]);
 
 	$app->renderPage();
 ?>

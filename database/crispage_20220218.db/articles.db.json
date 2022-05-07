@@ -43,13 +43,13 @@
 			"modified": 1647255833,
 			"author": "crispycat",
 			"summary": "Home page",
-			"tags": "",
+			"tags": "crispage",
 			"title": "Crispage",
 			"content": "Welcome",
 			"meta_desc": "Crispage",
 			"meta_keys": "Crispage,crispycat",
 			"meta_robots": "index, follow",
-			"hits": 41,
+			"hits": 66,
 			"options": {
 				"show_comments": "yes",
 				"show_info": "yes",
@@ -71,7 +71,7 @@
 			"meta_desc": "Crispage",
 			"meta_keys": "Crispage,crispycat",
 			"meta_robots": "index, follow",
-			"hits": 37,
+			"hits": 44,
 			"options": {
 				"show_comments": "yes",
 				"show_info": "yes",
@@ -93,7 +93,7 @@
 			"meta_desc": "Crispage",
 			"meta_keys": "Crispage,crispycat",
 			"meta_robots": "index, follow",
-			"hits": 12,
+			"hits": 17,
 			"options": {
 				"show_comments": "yes"
 			}

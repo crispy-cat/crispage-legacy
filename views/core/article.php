@@ -14,7 +14,7 @@
 
 	$session = Session::getCurrentSession();
 	if ($app->vars["article"]->state != "published" && (!$session || !User::userHasPermissions($session->user, UserPermissions::VIEW_UNPUBLISHED)))
-		$app->error(new ApplicationException(404, "Page not found", "The page you requested could not be found. Please check the URL or try searching for it."));
+		$app->error(new ApplicationException(404, $app("i18n")->getString("page_not_found"), $app("i18n")->getString("page_not_found_ex")));
 
 	$app->page->options["show_title"] = $app->vars["article"]->options["show_title"] ?? $app->getSetting("articles.show_title", "yes");
 	$app->page->options["show_sidebar"] = $app->vars["article"]->options["show_sidebar"] ?? $app->getSetting("articles.show_sidebar", "yes");
@@ -31,9 +31,9 @@
 	$app->page->metas["author"] = array("name" => "author", "content" => $app->vars["article"]->author);
 
 	$app->vars["date"] = date($app->getSetting("date_format_long", "Y, F j"), $app->vars["article"]->modified);
-	$app->vars["word"] = ($app->vars["article"]->modified > $app->vars["article"]->created) ? "Updated" : "Published";
+	$app->vars["word"] = $app("i18n")->getString(($app->vars["article"]->modified > $app->vars["article"]->created) ? "updated" : "published");
 	if ($app->vars["article"]->tags != "") {
-		$app->vars["stags"] = "Tags: ";
+		$app->vars["stags"] = $app("i18n")->getString("tags_v", null, "");
 		foreach (explode(",", $app->vars["article"]->tags) as $tag)
 			$app->vars["stags"] .= "<span class=\"badge bg-primary me-1\">". htmlentities($tag) . "</span>";
 	}
@@ -47,9 +47,9 @@
 				if (($app->vars["article"]->options["show_info"] ?? $app->getSetting("articles.show_info", "yes")) == "yes") {
 			?>
 				<ul id="article_info" class="list-group page-meta">
-					<li class="list-group-item">Author: <?php echo $app->vars["article"]->author; ?></li>
+					<li class="list-group-item"><?php $app("i18n")("author_v", null, $app->vars["article"]->author); ?></li>
 					<li class="list-group-item"><?php echo $app->vars["word"]; ?>: <?php echo $app->vars["date"]; ?></li>
-					<li class="list-group-item">Category: <?php echo htmlentities($app("categories")->get($app->vars["article"]->category)->title); ?></li>
+					<li class="list-group-item"><?php $app("i18n")("category_v", null, htmlentities($app("categories")->get($app->vars["article"]->category)->title)); ?></li>
 					<?php if ($app->vars["article"]->tags != "") { ?>
 						<li class="list-group-item"><?php echo $app->vars["stags"]; ?></li>
 					<?php } ?>
@@ -59,7 +59,7 @@
 <?php
 	});
 
-	$app->events->trigger("content.article_view", $app->vars["article"]);
+	$app->events->trigger("frontend.view.article", $app->vars["article"]);
 
 	$app->renderPage();
 ?>

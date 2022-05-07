@@ -19,9 +19,12 @@
 			$this->template = new Template(array("backend" => false, "template_name" => $tempname));
 		}
 
-		public function request(Request $request) {
+		public function request(Request $request) : void {
 			$this->events->trigger("app.request", $request);
 			$this->request = $request;
+			$this->events->trigger("app.languages.pre_load");
+			$this->loadLanguages();
+			$this->events->trigger("app.languages.post_load");
 			$this->events->trigger("app.plugins.pre_load");
 			$this->loadPlugins();
 			$this->executePlugins();

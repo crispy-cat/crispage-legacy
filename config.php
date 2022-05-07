@@ -1,4 +1,6 @@
 <?php
+	define("STARTTIME", microtime(true));
+	
 	class Config {
 		public const CONFIG_VERSION = "0.2.0";
 		// Should not be changed unless you know what you're doing!
@@ -37,10 +39,10 @@
 
 	// == Do not edit below this line ==
 
-	define("CRISPAGE", "0.9.1 alpha");
+	define("CRISPAGE", "0.10.0 alpha");
 
 	ini_set("display_errors", "1");
 	ini_set("display_startup_errors", "1");
 	error_reporting(Config::ERRORLVL);
-	ob_start(null, null, PHP_OUTPUT_HANDLER_CLEANABLE);
+	ob_start(null, 0, PHP_OUTPUT_HANDLER_CLEANABLE);
 ?>

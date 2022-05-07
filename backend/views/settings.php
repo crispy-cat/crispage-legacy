@@ -12,51 +12,51 @@
 
 	if (isset($app->request->query["settings"]) && is_array($app->request->query["settings"])) {
 		if (!User::userHasPermissions(Session::getCurrentSession()->user, UserPermissions::MODIFY_SETTINGS))
-			$app->redirectWithMessages("/backend/settings", array("type" => "error", "content" => "You do not have permission to modify settings"));
+			$app->redirectWithMessages("/backend/settings", array("type" => "error", "content" => $app("i18n")->getString("no_permission_settings")));
 
 		foreach ($app->request->query["settings"] as $setting => $value)
 			$app->setSetting($setting, $value);
 
-		$app->page->alerts["settings_updated"] = array("class" => "success", "content" => "Settings updated.");
+		$app->page->alerts["settings_updated"] = array("class" => "success", "content" => $app("i18n")->getString("settings_updated"));
 	}
 
-	$app->page->setTitle("Settings");
+	$app->page->setTitle($app("i18n")->getString("settings"));
 
 	$app->page->setContent(function($app) {
 ?>
 		<div id="main" class="page-content">
 			<div class="row">
 				<div class="col">
-					<h1>Settings</h1>
-					<p>Use this page to adjust your site's settings.</p>
+					<h1><?php $app("i18n")("settings"); ?></h1>
+					<p><?php $app("i18n")("use_this_settings"); ?></p>
 				</div>
 			</div>
 			<div class="row">
 				<div class="col">
 					<ul class="nav nav-tabs" role="tablist">
 						<li class="nav-item" role="presentation">
-							<button type="button" class="nav-link active" role="tab" data-bs-toggle="tab" data-bs-target="#settings_site">Site</button>
+							<button type="button" class="nav-link active" role="tab" data-bs-toggle="tab" data-bs-target="#settings_site"><?php $app("i18n")("site"); ?></button>
 						</li>
 						<li class="nav-item" role="presentation">
-							<button type="button" class="nav-link" role="tab" data-bs-toggle="tab" data-bs-target="#settings_seo">SEO</button>
+							<button type="button" class="nav-link" role="tab" data-bs-toggle="tab" data-bs-target="#settings_seo"><?php $app("i18n")("seo"); ?></button>
 						</li>
 						<li class="nav-item" role="presentation">
-							<button type="button" class="nav-link" role="tab" data-bs-toggle="tab" data-bs-target="#settings_appearance">Appearance</button>
+							<button type="button" class="nav-link" role="tab" data-bs-toggle="tab" data-bs-target="#settings_appearance"><?php $app("i18n")("appearance"); ?></button>
 						</li>
 						<li class="nav-item" role="presentation">
-							<button type="button" class="nav-link" role="tab" data-bs-toggle="tab" data-bs-target="#settings_articles">Articles</button>
+							<button type="button" class="nav-link" role="tab" data-bs-toggle="tab" data-bs-target="#settings_articles"><?php $app("i18n")("articles"); ?></button>
 						</li>
 						<li class="nav-item" role="presentation">
-							<button type="button" class="nav-link" role="tab" data-bs-toggle="tab" data-bs-target="#settings_categories">Categories</button>
+							<button type="button" class="nav-link" role="tab" data-bs-toggle="tab" data-bs-target="#settings_categories"><?php $app("i18n")("categories"); ?></button>
 						</li>
 						<li class="nav-item" role="presentation">
-							<button type="button" class="nav-link" role="tab" data-bs-toggle="tab" data-bs-target="#settings_modules">Modules</button>
+							<button type="button" class="nav-link" role="tab" data-bs-toggle="tab" data-bs-target="#settings_modules"><?php $app("i18n")("modules"); ?></button>
 						</li>
 						<li class="nav-item" role="presentation">
-							<button type="button" class="nav-link" role="tab" data-bs-toggle="tab" data-bs-target="#settings_users">Users</button>
+							<button type="button" class="nav-link" role="tab" data-bs-toggle="tab" data-bs-target="#settings_users"><?php $app("i18n")("users"); ?></button>
 						</li>
 						<li class="nav-item" role="presentation">
-							<button type="button" class="nav-link" role="tab" data-bs-toggle="tab" data-bs-target="#settings_mail">Mail</button>
+							<button type="button" class="nav-link" role="tab" data-bs-toggle="tab" data-bs-target="#settings_mail"><?php $app("i18n")("mail"); ?></button>
 						</li>
 					</ul>
 					<form class="form" method="post">
@@ -240,7 +240,7 @@
 								</div>
 							</div>
 						</div>
-						<input type="submit" class="btn btn-success mt-3" value="Save changes" />
+						<input type="submit" class="btn btn-success mt-3" value="<?php $app("i18n")("save_changes"); ?>" />
 					</form>
 				</div>
 			</div>
