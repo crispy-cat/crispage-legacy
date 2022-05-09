@@ -20,6 +20,7 @@
 			global $app;
 			if (file_exists($this->directory . "/index.php")) {
 				try {
+					$app->events->trigger("page.pre_render")
 					include $this->directory . "/index.php";
 				} catch (Throwable $e) {
 					$app->error(new ApplicationException(500, $app("i18n")->getString("render_error"), $app("i18n")->getString("render_error_ex"), null, $e, false));

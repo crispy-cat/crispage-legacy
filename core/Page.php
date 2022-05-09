@@ -39,7 +39,7 @@
 
 		public function renderContent() : void {
 			global $app;
-			$app->events->trigger("page.pre_render");
+			$app->events->trigger("page.pre_render.content");
 			try {
 				if (!isset($this->content)) throw new Exception("Page->content is null");
 				if (is_string($this->content)) echo $this->content;

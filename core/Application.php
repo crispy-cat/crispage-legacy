@@ -99,8 +99,8 @@
 		}
 
 		public function loadPlugin(Plugin $plugin) : void {
-			global $app;
-			$app->events->trigger("app.plugins.pre_load", $plugin);
+			global $this;
+			$this->events->trigger("app.plugins.pre_load", $plugin);
 			try {
 				$classname = ExtensionHelper::loadClass(Config::APPROOT . "/plugins/$plugin->class.php");
 				$this->loadedPlugins[] = new $classname(array(
@@ -111,9 +111,9 @@
 					"modified" => $plugin->modified,
 					"options" => $plugin->options
 				));
-				$app->events->trigger("app.plugins.post_load", $plugin);
+				$this->events->trigger("app.plugins.post_load", $plugin);
 			} catch (Throwable $e) {
-				throw new ApplicationException(500, $app("i18n")->getString("plugin_error"), $app("i18n")->getString("plugin_error_ex", null, $plugin->id), null, $e, false);
+				throw new ApplicationException(500, $this("i18n")->getString("plugin_error"), $this("i18n")->getString("plugin_error_ex", null, $plugin->id), null, $e, false);
 			}
 		}
 
@@ -134,7 +134,7 @@
 				try {
 					$plugin->execute();
 				} catch (Throwable $e) {
-					throw new ApplicationException(500, $app("i18n")->getString("plugin_error"), $app("i18n")->getString("plugin_error_ex2", null, $plugin->id), null, $e, false);
+					throw new ApplicationException(500, $this("i18n")->getString("plugin_error"), $this("i18n")->getString("plugin_error_ex2", null, $plugin->id), null, $e, false);
 				}
 			}
 		}
@@ -227,7 +227,7 @@
 				ob_clean();
 				$this->template->render();
 			} catch (Throwable $e) {
-				throw new ApplicationException(500, $app("i18n")->getString("render_error"), $app("i18n")->getString("render_error_ex3"), null, $e, false);
+				throw new ApplicationException(500, $this("i18n")->getString("render_error"), $this("i18n")->getString("render_error_ex3"), null, $e, false);
 			}
 			$this->events->trigger("app.page.post_render");
 		}

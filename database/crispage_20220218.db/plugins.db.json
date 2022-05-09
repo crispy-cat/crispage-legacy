@@ -15,6 +15,7 @@
 		"priority": "integer",
 		"created": "integer",
 		"modified": "integer",
+		"scope": "string",
 		"options": "array"
 	},
 	"TableData": []

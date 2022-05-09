@@ -1,3 +1,6 @@
+# 0.10.1 alpha
+- Bug fixes
+
 # 0.10.0 alpha
 - Added Database->addColumn, Database->removeColumn,
 	Database->countRows
