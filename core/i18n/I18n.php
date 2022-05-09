@@ -30,7 +30,7 @@
 		}
 
 		public function getLoadedLanguages() : array {
-			return array_keys($langs);
+			return array_keys($this->langs);
 		}
 
 		public function loadLanguageFile(string $path) : void {

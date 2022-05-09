@@ -37,6 +37,7 @@
 						"slug" => $slug
 					)));
 				} else {
+					$app->loadLanguages();
 					$app->error(new ApplicationException(404, $app("i18n")->getString("page_not_found"), $app("i18n")->getString("page_not_found_ex")));
 				}
 			}
