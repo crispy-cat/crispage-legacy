@@ -99,7 +99,6 @@
 		}
 
 		public function loadPlugin(Plugin $plugin) : void {
-			global $this;
 			$this->events->trigger("app.plugins.pre_load", $plugin);
 			try {
 				$classname = ExtensionHelper::loadClass(Config::APPROOT . "/plugins/$plugin->class.php");
