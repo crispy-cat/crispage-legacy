@@ -10,58 +10,47 @@
 	defined("CRISPAGE") or die("Application must be started from index.php!");
 	require_once Config::APPROOT . "/backend/header.php";
 
-	if (!User::userHasPermissions(Session::getCurrentSession()->user, UserPermissions::MODIFY_PLUGINS))
-		$app->redirectWithMessages("/backend/plugins/list", array("type" => "error", "content" => "You do not have permission to modify plugins"));
+	$currentUser = Session::getCurrentSession()->user;
+	$formFilled = FormHelper::formFieldsFilled(
+		"plugin_options", "plugin_priority"
+	) && is_array($app->request->query["plugin_options"]);
 
-	function checkQuery() {
-		global $app;
+	$app->vars["plugin"] = new Plugin(array());
 
-		return	isset($app->request->query["plugin_options"]) && is_array($app->request->query["plugin_options"]) &&
-				isset($app->request->query["plugin_priority"]);
-	}
-
-	$app->vars["plugin_id"]		= "";
-	$app->vars["plugin_options"] = array();
-	$app->vars["plugin_priority"]	= "";
+	if (!User::userHasPermissions($currentUser, UserPermissions::MODIFY_PLUGINS))
+		$app->redirectWithMessages("/backend/plugins/list", array("type" => "error", "content" => $app("i18n")->getString("no_permission_plugins")));
 
 	if (!isset($app->request->query["class"]))
-		$app->redirectWithMessages("/backend/plugins/select", array("type" => "info", "content" => "Please select a plugin type first"));
+		$app->redirectWithMessages("/backend/plugins/select", array("type" => "info", "content" => $app("i18n")->getString("invalid_plugin_type")));
 
-	$plugininfo = ExtensionHelper::getPluginInfo($app->request->query["class"]);
+	$app->vars["plugin_info"] = ExtensionHelper::getPluginInfo($app->request->query["class"]);
 
-	if (!$plugininfo)
-		$app->redirectWithMessages("/backend/plugins/list", array("type" => "error", "content" => "Invalid plugin type"));
-
-	$app->vars["plugin_name"] = $plugininfo["name"];
-	$app->vars["plugin_class_options"] = $plugininfo["options"];
+	if (!$app->vars["plugin_info"])
+		$app->redirectWithMessages("/backend/plugins/list", array("type" => "error", "content" => $app("i18n")->getString("invalid_plugin_type")));
 
 	if (isset($app->request->query["edit_id"])) {
 		if (!$app("plugins")->exists($app->request->query["edit_id"]))
-			$app->redirectWithMessages("/backend/plugins/list", array("type" => "error", "content" => "Plugin does not exist"));
+			$app->redirectWithMessages("/backend/plugins/list", array("type" => "error", "content" => $app("i18n")->getString("plugin_does_not_exist")));
 
-		$plugin = $app("plugins")->get($app->request->query["edit_id"]);
+		$app->vars["plugin"] = $app("plugins")->get($app->request->query["edit_id"]);
 
-		if (checkQuery()) {
+		if ($formFilled) {
 			$options = array();
-			foreach ($app->vars["plugin_class_options"] as $opt)
+			foreach ($app->vars["plugin_info"]["options"] as $opt)
 				$options[$opt["name"]] = $app->request->query["plugin_options"][$opt["name"]];
 
-			$plugin->priority	= $app->request->query["plugin_priority"];
-			$plugin->modified	= time();
-			$plugin->options	= $options;
+			$app->vars["plugin"]->priority	= $app->request->query["plugin_priority"];
+			$app->vars["plugin"]->modified	= time();
+			$app->vars["plugin"]->options	= $options;
 
-			$app("plugins")->set($plugin->id, $plugin);
+			$app("plugins")->set($app->vars["plugin"]->id, $app->vars["plugin"]);
 
-			$app->page->alerts["edit_success"] = array("class" => "success", "content" => "Changes saved.");
+			$app->page->alerts["edit_success"] = array("class" => "success", "content" => $app("i18n")->getString("changes_saved"));
 		}
 
-		$app->vars["title"] = "Edit Plugin";
-
-		$app->vars["plugin_id"]		= $plugin->id;
-		$app->vars["plugin_options"] = $plugin->options;
-		$app->vars["plugin_priority"]	= $plugin->priority;
+		$app->vars["title"] = $app("i18n")->getString("edit_plugin");
 	} else {
-		$app->redirectWithMessages("/backend/plugins/list", array("type" => "error", "content" => "No ID specified"));
+		$app->redirectWithMessages("/backend/plugins/list", array("type" => "error", "content" => $app("i18n")->getString("no_id_given")));
 	}
 
 	$app->page->setTitle($app->vars["title"]);
@@ -82,25 +71,25 @@
 						<?php if (isset($app->request->query["edit_id"])) { ?>
 							<input type="hidden" name="edit_id" value="<?php echo $app->request->query["edit_id"]; ?>" />
 						<?php } ?>
-						<label for="plugin_name">Plugin type:</label>
-						<input type="text" class="form-control" value="<?php echo $app->vars["plugin_name"]; ?>" disabled />
+						<label><?php $app("i18n")("plugin_type_c"); ?></label>
+						<input type="text" class="form-control" value="<?php echo $app->vars["plugin_info"]["name"]; ?>" disabled />
 
 						<?php
-							foreach ($app->vars["plugin_class_options"] as $option) {
+							foreach ($app->vars["plugin_info"]["options"] as $option) {
 								echo "<label for=\"plugin_options[{$option["name"]}]\">{$option["label"]}:</label>";
-								RenderHelper::renderField("plugin_options[{$option["name"]}]", $option["type"], $app->vars["plugin_options"][$option["name"]] ?? null);
+								RenderHelper::renderField("plugin_options[{$option["name"]}]", $option["type"], $app->vars["plugin"]->options[$option["name"]] ?? null);
 							}
 						?>
 					</div>
 					<div class="col-12 col-lg-4 ps-lg-2">
-						<label for="plugin_id">Plugin ID:</label>
-						<input type="text" class="form-control" value="<?php echo $app->vars["plugin_id"]; ?>" disabled />
+						<label><?php $app("i18n")("plugin_id_c"); ?></label>
+						<input type="text" class="form-control" value="<?php echo $app->vars["plugin"]->id; ?>" disabled />
 
-						<label for="plugin_priority">Plugin Priority:</label>
-						<input type="text" class="form-control" name="plugin_priority" value="<?php echo $app->vars["plugin_priority"]; ?>" />
+						<label for="plugin_priority"><?php $app("i18n")("plugin_priority_c"); ?></label>
+						<input type="text" class="form-control" name="plugin_priority" value="<?php echo $app->vars["plugin"]->priority; ?>" />
 
-						<a class="btn btn-secondary btn-lg mt-3 pe-2" href="<?php echo Config::WEBROOT; ?>/backend/plugins/list" style="width: calc(50% - 0.375rem);">Back</a>
-						<button class="btn btn-success btn-lg mt-3" type="submit" style="width: calc(50% - 0.375rem);">Save</button>
+						<a class="btn btn-secondary btn-lg mt-3 pe-2" href="<?php echo Config::WEBROOT; ?>/backend/plugins/list" style="width: calc(50% - 0.375rem);"><?php $app("i18n")("back"); ?></a>
+						<button class="btn btn-success btn-lg mt-3" type="submit" style="width: calc(50% - 0.375rem);"><?php $app("i18n")("save"); ?></button>
 					</div>
 				</div>
 			</form>

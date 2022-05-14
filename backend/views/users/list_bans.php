@@ -11,30 +11,28 @@
 	require_once Config::APPROOT . "/backend/header.php";
 
 	if (!isset($app->request->query["user_id"]))
-		$app->redirectWithMessages("/backend/users/list", array("type" => "error", "content" => "No ID specified"));
+		$app->redirectWithMessages("/backend/users/list", array("type" => "error", "content" => $app("i18n")->getString("no_id_given")));
 
 	$user = $app("users")->get($app->request->query["user_id"]);
 	if (!$user)
-		$app->redirectWithMessages("/backend/users/list", array("type" => "error", "content" => "User does not exist"));
+		$app->redirectWithMessages("/backend/users/list", array("type" => "error", "content" => $app("i18n")->getString("user_does_not_exist")));
 
-	$app->page->setTitle("Bans");
+	$app->page->setTitle($app("i18n")->getString("bans"));
 
-	$app->vars["show"] = (is_numeric($app->request->query["show"])) ?  $app->request->query["show"] : 15;
-	$app->vars["page"] = (is_numeric($app->request->query["page"])) ? $app->request->query["page"] : 1;
+	Paginator::paginationQuery($app->vars);
 
 	$bans = $app("bans")->getAllArr(array("user" => $app->request->query["user_id"]), "modified");
 
-	$app->vars["npages"] = Paginator::numPages($bans, $app->vars["show"]);
-	$app->vars["bans"] = Paginator::Paginate($bans, $app->vars["show"], $app->vars["page"]);
+	Paginator::paginateNum($app->vars, $bans, "bans");
 
 	$app->page->setContent(function($app) {
 ?>
 		<div id="main" class="page-content">
 			<div class="row">
 				<div class="col-12 col-md-2">
-					<h1>User Bans</h1>
+					<h1><?php $app("i18n")("bans"); ?></h1>
 					<p>'<?php echo $app->request->query["user_id"]; ?>'</p>
-					<span>Show only:</span>
+					<span><?php $app("i18n")("show_c"); ?></span>
 					<form class="d-flex">
 						<select class="form-select ms-2" name="show">
 							<option value="15">15</option>
@@ -43,16 +41,16 @@
 							<option value="120">120</option>
 							<option value="240">240</option>
 							<option value="480">480</option>
-							<option value="all">All</option>
+							<option value="all"><?php $app("i18n")("all"); ?></option>
 						</select>
-						<button class="btn btn-primary ms-2" type="submit">Go</button>
+						<button class="btn btn-primary ms-2" type="submit"><?php $app("i18n")("go"); ?></button>
 					</form>
 				</div>
 				<div class="col-12 col-md-10">
 					<div style="float: right;">
 						<div class="btn-group mt-4 mb-2 d-block ms-auto">
-							<a class="btn btn-warning" href="<?php echo Config::WEBROOT; ?>/backend/users/ban_user?user_id=<?php echo $app->request->query["user_id"]; ?>" style="width: 90px;">New Ban</a>
-							<a class="btn btn-warning" href="<?php echo Config::WEBROOT; ?>/backend/users/unban_user?user_id=<?php echo $app->request->query["user_id"]; ?>" style="width: 110px;">Unban User</a>
+							<a class="btn btn-warning" href="<?php echo Config::WEBROOT; ?>/backend/users/ban_user?user_id=<?php echo $app->request->query["user_id"]; ?>" style="width: 90px;"><?php $app("i18n")("new_ban"); ?></a>
+							<a class="btn btn-warning" href="<?php echo Config::WEBROOT; ?>/backend/users/unban_user?user_id=<?php echo $app->request->query["user_id"]; ?>" style="width: 110px;"><?php $app("i18n")("unban_user"); ?></a>
 						</div>
 						<?php
 							$baseurl = "/backend/users/list_bans?show=" . (($app->vars["show"]) ? $app->vars["show"] : "all") . "&page=";
@@ -67,11 +65,11 @@
 						<table class="table table-striped">
 							<thead>
 								<tr>
-									<th>Expires</th>
-									<th>Reason</th>
-									<th>Created</th>
-									<th>Modified</th>
-									<th>Actions</th>
+									<th><?php $app("i18n")("expires"); ?></th>
+									<th><?php $app("i18n")("reason"); ?></th>
+									<th><?php $app("i18n")("created"); ?></th>
+									<th><?php $app("i18n")("modified"); ?></th>
+									<th><?php $app("i18n")("actions"); ?></th>
 								</tr>
 							</thead>
 							<tbody>
@@ -82,14 +80,16 @@
 										<td><?php echo date($app->getSetting("date_format", "Y-m-d"), $ban->created); ?></td>
 										<td><?php echo date($app->getSetting("date_format", "Y-m-d"), $ban->modified); ?></td>
 										<td>
-											<a class="btn btn-danger btn-sm" href="<?php echo Config::WEBROOT; ?>/backend/users/delete_ban?delete_id=<?php echo $ban->id; ?>"><i class="bi bi-trash"></i> Delete</a>
+											<a class="btn btn-danger btn-sm" href="<?php echo Config::WEBROOT; ?>/backend/users/delete_ban?delete_id=<?php echo $ban->id; ?>">
+												<i class="bi bi-trash"></i> <?php $app("i18n")("delete"); ?>
+											</a>
 										</td>
 									</tr>
 								<?php } ?>
 							</tbody>
 						</table>
 					<?php } else { ?>
-						<p>No bans match your criteria!</p>
+						<p><?php $app("i18n")("no_bans_match"); ?></p>
 					<?php } ?>
 				</div>
 			</div>

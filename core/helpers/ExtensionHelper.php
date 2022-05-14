@@ -103,6 +103,8 @@
 					return Config::APPROOT . "/modules/" . $class;
 				case "plugin":
 					return Config::APPROOT . "/plugins/" . $class;
+				case "language":
+					return Config::APPROOT . "/languages/" . $class;
 				default:
 					return null;
 			}

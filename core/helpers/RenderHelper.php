@@ -216,7 +216,7 @@
 			echo "<input type=\"radio\" class=\"form-check-input\" name=\"$name\" id=\"{$name}_true\" value=\"1\"";
 			if ($value ?? false) echo " checked";
 			echo ">";
-			echo "<label class=\"form-check-label\" for=\"{$name}_true\">Yes</label>";
+			echo "<label class=\"form-check-label\" for=\"{$name}_true\"></label>";
 			echo "</div>";
 			echo "<div class=\"form-check form-check-inline\">";
 			echo "<input type=\"radio\" class=\"form-check-input\" name=\"$name\" id=\"{$name}_false\" value=\"0\"";
@@ -224,6 +224,20 @@
 			echo ">";
 			echo "<label class=\"form-check-label\" for=\"{$name}_false\">No</label>";
 			echo "</div><br />";
+		}
+
+		public static function renderYesNo(string $name, string $value = "no") {
+?>
+			<select class="form-control" name="<?php echo $name; ?>">
+				<?php if ($value == "yes") { ?>
+					<option value="yes" selected>Yes</option>
+					<option value="no">No</option>
+				<?php } else { ?>
+					<option value="yes">Yes</option>
+					<option value="no" selected>No</option>
+				<?php } ?>
+			</select>
+<?php
 		}
 
 		public static function renderEditor(string $name, string $value = "") {
@@ -249,6 +263,9 @@
 					break;
 				case "boolean":
 					self::renderBooleanField($name, $value ?? false);
+					break;
+				case "yesno":
+					self::renderYesNo($name, $value ?? "no");
 					break;
 				case "number":
 					echo "<input type=\"number\" class=\"form-control\" name=\"$name\" value=\"" . ($value ?? 0) . "\" required />";

@@ -10,112 +10,92 @@
 	defined("CRISPAGE") or die("Application must be started from index.php!");
 	require_once Config::APPROOT . "/backend/header.php";
 
-	if (!User::userHasPermissions(Session::getCurrentSession()->user, UserPermissions::MODIFY_MODULES))
-		$app->redirectWithMessages("/backend/modules/list", array("type" => "error", "content" => "You do not have permission to modify modules"));
+	$currentUser = Session::getCurrentSession()->user;
+	$formFilled = FormHelper::formFieldsFilled(
+		"module_title", "module_id", "module_options", "module_pos",
+		"module_ord"
+	) && is_array($app->request->query["module_options"]);
 
-	function checkQuery() {
-		global $app;
+	$app->vars["module"] = new Module(array());
 
-		return	isset($app->request->query["module_title"]) &&
-				isset($app->request->query["module_id"]) &&
-				isset($app->request->query["module_options"]) && is_array($app->request->query["module_options"]) &&
-				isset($app->request->query["module_pos"]) &&
-				isset($app->request->query["module_ord"]);
-	}
-
-	$app->vars["module_title"]	= "";
-	$app->vars["module_id"]		= "";
-	$app->vars["module_options"] = array();
-	$app->vars["module_pos"]	= "";
-	$app->vars["module_ord"]	= 0;
+	if (!User::userHasPermissions($currentUser, UserPermissions::MODIFY_MODULES))
+		$app->redirectWithMessages("/backend/modules/list", array("type" => "error", "content" => $app("i18n")->getString("no_permission_modules")));
 
 	if (!isset($app->request->query["class"]))
-		$app->redirectWithMessages("/backend/modules/select", array("type" => "info", "content" => "Please select a module type first"));
+		$app->redirectWithMessages("/backend/modules/select", array("type" => "info", "content" => $app("i18n")->getString("please_select_module")));
 
-	$moduleinfo = ExtensionHelper::getModuleInfo($app->request->query["class"]);
+	$app->vars["module_info"] = ExtensionHelper::getModuleInfo($app->request->query["class"]);
 
-	if (!$moduleinfo)
-		$app->redirectWithMessages("/backend/modules/list", array("type" => "error", "content" => "Invalid module type"));
-
-	$app->vars["module_name"] = $moduleinfo["name"];
-	$app->vars["module_class_options"] = $moduleinfo["options"];
+	if (!$app->vars["module_info"])
+		$app->redirectWithMessages("/backend/modules/list", array("type" => "error", "content" => $app("i18n")->getString("invalid_module_type")));
 
 	if (isset($app->request->query["edit_id"])) {
 		if (!$app("modules")->exists($app->request->query["edit_id"]))
-			$app->redirectWithMessages("/backend/modules/list", array("type" => "error", "content" => "Module does not exist"));
+			$app->redirectWithMessages("/backend/modules/list", array("type" => "error", "content" => $app("i18n")->getString("module_does_not_exist")));
 
-		$module = $app("modules")->get($app->request->query["edit_id"]);
+		$app->vars["module"] = $app("modules")->get($app->request->query["edit_id"]);
 
-		if (checkQuery()) {
-			$id = $app->request->query["edit_id"];
+		if ($formFilled) {
+			$app->vars["module"]->id = $app->request->query["edit_id"];
 			if ($app->request->query["edit_id"] != $app->request->query["module_id"]) {
 				if ($app("modules")->exists($app->request->query["module_id"])) {
-					$app->page->alerts["id_taken"] = array("class" => "warning", "content" => "The ID '{$app->request->query["module_id"]}' is taken! Using '$id'.");
+					$app->page->alerts["id_taken"] = array("class" => "warning", "content" => $app("i18n")->getString("id_taken_using", null, $app->request->query["module_id"], $app->vars["module"]->id));
 				} else {
 					if ($app->request->query["module_id"] == "")
-						$id = $app->nameToId($app->request->query["module_title"]);
+						$app->vars["module"]->id = $app->nameToId($app->request->query["module_title"]);
 					else
-						$id = $app->nameToId($app->request->query["module_id"]);
+						$app->vars["module"]->id = $app->nameToId($app->request->query["module_id"]);
 
 					$app("modules")->delete($app->request->query["edit_id"]);
 				}
 			}
 
 			$options = array();
-			foreach ($app->vars["module_class_options"] as $opt)
+			foreach ($app->vars["module_info"]["options"] as $opt)
 				$options[$opt["name"]] = $app->request->query["module_options"][$opt["name"]];
 
-			$module->title		= $app->request->query["module_title"];
-			$module->id			= $id;
-			$module->pos		= $app->request->query["module_pos"];
-			$module->ord		= $app->request->query["module_ord"];
-			$module->modified	= time();
-			$module->options	= $options;
+			$app->vars["module"]->title		= $app->request->query["module_title"];
+			$app->vars["module"]->id			= $app->vars["module"]->id;
+			$app->vars["module"]->pos		= $app->request->query["module_pos"];
+			$app->vars["module"]->ord		= $app->request->query["module_ord"];
+			$app->vars["module"]->modified	= time();
+			$app->vars["module"]->options	= $options;
 
-			$app("modules")->set($id, $module);
+			$app("modules")->set($app->vars["module"]->id, $app->vars["module"]);
 
 			if ($app->request->query["module_id"] == "")
-				$app->redirectWithMessages("/backend/modules/editor?class=$module->class&edit_id=$id", array("type" => "success", "content" => "Changes saved."));
+				$app->redirectWithMessages("/backend/modules/editor?class=" . $app->vars["module"]->class . "&edit_id=" . $app->vars["module"]->id, array("type" => "success", "content" => $app("i18n")->getString("changes_saved")));
 
-			$app->page->alerts["edit_success"] = array("class" => "success", "content" => "Changes saved.");
+			$app->page->alerts["edit_success"] = array("class" => "success", "content" => $app("i18n")->getString("changes_saved"));
 		}
 
-		$app->vars["title"] = "Edit Module";
-
-		$app->vars["module_title"]	= htmlentities($module->title);
-		$app->vars["module_id"]		= $module->id;
-		$app->vars["module_options"] = $module->options;
-		$app->vars["module_pos"]	= htmlentities($module->pos);
-		$app->vars["module_ord"]	= htmlentities($module->ord);
+		$app->vars["title"] = $app("i18n")->getString("edit_module");
 	} else {
-		$app->vars["title"] = "New Module";
+		$app->vars["title"] = $app("i18n")->getString("new_module");
 
-		if (checkQuery()) {
+		if ($formFilled) {
 			if ($app->request->query["module_id"] == "")
-				$id = $app->nameToId($app->request->query["module_title"]);
+				$app->vars["module"]->id = $app->nameToId($app->request->query["module_title"]);
 			else
-				$id = $app->nameToId($app->request->query["module_id"]);
+				$app->vars["module"]->id = $app->nameToId($app->request->query["module_id"]);
 
-			while ($app("modules")->exists($id)) $id .= "_1";
+			while ($app("modules")->exists($app->vars["module"]->id)) $app->vars["module"]->id .= "_1";
 
 			$options = array();
-			foreach ($app->vars["module_class_options"] as $opt)
+			foreach ($app->vars["module_info"]["options"] as $opt)
 				$options[$opt["name"]] = $app->request->query["module_options"][$opt["name"]];
 
-			$module = new Module(array(
-				"id"		=> $id,
-				"title"		=> $app->request->query["module_title"],
-				"class"		=> $app->request->query["class"],
-				"pos"		=> $app->request->query["module_pos"],
-				"ord"		=> $app->request->query["module_ord"],
-				"created"	=> time(),
-				"modified"	=> time(),
-				"options"	=> $options
-			));
+			$app->vars["module"]->title =	$app->request->query["module_title"];
+			$app->vars["module"]->class =	$app->request->query["class"];
+			$app->vars["module"]->pos =		$app->request->query["module_pos"];
+			$app->vars["module"]->ord =		$app->request->query["module_ord"];
+			$app->vars["module"]->created =	time();
+			$app->vars["module"]->modified =time();
+			$app->vars["module"]->options =	$options;
 
-			$app("modules")->set($id, $module);
+			$app("modules")->set($app->vars["module"]->id, $app->vars["module"]);
 
-			$app->redirectWithMessages("/backend/modules/editor?class=" . $app->request->query["class"] . "&edit_id=$id", array("type" => "success", "content" => "Changes saved."));
+			$app->redirectWithMessages("/backend/modules/editor?class=" . $app->request->query["class"] . "&edit_id=" . $app->vars["module"]->id, array("type" => "success", "content" => $app("i18n")->getString("changes_saved")));
 		}
 	}
 
@@ -137,31 +117,31 @@
 						<?php if (isset($app->request->query["edit_id"])) { ?>
 							<input type="hidden" name="edit_id" value="<?php echo $app->request->query["edit_id"]; ?>" />
 						<?php } ?>
-						<label for="module_title">Module Title:</label>
-						<input type="text" class="form-control" name="module_title" value="<?php echo $app->vars["module_title"]; ?>" required />
+						<label for="module_title"><?php $app("i18n")("module_title_c"); ?></label>
+						<input type="text" class="form-control" name="module_title" value="<?php echo $app->vars["module"]->title; ?>" required />
 
-						<label for="module_name">Module type:</label>
-						<input type="text" class="form-control" value="<?php echo $app->vars["module_name"]; ?>" disabled />
+						<label><?php $app("i18n")("module_type_c"); ?></label>
+						<input type="text" class="form-control" value="<?php echo $app->vars["module_info"]["name"]; ?>" disabled />
 
 						<?php
-							foreach ($app->vars["module_class_options"] as $option) {
+							foreach ($app->vars["module_info"]["options"] as $option) {
 								echo "<label for=\"module_options[{$option["name"]}]\">{$option["label"]}:</label>";
-								RenderHelper::renderField("module_options[{$option["name"]}]", $option["type"], $app->vars["module_options"][$option["name"]] ?? null);
+								RenderHelper::renderField("module_options[{$option["name"]}]", $option["type"], $app->vars["module"]->options[$option["name"]] ?? null);
 							}
 						?>
 					</div>
 					<div class="col-12 col-lg-4 ps-lg-2">
-						<label for="module_id">Module ID:</label>
-						<input type="text" class="form-control" name="module_id" placeholder="auto-generate" value="<?php echo $app->vars["module_id"]; ?>" />
+						<label for="module_id"><?php $app("i18n")("module_id_c"); ?></label>
+						<input type="text" class="form-control" name="module_id" placeholder="auto-generate" value="<?php echo $app->vars["module"]->id; ?>" />
 
-						<label for="module_pos">Module Position:</label>
-						<input type="text" class="form-control" name="module_pos" value="<?php echo $app->vars["module_pos"]; ?>" />
+						<label for="module_pos"><?php $app("i18n")("module_position_c"); ?></label>
+						<input type="text" class="form-control" name="module_pos" value="<?php echo $app->vars["module"]->pos; ?>" />
 
-						<label for="module_ord">Module Order:</label>
-						<input type="number" class="form-control" name="module_ord" value="<?php echo $app->vars["module_ord"]; ?>" />
+						<label for="module_ord"><?php $app("i18n")("module_order_c"); ?></label>
+						<input type="number" class="form-control" name="module_ord" value="<?php echo $app->vars["module"]->ord; ?>" />
 
-						<a class="btn btn-secondary btn-lg mt-3 pe-2" href="<?php echo Config::WEBROOT; ?>/backend/modules/list" style="width: calc(50% - 0.375rem);">Back</a>
-						<button class="btn btn-success btn-lg mt-3" type="submit" style="width: calc(50% - 0.375rem);">Save</button>
+						<a class="btn btn-secondary btn-lg mt-3 pe-2" href="<?php echo Config::WEBROOT; ?>/backend/modules/list" style="width: calc(50% - 0.375rem);"><?php $app("i18n")("back"); ?></a>
+						<button class="btn btn-success btn-lg mt-3" type="submit" style="width: calc(50% - 0.375rem);"><?php $app("i18n")("save"); ?></button>
 					</div>
 				</div>
 			</form>

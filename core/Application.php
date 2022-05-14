@@ -26,6 +26,7 @@
 	require_once Config::APPROOT . "/core/helpers/Mailer.php";
 	require_once Config::APPROOT . "/core/helpers/FileHelper.php";
 	require_once Config::APPROOT . "/core/helpers/ExtensionHelper.php";
+	require_once Config::APPROOT . "/core/helpers/FormHelper.php";
 
 	require_once Config::APPROOT . "/core/users/UserPermissions.php";
 	require_once Config::APPROOT . "/core/users/Authenticator.php";
@@ -91,7 +92,9 @@
 
 		public function __invoke(string $name) {
 			if (isset($this->$name)) return $this->$name;
-			return ($this->assets)($name);
+			$am = ($this->assets)($name);
+			if ($am) return $am;
+			return $this->vars[$name] ?? null;
 		}
 
 		public function __destruct() {

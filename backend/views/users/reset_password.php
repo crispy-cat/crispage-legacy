@@ -11,38 +11,35 @@
 	require_once Config::APPROOT . "/backend/header.php";
 
 	if (!isset($app->request->query["reset_id"]))
-		$app->redirectWithMessages("/backend/users/list", array("type" => "error", "content" => "No ID Specified"));
+		$app->redirectWithMessages("/backend/users/list", array("type" => "error", "content" => $app("i18n")->getString("no_id_given")));
 
 	if (!$app("users")->exists($app->request->query["reset_id"]))
-		$app->redirectWithMessages("/backend/users/list", array("type" => "error", "content" => "User does not exist"));
+		$app->redirectWithMessages("/backend/users/list", array("type" => "error", "content" => $app("i18n")->getString("user_does_not_exist")));
 
 	if ($app->request->query["reset_id"] == Session::getCurrentSession()->user) {
 		if (!User::userHasPermissions(Session::getCurrentSession()->user, UserPermissions::MODIFY_SELF))
-			$app->redirectWithMessages("/backend/users/list", array("type" => "error", "content" => "You do not have permission to modify yourself"));
+			$app->redirectWithMessages("/backend/users/list", array("type" => "error", "content" => $app("i18n")->getString("no_permission_self")));
 	} else {
 		if (!User::userHasPermissions(Session::getCurrentSession()->user, UserPermissions::MODIFY_USERS))
-			$app->redirectWithMessages("/backend/users/list", array("type" => "error", "content" => "You do not have permission to modify other users"));
+			$app->redirectWithMessages("/backend/users/list", array("type" => "error", "content" => $app("i18n")->getString("no_permission_users")));
 
 		if (User::compareUserRank(Session::getCurrentSession()->user, $app->request->query["reset_id"]) !== 1)
-			$app->redirectWithMessages("/backend/users/list", array("type" => "error", "content" => "Target user's group rank must be less than your own"));
+			$app->redirectWithMessages("/backend/users/list", array("type" => "error", "content" => $app("i18n")->getString("rank_less_than_own")));
 	}
 
 	if (isset($app->request->query["user_password"])) {
 		$app->auth->setPassword($app->request->query["reset_id"], $app->request->query["user_password"]);
-		$app->redirectWithMessages("/backend/users/list", array("type" => "success", "content" => "Password reset."));
+		$app->redirectWithMessages("/backend/users/list", array("type" => "success", "content" => $app("i18n")->getString("password_reset")));
 	}
 
-	$app->vars["user_name"] = $app("users")->get($app->request->query["reset_id"])->name;
-
-	$app->page->setTitle("Reset password for {$app->vars["user_name"]}");
+	$app->page->setTitle($app("i18n")->getString("reset_password"));
 
 	$app->page->setContent(function($app) {
 ?>
 		<div id="main" class="page-content">
 			<div class="row">
 				<div class="col">
-					<h1>Reset password for '<?php echo $app->vars["user_name"]; ?>'</h1>
-					<p>Please enter a new password.</p>
+					<h1><?php $app("i18n")("reset_password"); ?></h1>
 					<form>
 						<input type="hidden" name="reset_id" value="<?php echo $app->request->query["reset_id"]; ?>" />
 						<label for="user_password">New Password:</label>

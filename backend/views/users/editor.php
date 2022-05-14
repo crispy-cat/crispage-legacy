@@ -10,115 +10,98 @@
 	defined("CRISPAGE") or die("Application must be started from index.php!");
 	require_once Config::APPROOT . "/backend/header.php";
 
-	function checkQuery() {
-		global $app;
+	$currentUser = Session::getCurrentSession()->user;
+	$formFilled = FormHelper::formFieldsFilled(
+		"user_name", "user_id", "user_email", "user_group"
+	) && filter_var($app->request->query["user_email"], FILTER_VALIDATE_EMAIL);
 
-		return	isset($app->request->query["user_name"]) &&
-				isset($app->request->query["user_id"]) &&
-				isset($app->request->query["user_email"]) &&
-				isset($app->request->query["user_group"]) &&
-				filter_var($app->request->query["user_email"], FILTER_VALIDATE_EMAIL);
-	}
-
-	$app->vars["user_name"]		= "";
-	$app->vars["user_id"]		= "";
-	$app->vars["user_email"]	= "";
-	$app->vars["user_group"]	= null;
+	$app->vars["user"] = new User(array());
 
 	if (isset($app->request->query["edit_id"])) {
 		if (!$app("users")->exists($app->request->query["edit_id"]))
-			$app->redirectWithMessages("/backend/users/list", array("type" => "error", "content" => "Menu user does not exist"));
+			$app->redirectWithMessages("/backend/users/list", array("type" => "error", "content" => $app("i18n")->getString("user_does_not_exist")));
 
-		$user = $app("users")->get($app->request->query["edit_id"]);
+		$app->vars["user"] = $app("users")->get($app->request->query["edit_id"]);
 
-		if ($user->id == Session::getCurrentSession()->user) {
-			if (!User::userHasPermissions(Session::getCurrentSession()->user, UserPermissions::MODIFY_SELF))
-				$app->redirectWithMessages("/backend/users/list", array("type" => "error", "content" => "You do not have permission to modify yourself"));
+		if ($app->vars["user"]->id == $currentUser) {
+			if (!User::userHasPermissions($currentUser, UserPermissions::MODIFY_SELF))
+				$app->redirectWithMessages("/backend/users/list", array("type" => "error", "content" => $app("i18n")->getString("no_permission_self")));
 		} else {
-			if (!User::userHasPermissions(Session::getCurrentSession()->user, UserPermissions::MODIFY_USERS))
-				$app->redirectWithMessages("/backend/users/list", array("type" => "error", "content" => "You do not have permission to modify other users"));
+			if (!User::userHasPermissions($currentUser, UserPermissions::MODIFY_USERS))
+				$app->redirectWithMessages("/backend/users/list", array("type" => "error", "content" => $app("i18n")->getString("no_permission_users")));
 
-				if (User::compareUserRank(Session::getCurrentSession()->user, $user->id) !== 1)
-					$app->redirectWithMessages("/backend/users/list", array("type" => "error", "content" => "Target user's group rank must be less than your own"));
+				if (User::compareUserRank($currentUser, $app->vars["user"]->id) !== 1)
+					$app->redirectWithMessages("/backend/users/list", array("type" => "error", "content" => $app("i18n")->getString("rank_must_be_less")));
 		}
 
-		if (checkQuery()) {
-			$id = $app->request->query["edit_id"];
+		if ($form_filled) {
+			$app->vars["user"]->id = $app->request->query["edit_id"];
 			if ($app->request->query["edit_id"] != $app->request->query["user_id"]) {
 				if ($app("users")->exists($app->request->query["user_id"])) {
-					$app->page->alerts["id_taken"] = array("class" => "warning", "content" => "The ID '{$app->request->query["user_id"]}' is taken! Using '$id'.");
+					$app->page->alerts["id_taken"] = array("class" => "warning", "content" => $app("i18n")->getString("id_taken_using", null, $app->request->query["user_id"], $app->vars["user"]->id));
 				} else {
 					if ($app->request->query["user_id"] == "")
-						$id = $app->nameToId($app->request->query["user_name"]);
+						$app->vars["user"]->id = $app->nameToId($app->request->query["user_name"]);
 					else
-						$id = $app->nameToId($app->request->query["user_id"]);
+						$app->vars["user"]->id = $app->nameToId($app->request->query["user_id"]);
 
 					$app("users")->delete($app->request->query["edit_id"]);
 				}
 			}
 
 			$group = $app->request->query["user_group"];
-			if (User::compareUserRank(Session::getCurrentSession()->user, UserGroup::getGroupRank($group)) !== 1) {
+			if (User::compareUserRank($currentUser, UserGroup::getGroupRank($group)) !== 1) {
 				$group = $app->getSetting("users.default_group");
-				$app->page->alerts["group_lower"] = array("class" => "warning", "content" => "Target user's group rank must be less than your own, using default group");
+				$app->page->alerts["group_lower"] = array("class" => "warning", "content" => $app("i18n")->getString("rank_must_be_less"));
 			}
 
-			$user->name		= $app->request->query["user_name"];
-			$user->email	= $app->request->query["user_email"];
-			$user->id		= $id;
-			$user->group	= $group;
-			$user->modified	= time();
+			$app->vars["user"]->name	= $app->request->query["user_name"];
+			$app->vars["user"]->email	= $app->request->query["user_email"];
+			$app->vars["user"]->group	= $group;
+			$app->vars["user"]->modified= time();
 
-			$app("users")->set($id, $user);
+			$app("users")->set($app->vars["user"]->id, $app->vars["user"]);
 
 			if ($app->request->query["user_id"] == "")
-				$app->redirectWithMessages("/backend/users/editor?edit_id=$id", array("type" => "success", "content" => "Changes saved."));
+				$app->redirectWithMessages("/backend/users/editor?edit_id=" . $app->vars["user"]->id, array("type" => "success", "content" => $app("i18n")->getString("changes_saved")));
 
-			$app->page->alerts["edit_success"] = array("class" => "success", "content" => "Changes saved.");
+			$app->page->alerts["edit_success"] = array("class" => "success", "content" => $app("i18n")->getString("changes_saved"));
 		}
 
-		$app->vars["title"] = "Edit User";
-
-		$app->vars["user_name"]	= htmlentities($user->name);
-		$app->vars["user_id"]	= $user->id;
-		$app->vars["user_email"]= htmlentities($user->email);
-		$app->vars["user_group"]= htmlentities($user->group);
+		$app->vars["title"] = $app("i18n")->getString("edit_user");
 	} else {
-		$app->vars["title"] = "New User";
+		$app->vars["title"] = $app("i18n")->getString("new_user");
 
-		if (checkQuery()) {
-			if (!User::userHasPermissions(Session::getCurrentSession()->user, UserPermissions::MODIFY_USERS))
-				$app->redirectWithMessages("/backend/users/list", array("type" => "error", "content" => "You do not have permission to create users"));
+		if ($formFilled) {
+			if (!User::userHasPermissions($currentUser, UserPermissions::MODIFY_USERS))
+				$app->redirectWithMessages("/backend/users/list", array("type" => "error", "content" => $app("i18n")->getString("no_permission_users")));
 
 			if ($app->request->query["user_id"] == "")
-				$id = $app->nameToId($app->request->query["user_name"]);
+				$app->vars["user"]->id = $app->nameToId($app->request->query["user_name"]);
 			else
-				$id = $app->nameToId($app->request->query["user_id"]);
+				$app->vars["user"]->id = $app->nameToId($app->request->query["user_id"]);
 
-			while ($app("users")->exists($id)) $id .= "_1";
+			while ($app("users")->exists($app->vars["user"]->id)) $app->vars["user"]->id .= "_1";
 
-			$id = $app->nameToId($id);
+			$app->vars["user"]->id = $app->nameToId($app->vars["user"]->id);
 
 			$group = $app->request->query["user_group"];
-			if (User::compareUserRank(Session::getCurrentSession()->user, UserGroup::getGroupRank($group)) !== 1) {
+			if (User::compareUserRank($currentUser, UserGroup::getGroupRank($group)) !== 1) {
 				$group = $app->getSetting("users.default_group");
-				$app->page->alerts["group_lower"] = array("class" => "warning", "content" => "Target user's group rank must be less than your own, using default group");
+				$app->page->alerts["group_lower"] = array("class" => "warning", "content" => $app("i18n")->getString("rank_must_be_less"));
 			}
 
-			$user = new User(array(
-				"id"		=> $id,
-				"name"		=> $app->request->query["user_name"],
-				"email"		=> $app->request->query["user_email"],
-				"group"		=> $group,
-				"created"	=> time(),
-				"modified"	=> time(),
-				"loggedin"	=> 0,
-				"activated"	=> 2
-			));
+			$app->vars["user"]->name	= $app->request->query["user_name"];
+			$app->vars["user"]->email	= $app->request->query["user_email"];
+			$app->vars["user"]->group	= $group;
+			$app->vars["user"]->created = time();
+			$app->vars["user"]->modified= time();
+			$app->vars["user"]->loggedin= 0;
+			$app->vars["user"]->activated=2;
 
-			$app("users")->set($id, $user);
+			$app("users")->set($app->vars["user"]->id, $app->vars["user"]);
 
-			$app->redirectWithMessages("/backend/users/editor?edit_id=$id", array("type" => "success", "content" => "Changes saved."));
+			$app->redirectWithMessages("/backend/users/editor?edit_id=" . $app->vars["user"]->id, array("type" => "success", "content" => $app("i18n")->getString("changes_saved")));
 		}
 	}
 
@@ -139,21 +122,21 @@
 						<?php if (isset($app->request->query["edit_id"])) { ?>
 							<input type="hidden" name="edit_id" value="<?php echo $app->request->query["edit_id"]; ?>" />
 						<?php } ?>
-						<label for="user_name">User Name:</label>
-						<input type="text" class="form-control" name="user_name" value="<?php echo $app->vars["user_name"]; ?>" required />
+						<label for="user_name"><?php $app("i18n")("user_name_c"); ?></label>
+						<input type="text" class="form-control" name="user_name" value="<?php echo $app->vars["user"]->name; ?>" required />
 
-						<label for="user_email">User Email:</label>
-						<input type="email" class="form-control" name="user_email" value="<?php echo $app->vars["user_email"]; ?>" required />
+						<label for="user_email"><?php $app("i18n")("user_email_c"); ?></label>
+						<input type="email" class="form-control" name="user_email" value="<?php echo $app->vars["user"]->email; ?>" required />
 					</div>
 					<div class="col-12 col-lg-4 ps-lg-2">
-						<label for="user_id">User ID:</label>
-						<input type="text" class="form-control" name="user_id" placeholder="auto-generate" value="<?php echo $app->vars["user_id"]; ?>" />
+						<label for="user_id"><?php $app("i18n")("user_id_c"); ?></label>
+						<input type="text" class="form-control" name="user_id" placeholder="auto-generate" value="<?php echo $app->vars["user"]->id; ?>" />
 
-						<label for="user_group">User Group:</label>
-						<?php RenderHelper::renderUserGroupPicker("user_group", $app->vars["user_group"]); ?>
+						<label for="user_group"><?php $app("i18n")("user_group_c"); ?></label>
+						<?php RenderHelper::renderUserGroupPicker("user_group", $app->vars["user"]->group); ?>
 
-						<a class="btn btn-secondary btn-lg mt-3 pe-2" href="<?php echo Config::WEBROOT; ?>/backend/users/list" style="width: calc(50% - 0.375rem);">Back</a>
-						<button class="btn btn-success btn-lg mt-3" type="submit" style="width: calc(50% - 0.375rem);">Save</button>
+						<a class="btn btn-secondary btn-lg mt-3 pe-2" href="<?php echo Config::WEBROOT; ?>/backend/users/list" style="width: calc(50% - 0.375rem);"><?php $app("i18n")("back"); ?></a>
+						<button class="btn btn-success btn-lg mt-3" type="submit" style="width: calc(50% - 0.375rem);"><?php $app("i18n")("save"); ?></button>
 					</div>
 				</div>
 			</form>

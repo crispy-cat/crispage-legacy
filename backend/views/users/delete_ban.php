@@ -11,40 +11,40 @@
 	require_once Config::APPROOT . "/backend/header.php";
 
 	if (!isset($app->request->query["delete_id"]))
-		$app->redirectWithMessages("/backend/users/list", array("type" => "error", "content" => "No ID Specified"));
+		$app->redirectWithMessages("/backend/users/list", array("type" => "error", "content" => $app("i18n")->getString("no_id_given")));
 
 	if (!$app("bans")->exists($app->request->query["delete_id"]))
-		$app->redirectWithMessages("/backend/users/list", array("type" => "error", "content" => "Ban does not exist"));
+		$app->redirectWithMessages("/backend/users/list", array("type" => "error", "content" => $app("i18n")->getString("ban_does_not_exist")));
 
 	$ban = $app("bans")->get($app->request->query["delete_id"]);
 
 	if (!User::userHasPermissions(Session::getCurrentSession()->user, UserPermissions::BAN_USERS))
-		$app->redirectWithMessages("/backend/users/list_bans?user_id={$ban->user}", array("type" => "error", "content" => "You do not have permission to delete bans"));
+		$app->redirectWithMessages("/backend/users/list_bans?user_id={$ban->user}", array("type" => "error", "content" => $app("i18n")->getString("no_permission_bans"));
 
 	if (User::compareUserRank(Session::getCurrentSession()->user, $ban->user) !== 1)
-		$app->redirectWithMessages("/backend/users/list_bans?user_id={$user->id}", array("type" => "error", "content" => "Target user's group rank must be less than your own"));
+		$app->redirectWithMessages("/backend/users/list_bans?user_id={$user->id}", array("type" => "error", "content" => $app("i18n")->getString("rank_less_than_own")));
 
 	if (isset($app->request->query["confirm"]) && $app->request->query["confirm"]) {
 		$app("bans")->delete($ban->id);
-		$app->redirectWithMessages("/backend/users/list_bans?user_id={$ban->user}", array("type" => "success", "content" => "Ban deleted."));
+		$app->redirectWithMessages("/backend/users/list_bans?user_id={$ban->user}", array("type" => "success", "content" => $app("i18n")->getString("ban_deleted")));
 	}
 
 	$app->vars["ban_user"] = $ban->user;
 
-	$app->page->setTitle("Delete Ban");
+	$app->page->setTitle($app("i18n")->getString("delete_ban"));
 
 	$app->page->setContent(function($app) {
 ?>
 		<div id="main" class="page-content">
 			<div class="row">
 				<div class="col">
-					<h1>Delete Ban</h1>
-					<p>Are you sure you want to delete this ban? This action cannot be undone!</p>
+					<h1><?php $app("i18n")("delete_ban"); ?></h1>
+					<p><?php $app("i18n")("sure_delete_ban"); ?></p>
 					<form class="d-flex">
 						<input type="hidden" name="delete_id" value="<?php echo $app->request->query["delete_id"]; ?>" />
 						<input type="hidden" name="confirm" value="1" />
-						<a class="btn btn-primary me-2" href="<?php echo Config::WEBROOT; ?>/backend/users/list_bans?user_id=<?php echo $app->vars["ban_user"]; ?>">Back</a>
-						<button class="btn btn-danger" type="submit">Delete</button>
+						<a class="btn btn-primary me-2" href="<?php echo Config::WEBROOT; ?>/backend/users/list_bans?user_id=<?php echo $app->vars["ban_user"]; ?>"><?php $app("i18n")("back"); ?></a>
+						<button class="btn btn-danger" type="submit"><?php $app("i18n")("delete"); ?></button>
 					</form>
 				</div>
 			</div>

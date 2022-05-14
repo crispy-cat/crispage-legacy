@@ -10,133 +10,97 @@
 	defined("CRISPAGE") or die("Application must be started from index.php!");
 	require_once Config::APPROOT . "/backend/header.php";
 
-	function checkQuery() {
-		global $app;
+	$currentUser = Session::getCurrentSession()->user;
+	$formFilled = FormHelper::formFieldsFilled(
+		"article_title", "article_content", "article_summary", "article_id",
+		"article_state", "article_category", "article_tags", "article_meta_desc",
+		"article_meta_keys", "article_meta_robots", "article_options"
+	) && is_array($app->request->query["article_options"]);
 
-		return	isset($app->request->query["article_title"]) &&
-				isset($app->request->query["article_content"]) &&
-				isset($app->request->query["article_summary"]) &&
-				isset($app->request->query["article_id"]) &&
-				isset($app->request->query["article_state"]) &&
-				isset($app->request->query["article_category"]) &&
-				isset($app->request->query["article_tags"]) &&
-				isset($app->request->query["article_meta_desc"]) &&
-				isset($app->request->query["article_meta_keys"]) &&
-				isset($app->request->query["article_meta_robots"]) &&
-				isset($app->request->query["article_options"]) &&
-				is_array($app->request->query["article_options"]);
-	}
-
-	$app->vars["article_title"]		= "";
-	$app->vars["article_content"]	= "";
-	$app->vars["article_summary"]	= "";
-	$app->vars["article_id"]		= "";
-	$app->vars["article_published"]	= true;
-	$app->vars["article_category"]	= null;
-	$app->vars["article_tags"]		= "";
-	$app->vars["article_meta_desc"]	= "";
-	$app->vars["article_meta_keys"]	= "";
-	$app->vars["article_meta_robots"] = "";
-	$app->vars["article_options"]	= array();
+	$app->vars["article"] = new Article(array());
 
 	if (isset($app->request->query["edit_id"])) {
+		$app->vars["title"] = $app("i18n")->getString("edit_article");
+
 		if (!$app("articles")->exists($app->request->query["edit_id"]))
-			$app->redirectWithMessages("/backend/articles/list", array("type" => "error", "content" => "Article does not exist"));
+			$app->redirectWithMessages("/backend/articles/list", array("type" => "error", "content" => $app("i18n")->getString("article_does_not_exist")));
 
-		$article = $app("articles")->get($app->request->query["edit_id"]);
+		$app->vars["article"] = $app("articles")->get($app->request->query["edit_id"]);
 
-		if ($article->author == Session::getCurrentSession()->user) {
-			if (!User::userHasPermissions(Session::getCurrentSession()->user, UserPermissions::MODIFY_ARTICLES_OWN))
-				$app->redirectWithMessages("/backend/articles/list", array("type" => "error", "content" => "You do not have permission to modify articles"));
+		if ($app->vars["article"]->author == $currentUser) {
+			if (!User::userHasPermissions($currentUser, UserPermissions::MODIFY_ARTICLES_OWN))
+				$app->redirectWithMessages("/backend/articles/list", array("type" => "error", "content" => $app("i18n")->getString("no_permission_articles")));
 		} else {
-			if (!User::userHasPermissions(Session::getCurrentSession()->user, UserPermissions::MODIFY_ARTICLES))
-				$app->redirectWithMessages("/backend/articles/list", array("type" => "error", "content" => "You do not have permission to modify others' articles"));
+			if (!User::userHasPermissions($currentUser, UserPermissions::MODIFY_ARTICLES))
+				$app->redirectWithMessages("/backend/articles/list", array("type" => "error", "content" => $app("i18n")->getString("no_permission_articles_others")));
 		}
 
-		if (checkQuery()) {
-			$id = $app->request->query["edit_id"];
+		if ($formFilled) {
+			$app->vars["article"]->id = $app->request->query["edit_id"];
 			if ($app->request->query["edit_id"] != $app->request->query["article_id"]) {
 				if ($app("articles")->exists($app->request->query["article_id"])) {
-					$app->page->alerts["id_taken"] = array("class" => "warning", "content" => "The ID '{$app->request->query["article_id"]}' is taken! Using '$id'.");
+					$app->page->alerts["id_taken"] = array("class" => "warning", "content" => $app("i18n")->getString("id_taken_using", null, $app->request->query["article_id"], $app->vars["article"]->id));
 				} else {
 					if ($app->request->query["article_id"] == "")
-						$id = $app->nameToId($app->request->query["article_title"]);
+						$app->vars["article"]->id = $app->nameToId($app->request->query["article_title"]);
 					else
-						$id = $app->nameToId($app->request->query["article_id"]);
+						$app->vars["article"]->id = $app->nameToId($app->request->query["article_id"]);
 
 					$app("articles")->delete($app->request->query["edit_id"]);
 				}
 			}
 
-			$article->title		= $app->request->query["article_title"];
-			$article->content	= $app->request->query["article_content"];
-			$article->summary	= $app->request->query["article_summary"];
-			$article->id		= $id;
-			$article->state		= $app->request->query["article_state"];
-			$article->modified	= time();
-			$article->category	= $app("categories")->get($app->request->query["article_category"])->id;
-			$article->tags		= $app->request->query["article_tags"];
-			$article->meta_desc	= ($app->request->query["article_meta_desc"] != "") ? $app->request->query["article_meta_desc"] : $app->getSetting("meta_desc", "");
-			$article->meta_keys	= ($app->request->query["article_meta_keys"] != "") ? $app->request->query["article_meta_keys"] : $app->getSetting("meta_keys", "");
-			$article->meta_robots	= ($app->request->query["article_meta_robots"] != "") ? $app->request->query["article_meta_robots"] : $app->getSetting("meta_robots", "");
-			$article->options	= $app->request->query["article_options"];
+			$app->vars["article"]->title	= $app->request->query["article_title"];
+			$app->vars["article"]->content	= $app->request->query["article_content"];
+			$app->vars["article"]->summary	= $app->request->query["article_summary"];
+			$app->vars["article"]->state	= $app->request->query["article_state"];
+			$app->vars["article"]->modified	= time();
+			$app->vars["article"]->category	= $app->request->query["article_category"];
+			$app->vars["article"]->tags		= $app->request->query["article_tags"];
+			$app->vars["article"]->meta_desc= ($app->request->query["article_meta_desc"] != "") ? $app->request->query["article_meta_desc"] : $app->getSetting("meta_desc", "");
+			$app->vars["article"]->meta_keys= ($app->request->query["article_meta_keys"] != "") ? $app->request->query["article_meta_keys"] : $app->getSetting("meta_keys", "");
+			$app->vars["article"]->meta_robots= ($app->request->query["article_meta_robots"] != "") ? $app->request->query["article_meta_robots"] : $app->getSetting("meta_robots", "");
+			$app->vars["article"]->options	= $app->request->query["article_options"];
 
-			$app("articles")->set($id, $article);
+			$app("articles")->set($app->vars["article"]->id, $app->vars["article"]);
 
 			if ($app->request->query["article_id"] == "")
-				$app->redirectWithMessages("/backend/articles/editor?edit_id=$id", array("type" => "success", "content" => "Changes saved."));
+				$app->redirectWithMessages("/backend/articles/editor?edit_id=" . $app->vars["article"]->id, array("type" => "success", "content" => $app("i18n")->getString("changes_saved")));
 
-			$app->page->alerts["edit_success"] = array("class" => "success", "content" => "Changes saved.");
+			$app->page->alerts["edit_success"] = array("class" => "success", "content" => $app("i18n")->getString("changes_saved"));
 		}
-
-		$app->vars["title"] = "Edit Article";
-
-		$app->vars["article_title"]		= htmlentities($article->title);
-		$app->vars["article_content"]	= htmlentities($article->content);
-		$app->vars["article_summary"]	= htmlentities($article->summary);
-		$app->vars["article_id"]		= $article->id;
-		$app->vars["article_published"]	= $article->state == "published";
-		$app->vars["article_category"]	= htmlentities($article->category);
-		$app->vars["article_tags"]		= htmlentities($article->tags);
-		$app->vars["article_meta_desc"]	= htmlentities($article->meta_desc);
-		$app->vars["article_meta_keys"]	= htmlentities($article->meta_keys);
-		$app->vars["article_meta_robots"]	= htmlentities($article->meta_robots);
-		$app->vars["article_options"]	= $article->options;
 	} else {
-		$app->vars["title"] = "New Article";
+		$app->vars["title"] = $app("i18n")->getString("new_article");
 
-		if (checkQuery()) {
-			if (!User::userHasPermissions(Session::getCurrentSession()->user, UserPermissions::MODIFY_ARTICLES_OWN))
-				$app->redirectWithMessages("/backend/articles/list", array("type" => "error", "content" => "You do not have permission to create articles"));
+		if ($formFilled) {
+			if (!User::userHasPermissions($currentUser, UserPermissions::MODIFY_ARTICLES_OWN))
+				$app->redirectWithMessages("/backend/articles/list", array("type" => "error", "content" => $app("i18n")->getString("no_permission_articles")));
 
 			if ($app->request->query["article_id"] == "")
-				$id = $app->nameToId($app->request->query["article_title"]);
+				$app->vars["article"]->id = $app->nameToId($app->request->query["article_title"]);
 			else
-				$id = $app->nameToId($app->request->query["article_id"]);
+				$app->vars["article"]->id = $app->nameToId($app->request->query["article_id"]);
 
-			while ($app("articles")->exists($id)) $id .= "_1";
+			while ($app("articles")->exists($app->vars["article"]->id)) $app->vars["article"]->id .= "_1";
 
-			$article = new Article(array(
-				"id"		=> $id,
-				"title"		=> $app->request->query["article_title"],
-				"content"	=> $app->request->query["article_content"],
-				"summary"	=> $app->request->query["article_summary"],
-				"state"		=> $app->request->query["article_state"],
-				"author" 	=> Session::getCurrentSession()->user, // TODO: Change to active user
-				"created"	=> time(),
-				"modified"	=> time(),
-				"category"	=> $app->request->query["article_category"],
-				"tags"		=> $app->request->query["article_tags"],
-				"meta_desc" => ($app->request->query["article_meta_desc"] != "") ? $app->request->query["article_meta_desc"] : $app->getSetting("meta_desc", ""),
-				"meta_keys" => ($app->request->query["article_meta_keys"] != "") ? $app->request->query["article_meta_keys"] : $app->getSetting("meta_keys", ""),
-				"meta_robots" => ($app->request->query["article_meta_robots"] != "") ? $app->request->query["article_meta_robots"] : $app->getSetting("meta_robots", ""),
-				"hits"		=> 0,
-				"options"	=> $app->request->query["article_options"]
-			));
+			$app->vars["article"]->title	= $app->request->query["article_title"];
+			$app->vars["article"]->content	= $app->request->query["article_content"];
+			$app->vars["article"]->summary	= $app->request->query["article_summary"];
+			$app->vars["article"]->state	= $app->request->query["article_state"];
+			$app->vars["article"]->author	= $currentUser;
+			$app->vars["article"]->created	= time();
+			$app->vars["article"]->modified	= time();
+			$app->vars["article"]->category	= $app->request->query["article_category"];
+			$app->vars["article"]->tags		= $app->request->query["article_tags"];
+			$app->vars["article"]->meta_desc= ($app->request->query["article_meta_desc"] != "") ? $app->request->query["article_meta_desc"] : $app->getSetting("meta_desc", "");
+			$app->vars["article"]->meta_keys= ($app->request->query["article_meta_keys"] != "") ? $app->request->query["article_meta_keys"] : $app->getSetting("meta_keys", "");
+			$app->vars["article"]->meta_robots= ($app->request->query["article_meta_robots"] != "") ? $app->request->query["article_meta_robots"] : $app->getSetting("meta_robots", "");
+			$app->vars["article"]->hits		= 0;
+			$app->vars["article"]->options	= $app->request->query["article_options"];
 
-			$app("articles")->set($id, $article);
+			$app("articles")->set($app->vars["article"]->id, $app->vars["article"]);
 
-			$app->redirectWithMessages("/backend/articles/editor?edit_id=$id", array("type" => "success", "content" => "Changes saved."));
+			$app->redirectWithMessages("/backend/articles/editor?edit_id=" . $app->vars["article"]->id, array("type" => "success", "content" => $app("i18n")->getString("changes_saved")));
 		}
 	}
 
@@ -148,8 +112,8 @@
 			<div class="row">
 				<div class="col">
 					<h1><?php echo $app->vars["title"]; ?></h1>
-					<?php if ($app->vars["article_id"] != "") { ?>
-						<a href="<?php echo Config::WEBROOT . "/" . Router::getArticleRoute($app->vars["article_id"]); ?>">View article page</a>
+					<?php if ($app->vars["article"]->id != "") { ?>
+						<a target="_blank" href="<?php echo Config::WEBROOT . "/" . Router::getArticleRoute($app->vars["article"]->id); ?>"><?php $app("i18n")("view_article"); ?></a>
 					<?php } ?>
 				</div>
 			</div>
@@ -161,97 +125,65 @@
 					<div class="col-12 col-lg-8 pe-lg-2">
 						<ul class="nav nav-tabs" role="tablist">
 							<li class="nav-item" role="presentation">
-								<button type="button" class="nav-link active" role="tab" data-bs-toggle="tab" data-bs-target="#article_content">Content</button>
+								<button type="button" class="nav-link active" role="tab" data-bs-toggle="tab" data-bs-target="#article_content"><?php $app("i18n")("content"); ?></button>
 							</li>
 							<li class="nav-item" role="presentation">
-								<button type="button" class="nav-link" role="tab" data-bs-toggle="tab" data-bs-target="#article_options">Options</button>
+								<button type="button" class="nav-link" role="tab" data-bs-toggle="tab" data-bs-target="#article_options"><?php $app("i18n")("options"); ?></button>
 							</li>
 						</ul>
 						<div class="tab-content">
 							<div id="article_content" class="tab-pane show active" role="tabpanel">
-								<label for="article_title">Article Title:</label>
-								<input type="text" class="form-control" name="article_title" value="<?php echo $app->vars["article_title"]; ?>" required />
+								<label for="article_title"><?php $app("i18n")("article_title_c"); ?></label>
+								<input type="text" class="form-control" name="article_title" value="<?php echo htmlentities($app->vars["article"]->title); ?>" required />
 
-								<label for="article_content">Article Content:</label>
-								<textarea class="form-control" name="article_content" style="height: 300px; font-family: monospace;" required onkeydown="if(event.keyCode===9){var v=this.value,s=this.selectionStart,e=this.selectionEnd;this.value=v.substring(0, s)+'\t'+v.substring(e);this.selectionStart=this.selectionEnd=s+1;return false;}"><?php echo $app->vars["article_content"]; ?></textarea>
+								<label for="article_content"><?php $app("i18n")("article_content_c"); ?></label>
+								<?php RenderHelper::renderEditor("article_content", htmlentities($app->vars["article"]->content)); ?>
 
-								<label for="article_summary">Article Summary:</label>
-								<textarea class="form-control" name="article_summary" style="height: 170px;" required><?php echo $app->vars["article_summary"]; ?></textarea>
+								<label for="article_summary"><?php $app("i18n")("article_summary"); ?></label>
+								<textarea class="form-control" name="article_summary" style="height: 170px;" required><?php echo htmlentities($app->vars["article"]->summary); ?></textarea>
 							</div>
 							<div id="article_options" class="tab-pane" role="tabpanel">
-								<label for="article_options[show_comments]">Show Comments:</label>
-								<select class="form-control" name="article_options[show_comments]">
-									<?php if ($app->getSetting("articles.show_comments", "yes") == "yes") { ?>
-										<option value="yes" <?php if (($app->vars["article_options"]["show_comments"] ?? "yes") == "yes") echo "selected"; ?>>Yes (Default)</option>
-										<option value="no" <?php if (($app->vars["article_options"]["show_comments"] ?? "yes") == "no") echo "selected"; ?>>No</option>
-									<?php } else { ?>
-										<option value="yes" <?php if (($app->vars["article_options"]["show_comments"] ?? "no") == "yes") echo "selected"; ?>>Yes</option>
-										<option value="no" <?php if (($app->vars["article_options"]["show_comments"] ?? "no") == "no") echo "selected"; ?>>No (Default)</option>
-									<?php } ?>
-								</select>
+								<label for="article_options[show_comments]"><?php $app("i18n")("show_comments_c"); ?></label>
+								<?php RenderHelper::renderYesNo("article_options[show_comments]", $app->vars["article"]->options["show_comments"] ?? $app->getSetting("articles.show_comments", "yes")); ?>
 
-								<label for="article_options[show_info]">Show Article Info:</label>
-								<select class="form-control" name="article_options[show_info]">
-									<?php if ($app->getSetting("articles.show_info", "yes") == "yes") { ?>
-										<option value="yes" <?php if (($app->vars["article_options"]["show_info"] ?? "yes") == "yes") echo "selected"; ?>>Yes (Default)</option>
-										<option value="no" <?php if (($app->vars["article_options"]["show_info"] ?? "yes") == "no") echo "selected"; ?>>No</option>
-									<?php } else { ?>
-										<option value="yes" <?php if (($app->vars["article_options"]["show_info"] ?? "no") == "yes") echo "selected"; ?>>Yes</option>
-										<option value="no" <?php if (($app->vars["article_options"]["show_info"] ?? "no") == "no") echo "selected"; ?>>No (Default)</option>
-									<?php } ?>
-								</select>
+								<label for="article_options[show_info]"><?php $app("i18n")("show_article_info_c"); ?></label>
+								<?php RenderHelper::renderYesNo("article_options[show_comments]", $app->vars["article"]->options["show_info"] ?? $app->getSetting("articles.show_info", "yes")); ?>
 
-								<label for="article_options[show_title]">Show Title:</label>
-								<select class="form-control" name="article_options[show_title]">
-									<?php if ($app->getSetting("articles.show_title", "yes") == "yes") { ?>
-										<option value="yes" <?php if (($app->vars["article_options"]["show_title"] ?? "yes") == "yes") echo "selected"; ?>>Yes (Default)</option>
-										<option value="no" <?php if (($app->vars["article_options"]["show_title"] ?? "yes") == "no") echo "selected"; ?>>No</option>
-									<?php } else { ?>
-										<option value="yes" <?php if (($app->vars["article_options"]["show_title"] ?? "no") == "yes") echo "selected"; ?>>Yes</option>
-										<option value="no" <?php if (($app->vars["article_options"]["show_title"] ?? "no") == "no") echo "selected"; ?>>No (Default)</option>
-									<?php } ?>
-								</select>
+								<label for="article_options[show_title]"><?php $app("i18n")("show_title_c"); ?></label>
+								<?php RenderHelper::renderYesNo("article_options[show_comments]", $app->vars["article"]->options["show_title"] ?? $app->getSetting("articles.show_title", "yes")); ?>
 
-								<label for="article_options[show_sidebar]">Show Sidebar</label>
-								<select class="form-control" name="article_options[show_sidebar]">
-									<?php if ($app->getSetting("articles.show_sidebar", "yes") == "yes") { ?>
-										<option value="yes" <?php if (($app->vars["article_options"]["show_sidebar"] ?? "yes") == "yes") echo "selected"; ?>>Yes (Default)</option>
-										<option value="no" <?php if (($app->vars["article_options"]["show_sidebar"] ?? "yes") == "no") echo "selected"; ?>>No</option>
-									<?php } else { ?>
-										<option value="yes" <?php if (($app->vars["article_options"]["show_sidebar"] ?? "no") == "yes") echo "selected"; ?>>Yes</option>
-										<option value="no" <?php if (($app->vars["article_options"]["show_sidebar"] ?? "no") == "no") echo "selected"; ?>>No (Default)</option>
-									<?php } ?>
-								</select>
+								<label for="article_options[show_sidebar]"><?php $app("i18n")("show_sidebar_c"); ?></label>
+								<?php RenderHelper::renderYesNo("article_options[show_comments]", $app->vars["article"]->options["show_sidebar"] ?? $app->getSetting("articles.show_sidebar", "yes")); ?>
 							</div>
 						</div>
 					</div>
 					<div class="col-12 col-lg-4 ps-lg-2">
-						<label for="article_id">Article ID:</label>
-						<input type="text" class="form-control" name="article_id" placeholder="auto-generate" value="<?php echo $app->vars["article_id"]; ?>" />
+						<label for="article_id"><?php $app("i18n")("article_id_c"); ?></label>
+						<input type="text" class="form-control" name="article_id" placeholder="auto-generate" value="<?php echo htmlentities($app->vars["article"]->id); ?>" />
 
-						<label for="article_state">Article Status:</label>
+						<label for="article_state"><?php $app("i18n")("article_state_c"); ?></label>
 						<select class="form-select" name="article_state">
-							<option value="published" <?php if ($app->vars["article_published"]) echo "selected"; ?>>Published</option>
-							<option value="unpublished" <?php if (!$app->vars["article_published"]) echo "selected"; ?>>Unpublished</option>
+							<option value="published" <?php if ($app->vars["article"]->state == "published") echo "selected"; ?>><?php $app("i18n")("published"); ?></option>
+							<option value="unpublished" <?php if ($app->vars["article"]->state == "unpublished") echo "selected"; ?>><?php $app("i18n")("unpublished"); ?></option>
 						</select>
 
-						<label for="article_category">Category:</label>
-						<?php RenderHelper::renderCategoryPicker("article_category", $app->vars["article_category"]); ?>
+						<label for="article_category"><?php $app("i18n")("article_category_c"); ?></label>
+						<?php RenderHelper::renderCategoryPicker("article_category", htmlentities($app->vars["article"]->category)); ?>
 
-						<label for="article_tags">Article Tags:</label>
-						<input type="text" class="form-control" name="article_tags" value="<?php echo $app->vars["article_tags"]; ?>" />
+						<label for="article_tags"><?php $app("i18n")("article_tags_c"); ?></label>
+						<input type="text" class="form-control" name="article_tags" value="<?php echo htmlentities($app->vars["article"]->tags); ?>" />
 
-						<label for="article_meta_desc">Meta Description:</label>
-						<textarea class="form-control" name="article_meta_desc" style="height: 160px;" placeholder="<?php echo $app->getSetting("meta_desc"); ?>"><?php echo $app->vars["article_meta_desc"]; ?></textarea>
+						<label for="article_meta_desc"><?php $app("i18n")("meta_description_c"); ?></label>
+						<textarea class="form-control" name="article_meta_desc" style="height: 160px;" placeholder="<?php echo $app->getSetting("meta_desc"); ?>"><?php echo htmlentities($app->vars["article"]->meta_desc); ?></textarea>
 
-						<label for="article_meta_keys">Meta Keywords:</label>
-						<input type="text" class="form-control" name="article_meta_keys" placeholder="<?php echo $app->getSetting("meta_keys"); ?>" value="<?php echo $app->vars["article_meta_keys"]; ?>" />
+						<label for="article_meta_keys"><?php $app("i18n")("meta_keywords_c"); ?></label>
+						<input type="text" class="form-control" name="article_meta_keys" placeholder="<?php echo $app->getSetting("meta_keys"); ?>" value="<?php echo htmlentities($app->vars["article"]->meta_keys); ?>" />
 
-						<label for="article_meta_robots">Meta Robots:</label>
-						<input type="text" class="form-control" name="article_meta_robots" placeholder="<?php echo $app->getSetting("meta_robots"); ?>" value="<?php echo $app->vars["article_meta_robots"]; ?>" />
+						<label for="article_meta_robots"><?php $app("i18n")("meta_robots_c"); ?></label>
+						<input type="text" class="form-control" name="article_meta_robots" placeholder="<?php echo $app->getSetting("meta_robots"); ?>" value="<?php echo htmlentities($app->vars["article"]->meta_robots); ?>" />
 
-						<a class="btn btn-secondary btn-lg mt-3 me-2" href="<?php echo Config::WEBROOT; ?>/backend/articles/list" style="width: calc(50% - 0.375rem);">Back</a>
-						<button class="btn btn-success btn-lg mt-3" type="submit" style="width: calc(50% - 0.375rem);">Save</button>
+						<a class="btn btn-secondary btn-lg mt-3 me-2" href="<?php echo Config::WEBROOT; ?>/backend/articles/list" style="width: calc(50% - 0.375rem);"><?php $app("i18n")("back"); ?></a>
+						<button class="btn btn-success btn-lg mt-3" type="submit" style="width: calc(50% - 0.375rem);"><?php $app("i18n")("save"); ?></button>
 					</div>
 				</div>
 			</form>

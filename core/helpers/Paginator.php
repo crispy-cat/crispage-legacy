@@ -24,8 +24,20 @@
 		}
 
 		public static function numPages(array $items, int $nent) : int {
-			if ($nent == 0) return 1;
-			return ceil(count($items) / $nent);
+			return ceil(max(1, count($items)) / max(1, $nent));
+		}
+		
+		public static function paginationQuery(array &$vars, int $dshow = 15, int $dpage = 1, string $vshow = "show", string $vpage = "page") : void {
+			global $app;
+			$vars["show"] = (is_numeric($app->request->query[$vshow])) ?  $app->request->query[$vshow] : $dshow;
+			$vars["page"] = (is_numeric($app->request->query[$vpage])) ? $app->request->query[$vpage] : $dpage;
+		}
+		
+		public static function paginateNum(array &$vars, array $data, string $vdata, string $vnpages = "npages", string $vshow = "show", string $vpage = "page") : void {
+			$show = $vars[$vshow];
+			$page = $vars[$vpage];
+			$vars[$vnpages] = self::numPages($data, $show);
+			$vars[$vdata] = self::paginate($data, $show, $page);
 		}
 	}
 ?>

@@ -24,7 +24,7 @@
 			if (!isset($this->dbdata[$table])) {
 				$file = "$this->dbfpre$table.db.json";
 				if (!file_exists($file) || !filesize($file)) throw new Exception("Attempted to read nonexistent database file $file");
-				$fc = fopen($file, "r");
+				$fc = fopen($file, "rb");
 				if (!$fc) throw new Exception("Could not open database file for reading $file");
 				if (!flock($fc, LOCK_SH)) throw new Exception("Could not get lock on database file $file");
 				$data = fread($fc, filesize($file));
@@ -225,7 +225,7 @@
 			$app->events->trigger("database.write_changes");
 			foreach ($this->dbdata as $table => $data) {
 				$file = "$this->dbfpre$table.db.json";
-				$fc = fopen($file, "c+");
+				$fc = fopen($file, "c+b");
 				if (!$fc) throw new Exception("Could not open database file for writing $file");
 				if (!flock($fc, LOCK_EX)) throw new Exception("Could not get lock on database file $file");
 				if ($this->pretty)

@@ -10,109 +10,87 @@
 	defined("CRISPAGE") or die("Application must be started from index.php!");
 	require_once Config::APPROOT . "/backend/header.php";
 
-	if (!User::userHasPermissions(Session::getCurrentSession()->user, UserPermissions::MODIFY_MENUS))
-		$app->redirectWithMessages("/backend/menu_items/list", array("type" => "error", "content" => "You do not have permission to modify menu items"));
+	$currentUser = Session::getCurrentSession()->user;
+	$formFilled = FormHelper::formFieldsFilled(
+		"item_label", "item_id", "item_type", "item_menu",
+		"item_parent", "item_ord"
+	);
 
-	function checkQuery() {
-		global $app;
+	$app->vars["item"] = new MenuItem(array());
 
-		return	isset($app->request->query["item_label"]) &&
-				isset($app->request->query["item_id"]) &&
-				isset($app->request->query["item_type"]) &&
-				isset($app->request->query["item_menu"]) &&
-				isset($app->request->query["item_parent"]) &&
-				isset($app->request->query["item_ord"]);
-	}
-
-	$app->vars["item_label"]	= "";
-	$app->vars["item_content"]	= "";
-	$app->vars["item_id"]		= "";
-	$app->vars["item_type"]		= "article";
-	$app->vars["item_menu"]		= null;
-	$app->vars["item_parent"]	= null;
-	$app->vars["item_ord"]		= 0;
+	if (!User::userHasPermissions($currentUser, UserPermissions::MODIFY_MENUS))
+		$app->redirectWithMessages("/backend/menu_items/list", array("type" => "error", "content" => $app("i18n")->getString("no_permission_menus")));
 
 	if (isset($app->request->query["edit_id"])) {
 		if (!$app("menu_items")->exists($app->request->query["edit_id"]))
-			$app->redirectWithMessages("/backend/menu_items/list", array("type" => "error", "content" => "Menu item does not exist"));
+			$app->redirectWithMessages("/backend/menu_items/list", array("type" => "error", "content" => $app("i18n")->getString("menu_item_does_not_exist")));
 
-		$item = $app("menu_items")->get($app->request->query["edit_id"]);
+		$app->vars["item"] = $app("menu_items")->get($app->request->query["edit_id"]);
 
-		if (checkQuery()) {
-			$id = $app->request->query["edit_id"];
+		if ($formFilled) {
+			$app->vars["item"]->id = $app->request->query["edit_id"];
 			if ($app->request->query["edit_id"] != $app->request->query["item_id"]) {
 				if ($app("menu_items")->exists($app->request->query["item_id"])) {
-					$app->page->alerts["id_taken"] = array("class" => "warning", "content" => "The ID '{$app->request->query["item_id"]}' is taken! Using '$id'.");
+					$app->page->alerts["id_taken"] = array("class" => "warning", "content" => $app("i18n")->getString("id_taken_using", null, $app->request->query["item_id"], $app->vars["item"]->id));
 				} else {
 					if ($app->request->query["item_id"] == "")
-						$id = $app->nameToId($app->request->query["item_label"]);
+						$app->vars["item"]->id = $app->nameToId($app->request->query["item_label"]);
 					else
-						$id = $app->nameToId($app->request->query["item_id"]);
+						$app->vars["item"]->id = $app->nameToId($app->request->query["item_id"]);
 
 					$app("menu_items")->delete($app->request->query["edit_id"]);
 				}
 			}
 
 			$parent = $app->request->query["item_parent"];
-			if ($parent == $id) {
+			if ($parent == $app->vars["item"]->id) {
 				$parent = null;
-				$app->page->alerts["parent_self"] = array("class" => "warning", "content" => "Parent item cannot be self.");
+				$app->page->alerts["parent_self"] = array("class" => "warning", "content" => $app("i18n")->getString("parent_cannot_be_self"));
 			}
 
-			$item->label	= $app->request->query["item_label"];
-			$item->content	= $app->request->query["item_content"] ?? "";
-			$item->type		= $app->request->query["item_type"];
-			$item->id		= $id;
-			$item->menu		= $app->request->query["item_menu"];
-			$item->parent	= $parent;
-			$item->ord		= $app->request->query["item_ord"];
-			$item->modified	= time();
+			$app->vars["item"]->label	= $app->request->query["item_label"];
+			$app->vars["item"]->content	= $app->request->query["item_content"] ?? "";
+			$app->vars["item"]->type	= $app->request->query["item_type"];
+			$app->vars["item"]->id		= $app->vars["item"]->id;
+			$app->vars["item"]->menu	= $app->request->query["item_menu"];
+			$app->vars["item"]->parent	= $parent;
+			$app->vars["item"]->ord		= $app->request->query["item_ord"];
+			$app->vars["item"]->modified= time();
 
-			$app("menu_items")->set($id, $item);
+			$app("menu_items")->set($app->vars["item"]->id, $app->vars["item"]);
 
 			if ($app->request->query["item_id"] == "")
-				$app->redirectWithMessages("/backend/menu_items/editor?edit_id=$id", array("type" => "success", "content" => "Changes saved."));
+				$app->redirectWithMessages("/backend/menu_items/editor?edit_id=" . $app->vars["item"]->id, array("type" => "success", "content" => $app("i18n")->getString("changes_saved")));
 
-			$app->page->alerts["edit_success"] = array("class" => "success", "content" => "Changes saved.");
+			$app->page->alerts["edit_success"] = array("class" => "success", "content" => $app("i18n")->getString("changes_saved"));
 		}
 
-		$app->vars["title"] = "Edit Menu Item";
-
-		$app->vars["item_label"]	= htmlentities($item->label);
-		$app->vars["item_content"]	= htmlentities($item->content);
-		$app->vars["item_id"]		= $item->id;
-		$app->vars["item_type"]		= htmlentities($item->type);
-		$app->vars["item_menu"]		= htmlentities($item->menu);
-		$app->vars["item_parent"]	= htmlentities($item->parent);
-		$app->vars["item_ord"]		= htmlentities($item->ord);
+		$app->vars["title"] = $app("i18n")->getString("edit_menu_item");
 	} else {
-		$app->vars["title"] = "New Menu Item";
+		$app->vars["title"] = $app("i18n")->getString("new_menu_item");
 
-		if (checkQuery()) {
+		if ($formFilled) {
 			if ($app->request->query["item_id"] == "")
-				$id = $app->nameToId($app->request->query["item_label"]);
+				$app->vars["item"]->id = $app->nameToId($app->request->query["item_label"]);
 			else
-				$id = $app->nameToId($app->request->query["item_id"]);
+				$app->vars["item"]->id = $app->nameToId($app->request->query["item_id"]);
 
-			while ($app("menu_items")->exists($id)) $id .= "_1";
+			while ($app("menu_items")->exists($app->vars["item"]->id)) $app->vars["item"]->id .= "_1";
 
-			$id = $app->nameToId($id);
+			$app->vars["item"]->id = $app->nameToId($app->vars["item"]->id);
 
-			$item = new MenuItem(array(
-				"id"		=> $id,
-				"label"		=> $app->request->query["item_label"],
-				"content"	=> $app->request->query["item_content"] ?? "",
-				"type"		=> $app->request->query["item_type"],
-				"menu"		=> $app->request->query["item_menu"],
-				"parent"	=> $app->request->query["item_parent"],
-				"ord"		=> $app->request->query["item_ord"],
-				"created"	=> time(),
-				"modified"	=> time()
-			));
+			$app->vars["item"]->label =		$app->request->query["item_label"];
+			$app->vars["item"]->content =	$app->request->query["item_content"] ?? "";
+			$app->vars["item"]->type =		$app->request->query["item_type"];
+			$app->vars["item"]->menu =		$app->request->query["item_menu"];
+			$app->vars["item"]->parent =	$app->request->query["item_parent"];
+			$app->vars["item"]->ord =		$app->request->query["item_ord"];
+			$app->vars["item"]->created =	time();
+			$app->vars["item"]->modified =	time();
 
-			$app("menu_items")->set($id, $item);
+			$app("menu_items")->set($app->vars["item"]->id, $app->vars["item"]);
 
-			$app->redirectWithMessages("/backend/menu_items/editor?edit_id=$id", array("type" => "success", "content" => "Changes saved."));
+			$app->redirectWithMessages("/backend/menu_items/editor?edit_id=" . $app->vars["item"]->id, array("type" => "success", "content" => $app("i18n")->getString("changes_saved")));
 		}
 	}
 
@@ -133,24 +111,24 @@
 						<?php if (isset($app->request->query["edit_id"])) { ?>
 							<input type="hidden" name="edit_id" value="<?php echo $app->request->query["edit_id"]; ?>" />
 						<?php } ?>
-						<label for="item_label">Item Label:</label>
-						<input type="text" class="form-control" name="item_label" value="<?php echo $app->vars["item_label"]; ?>" required />
+						<label for="item_label"><?php $app("i18n")("item_label_c"); ?></label>
+						<input type="text" class="form-control" name="item_label" value="<?php echo $app->vars["item"]->label; ?>" required />
 
-						<label for="item_type">Item Type:</label>
+						<label for="item_type"><?php $app("i18n")("item_type_c"); ?></label>
 						<select id="item_type" class="form-select" name="item_type">
-							<option value="article" <?php if ($app->vars["item_type"] == "article") echo "selected"; ?>>Article</option>
-							<option value="category" <?php if ($app->vars["item_type"] == "category") echo "selected"; ?>>Category</option>
-							<option value="search" <?php if ($app->vars["item_type"] == "search") echo "selected"; ?>>Search</option>
-							<option value="login" <?php if ($app->vars["item_type"] == "login") echo "selected"; ?>>User Login</option>
-							<option value="logout" <?php if ($app->vars["item_type"] == "logout") echo "selected"; ?>>User Logout</option>
-							<option value="register" <?php if ($app->vars["item_type"] == "register") echo "selected"; ?>>User Register</option>
-							<option value="reset_password" <?php if ($app->vars["item_type"] == "reset_password") echo "selected"; ?>>User Password Reset</option>
-							<option value="user_profile" <?php if ($app->vars["item_type"] == "user_profile") echo "selected"; ?>>User Profile</option>
-							<option value="url" <?php if ($app->vars["item_type"] == "url") echo "selected"; ?>>Custom URL</option>
+							<option value="article" <?php if ($app->vars["item"]->type == "article") echo "selected"; ?>>Article</option>
+							<option value="category" <?php if ($app->vars["item"]->type == "category") echo "selected"; ?>>Category</option>
+							<option value="search" <?php if ($app->vars["item"]->type == "search") echo "selected"; ?>>Search</option>
+							<option value="login" <?php if ($app->vars["item"]->type == "login") echo "selected"; ?>>User Login</option>
+							<option value="logout" <?php if ($app->vars["item"]->type == "logout") echo "selected"; ?>>User Logout</option>
+							<option value="register" <?php if ($app->vars["item"]->type == "register") echo "selected"; ?>>User Register</option>
+							<option value="reset_password" <?php if ($app->vars["item"]->type == "reset_password") echo "selected"; ?>>User Password Reset</option>
+							<option value="user_profile" <?php if ($app->vars["item"]->type == "user_profile") echo "selected"; ?>>User Profile</option>
+							<option value="url" <?php if ($app->vars["item"]->type == "url") echo "selected"; ?>>Custom URL</option>
 						</select>
 
-						<label id="item_content_label" for="item_content">Item Content:</label>
-						<input type="text" id="item_content" class="form-control" name="item_content" value="<?php echo $app->vars["item_content"]; ?>" />
+						<label id="item_content_label" for="item_content"><?php $app("i18n")("item_content_c"); ?></label>
+						<input type="text" id="item_content" class="form-control" name="item_content" value="<?php echo $app->vars["item"]->content; ?>" />
 
 						<script>
 							function selectChanged() {
@@ -194,20 +172,20 @@
 						</script>
 					</div>
 					<div class="col-12 col-lg-4 ps-lg-2">
-						<label for="item_id">Item ID:</label>
-						<input type="text" class="form-control" name="item_id" placeholder="auto-generate" value="<?php echo $app->vars["item_id"]; ?>" />
+						<label for="item_id"><?php $app("i18n")("item_id_c"); ?></label>
+						<input type="text" class="form-control" name="item_id" placeholder="auto-generate" value="<?php echo $app->vars["item"]->id; ?>" />
 
-						<label for="item_menu">Item Menu:</label>
-						<?php RenderHelper::renderMenuPicker("item_menu", $app->vars["item_menu"]); ?>
+						<label for="item_menu"><?php $app("i18n")("item_menu_c"); ?></label>
+						<?php RenderHelper::renderMenuPicker("item_menu", $app->vars["item"]->menu); ?>
 
-						<label for="item_parent">Item Parent:</label>
-						<?php RenderHelper::renderMenuItemPicker("item_parent", $app->vars["item_parent"], array("title" => "[none]", "value" => "")); ?>
+						<label for="item_parent"><?php $app("i18n")("item_parent_c"); ?></label>
+						<?php RenderHelper::renderMenuItemPicker("item_parent", $app->vars["item"]->parent, array("title" => "[none]", "value" => "")); ?>
 
-						<label for="item_ord">Item Order:</label>
-						<input type="number" class="form-control" name="item_ord" value="<?php echo $app->vars["item_ord"]; ?>" />
+						<label for="item_ord"><?php $app("i18n")("item_order_c"); ?></label>
+						<input type="number" class="form-control" name="item_ord" value="<?php echo $app->vars["item"]->ord; ?>" />
 
-						<a class="btn btn-secondary btn-lg mt-3 pe-2" href="<?php echo Config::WEBROOT; ?>/backend/menu_items/list" style="width: calc(50% - 0.375rem);">Back</a>
-						<button class="btn btn-success btn-lg mt-3" type="submit" style="width: calc(50% - 0.375rem);">Save</button>
+						<a class="btn btn-secondary btn-lg mt-3 pe-2" href="<?php echo Config::WEBROOT; ?>/backend/menu_items/list" style="width: calc(50% - 0.375rem);"><?php $app("i18n")("back"); ?></a>
+						<button class="btn btn-success btn-lg mt-3" type="submit" style="width: calc(50% - 0.375rem);"><?php $app("i18n")("save"); ?></button>
 					</div>
 				</div>
 			</form>

@@ -11,33 +11,35 @@
 	require_once Config::APPROOT . "/backend/header.php";
 
 	if (!User::userHasPermissions(Session::getCurrentSession()->user, UserPermissions::MODIFY_PLUGINS))
-		$app->redirectWithMessages("/backend/plugins/list", array("type" => "error", "content" => "You do not have permission to deactivate plugins"));
+		$app->redirectWithMessages("/backend/plugins/list", array("type" => "error", "content" => $app("i18n")->getString("no_permission_plugins")));
 
 	if (!isset($app->request->query["deactivate_id"]))
-		$app->redirectWithMessages("/backend/plugins/list", array("type" => "error", "content" => "No ID Specified"));
+		$app->redirectWithMessages("/backend/plugins/list", array("type" => "error", "content" => $app("i18n")->getString("no_id_given")));
 
 	if (!$app("plugins")->exists($app->request->query["deactivate_id"]))
-		$app->redirectWithMessages("/backend/plugins/list", array("type" => "error", "content" => "Plugin does not exist"));
+		$app->redirectWithMessages("/backend/plugins/list", array("type" => "error", "content" => $app("i18n")->getString("plugin_does_not_exist")));
 
 	if (isset($app->request->query["confirm"]) && $app->request->query["confirm"]) {
 		$app("plugins")->delete($app->request->query["deactivate_id"]);
-		$app->redirectWithMessages("/backend/plugins/list", array("type" => "success", "content" => "Plugin deactivated"));
+		$app->redirectWithMessages("/backend/plugins/list", array("type" => "success", "content" => $app("i18n")->getString("plugin_deactivated")));
 	}
+	
+	$app->vars["deactivate_id"] = $app->request->query["deactivate_id"];
 
-	$app->page->setTitle("Deactivate Plugin");
+	$app->page->setTitle($app("i18n")->getString("delete_v", null, $app->vars["deactivate_id"]));
 
 	$app->page->setContent(function($app) {
 ?>
 		<div id="main" class="page-content">
 			<div class="row">
 				<div class="col">
-					<h1>Delete '<?php echo $app->request->query["deactivate_id"]; ?>'</h1>
-					<p>Are you sure you want to deactivate this plugin? This action cannot be undone!</p>
+					<h1><?php $app("i18n")("deactivate_v", null, $app->vars["deactivate_id"]); ?></h1>
+					<p><?php $app("i18n")("sure_delete_plugin"); ?></p>
 					<form class="d-flex">
 						<input type="hidden" name="deactivate_id" value="<?php echo $app->request->query["deactivate_id"]; ?>" />
 						<input type="hidden" name="confirm" value="1" />
-						<a class="btn btn-primary me-2" href="<?php echo Config::WEBROOT; ?>/backend/plugins/list">Back</a>
-						<button class="btn btn-danger" type="submit">Deactivate</button>
+						<a class="btn btn-primary me-2" href="<?php echo Config::WEBROOT; ?>/backend/plugins/list"><?php $app("i18n")("back"); ?></a>
+						<button class="btn btn-danger" type="submit"><?php $app("i18n")("deactivate"); ?></button>
 					</form>
 				</div>
 			</div>

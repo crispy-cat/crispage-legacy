@@ -10,26 +10,24 @@
 	defined("CRISPAGE") or die("Application must be started from index.php!");
 	require_once Config::APPROOT . "/backend/header.php";
 
-	$app->page->setTitle("Comments");
+	$app->page->setTitle($app("i18n")->getString("comments"));
 
 	$app->vars["art"] = $app->request->query["art"] ?? null;
-	$app->vars["show"] = (is_numeric($app->request->query["show"])) ?  $app->request->query["show"] : 15;
-	$app->vars["page"] = (is_numeric($app->request->query["page"])) ? $app->request->query["page"] : 1;
+	Paginator::paginationQuery($app->vars);
 
 	$comments = $app("comments")->getAllArr(($app->vars["art"]) ? array("article" => $app->vars["art"]) : null, "modified");
 
-	$app->vars["npages"] = Paginator::numPages($comments, $app->vars["show"]);
-	$app->vars["comments"] = Paginator::Paginate($comments, $app->vars["show"], $app->vars["page"]);
+	Paginator::paginateNum($app->vars, $comments, "comments");
 
 	$app->page->setContent(function($app) {
 ?>
 		<div id="main" class="page-content">
 			<div class="row">
 				<div class="col-12 col-md-4 col-xxl-2">
-					<h1>Comments</h1>
-					<span>Show only:</span>
+					<h1><?php $app("i18n")("comments"); ?></h1>
+					<span><?php $app("i18n")("show_c"); ?></span>
 					<form class="d-flex">
-						<?php RenderHelper::renderArticlePicker("art", null, array("title" => "All Articles", "value" => "")); ?>
+						<?php RenderHelper::renderArticlePicker("art", null, array("title" => $app("i18n")->getString("all_articles"), "value" => "")); ?>
 						<select class="form-select ms-2" name="show">
 							<option value="15">15</option>
 							<option value="30">30</option>
@@ -37,9 +35,9 @@
 							<option value="120">120</option>
 							<option value="240">240</option>
 							<option value="480">480</option>
-							<option value="all">All</option>
+							<option value="all"><?php $app("i18n")("all"); ?></option>
 						</select>
-						<button class="btn btn-primary ms-2" type="submit">Go</button>
+						<button class="btn btn-primary ms-2" type="submit"><?php $app("i18n")("go"); ?></button>
 					</form>
 				</div>
 				<div class="col-12 col-md-8 col-xxl-10">
@@ -57,13 +55,13 @@
 						<table class="table table-striped">
 							<thead>
 								<tr>
-									<th>Id</th>
-									<th>Author</th>
-									<th>Article</th>
-									<th>Comment</th>
-									<th>Created</th>
-									<th>Modified</th>
-									<th>Actions</th>
+									<th><?php $app("i18n")("id"); ?></th>
+									<th><?php $app("i18n")("author"); ?></th>
+									<th><?php $app("i18n")("article"); ?></th>
+									<th><?php $app("i18n")("comment"); ?></th>
+									<th><?php $app("i18n")("created"); ?></th>
+									<th><?php $app("i18n")("modified"); ?></th>
+									<th><?php $app("i18n")("actions"); ?></th>
 								</tr>
 							</thead>
 							<tbody>
@@ -76,14 +74,16 @@
 										<td><?php echo date($app->getSetting("date_format", "Y-m-d"), $comment->created); ?></td>
 										<td><?php echo date($app->getSetting("date_format", "Y-m-d"), $comment->modified); ?></td>
 										<td>
-											<a class="btn btn-danger btn-sm" href="<?php echo Config::WEBROOT; ?>/backend/comments/delete?delete_id=<?php echo $comment->id; ?>"><i class="bi bi-trash"></i> Delete</a>
+											<a class="btn btn-danger btn-sm" href="<?php echo Config::WEBROOT; ?>/backend/comments/delete?delete_id=<?php echo $comment->id; ?>">
+												<i class="bi bi-trash"></i> <?php $app("i18n")("delete"); ?>
+											</a>
 										</td>
 									</tr>
 								<?php } ?>
 							</tbody>
 						</table>
 					<?php } else { ?>
-						<p>No comments match your criteria!</p>
+						<p><?php $app("i18n")("no_comments_match"); ?></p>
 					<?php } ?>
 				</div>
 			</div>

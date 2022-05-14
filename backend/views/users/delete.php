@@ -11,47 +11,47 @@
 	require_once Config::APPROOT . "/backend/header.php";
 
 	if (!isset($app->request->query["delete_id"]))
-		$app->redirectWithMessages("/backend/users/list", array("type" => "error", "content" => "No ID Specified"));
+		$app->redirectWithMessages("/backend/users/list", array("type" => "error", "content" => $app("i18n")->getString("no_id_given")));
 
 	if (!$app("users")->exists($app->request->query["delete_id"]))
-		$app->redirectWithMessages("/backend/users/list", array("type" => "error", "content" => "User does not exist"));
+		$app->redirectWithMessages("/backend/users/list", array("type" => "error", "content" => $app("i18n")->getString("user_does_not_exist")));
 
 	$user = $app("users")->get($app->request->query["delete_id"]);
 
 	if ($user->id == Session::getCurrentSession()->user) {
-		$app->redirectWithMessages("/backend/users/list", array("type" => "error", "content" => "The active user cannot be deleted"));
+		$app->redirectWithMessages("/backend/users/list", array("type" => "error", "content" => $app("i18n")->getString("target_not_current_user")));
 	} else {
 		if (!User::userHasPermissions(Session::getCurrentSession()->user, UserPermissions::MODIFY_USERS))
-			$app->redirectWithMessages("/backend/users/list", array("type" => "error", "content" => "You do not have permission to delete other users"));
+			$app->redirectWithMessages("/backend/users/list", array("type" => "error", "content" => $app("i18n")->getString("no_permission_users")));
 
 		if (User::compareUserRank(Session::getCurrentSession()->user, $app->request->query["delete_id"]) !== 1)
-			$app->redirectWithMessages("/backend/users/list", array("type" => "error", "content" => "Target user's group rank must be less than your own"));
+			$app->redirectWithMessages("/backend/users/list", array("type" => "error", "content" => $app("i18n")->getString("rank_less_than_own")));
 	}
 
 	if (isset($app->request->query["confirm"]) && $app->request->query["confirm"]) {
 		if (count($app("users")->getAllArr()) < 2)
-			$app->redirectWithMessages("/backend/users/list", array("type" => "error", "content" => "There must be at least one user"));
+			$app->redirectWithMessages("/backend/users/list", array("type" => "error", "content" => $app("i18n")->getString("must_be_one_user")));
 
 		$app("users")->delete($user->id);
-		$app->redirectWithMessages("/backend/users/list", array("type" => "success", "content" => "User deleted."));
+		$app->redirectWithMessages("/backend/users/list", array("type" => "success", "content" => $app("i18n")->getString("user_deleted")));
 	}
 
 	$app->vars["user_name"] = htmlentities($user->name);
 
-	$app->page->setTitle("Delete {$app->vars["user_name"]}");
+	$app->page->setTitle($app("i18n")->getString("delete_v", null, $app->vars["user_name"]));
 
 	$app->page->setContent(function($app) {
 ?>
 		<div id="main" class="page-content">
 			<div class="row">
 				<div class="col">
-					<h1>Delete '<?php echo $app->vars["user_name"]; ?>'</h1>
-					<p>Are you sure you want to delete this user? This action cannot be undone!</p>
+					<h1><?php $app("i18n")("delete_v", null, $app->vars["user_name"]); ?></h1>
+					<p><?php $app("i18n")("sure_delete_user"); ?></p>
 					<form class="d-flex">
 						<input type="hidden" name="delete_id" value="<?php echo $app->request->query["delete_id"]; ?>" />
 						<input type="hidden" name="confirm" value="1" />
-						<a class="btn btn-primary me-2" href="<?php echo Config::WEBROOT; ?>/backend/users/list">Back</a>
-						<button class="btn btn-danger" type="submit">Delete</button>
+						<a class="btn btn-primary me-2" href="<?php echo Config::WEBROOT; ?>/backend/users/list"><?php $app("i18n")("back"); ?></a>
+						<button class="btn btn-danger" type="submit"><?php $app("i18n")("delete"); ?></button>
 					</form>
 				</div>
 			</div>

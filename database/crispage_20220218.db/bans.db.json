@@ -16,5 +16,14 @@
 		"expires": "integer",
 		"reason": "string"
 	},
-	"TableData": []
+	"TableData": [
+		{
+			"id": "Vfy8MkbaVbkyyQtV",
+			"user": "banned",
+			"created": 1647452603,
+			"modified": 1647452603,
+			"expires": 1967860800,
+			"reason": "This user is banned"
+		}
+	]
 }

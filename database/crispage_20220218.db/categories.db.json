@@ -34,16 +34,17 @@
 			"parent": "",
 			"state": "published",
 			"created": 1646600262,
-			"modified": 1646600262,
+			"modified": 1652494901,
 			"title": "Category 1",
 			"content": "Category 1",
 			"tags": "",
-			"meta_desc": "CrispyCMS",
+			"meta_desc": "Crispage",
 			"meta_keys": "crispycms,crispycat",
 			"meta_robots": "index, follow",
-			"options": [
-				""
-			]
+			"options": {
+				"show_title": "yes",
+				"show_sidebar": "yes"
+			}
 		},
 		{
 			"id": "category-1-a",

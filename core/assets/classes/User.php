@@ -43,6 +43,7 @@
 		public static function compareUserRank(string $user = null, $target = null) : int {
 			if (!$user) return -1;
 			if ($target === null) return 1;
+			if (self::getUserRank($user) < 0) return 1;
 			if (is_int($target)) return (self::getUserRank($user) - $target) <=> 0;
 			else return (self::getUserRank($user) - self::getUserRank($target)) <=> 0;
 		}

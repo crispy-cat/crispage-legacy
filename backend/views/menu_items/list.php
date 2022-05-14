@@ -10,23 +10,21 @@
 	defined("CRISPAGE") or die("Application must be started from index.php!");
 	require_once Config::APPROOT . "/backend/header.php";
 
-	$app->page->setTitle("Menu Items");
+	$app->page->setTitle($app("i18n")->getString("menu_items"));
 
 	$app->vars["menu"] = $app->request->query["menu"] ?? null;
-	$app->vars["show"] = (is_numeric($app->request->query["show"])) ?  $app->request->query["show"] : 15;
-	$app->vars["page"] = (is_numeric($app->request->query["page"])) ? $app->request->query["page"] : 1;
+	Paginator::paginationQuery($app->vars);
 
 	$items = $app("menu_items")->getAllArr(($app->vars["menu"]) ? array("menu" => $app->vars["menu"]) : null, "menu");
 
-	$app->vars["npages"] = Paginator::numPages($items, $app->vars["show"]);
-	$app->vars["items"] = Paginator::Paginate($items, $app->vars["show"], $app->vars["page"]);
+	Paginator::paginateNum($app->vars, $items, "items");
 
 	$app->page->setContent(function($app) {
 ?>
 		<div id="main" class="page-content">
 			<div class="row">
 				<div class="col-12 col-md-4 col-xxl-2">
-					<h1>Menu Items</h1>
+					<h1><?php $app("i18n")("menu_items"); ?></h1>
 					<span>Show only:</span>
 					<form class="d-flex">
 						<?php RenderHelper::renderMenuPicker("menu", null, array("title" => "All Menus", "value" => "")); ?>
@@ -44,7 +42,7 @@
 				</div>
 				<div class="col-12 col-md-8 col-xxl-10">
 					<div style="float: right;">
-						<a class="btn btn-success mt-4 mb-2 d-block ms-auto" href="<?php echo Config::WEBROOT; ?>/backend/menu_items/editor" style="width: 130px;">New Menu Item</a>
+						<a class="btn btn-success mt-4 mb-2 d-block ms-auto" href="<?php echo Config::WEBROOT; ?>/backend/menu_items/editor" style="width: 130px;"><?php $app("i18n")("new_menu_item"); ?></a>
 						<?php
 							$baseurl = Config::WEBROOT . "/backend/menu_items/list?menu=" . (($app->vars["menu"]) ? $app->vars["menu"] : "") . "&show=" . (($app->vars["show"]) ? $app->vars["show"] : "all") . "&page=";
 							RenderHelper::renderPagination($baseurl, $app->vars["npages"], $app->vars["page"] ?? 1);
@@ -58,15 +56,15 @@
 						<table class="table table-striped">
 							<thead>
 								<tr>
-									<th>Id</th>
-									<th>Label</th>
-									<th>Type</th>
-									<th>Menu</th>
-									<th>Parent</th>
-									<th>Order</th>
-									<th>Created</th>
-									<th>Modified</th>
-									<th>Actions</th>
+									<th><?php $app("i18n")("id"); ?></th>
+									<th><?php $app("i18n")("label"); ?></th>
+									<th><?php $app("i18n")("type"); ?></th>
+									<th><?php $app("i18n")("menu"); ?></th>
+									<th><?php $app("i18n")("parent"); ?></th>
+									<th><?php $app("i18n")("order"); ?></th>
+									<th><?php $app("i18n")("created"); ?></th>
+									<th><?php $app("i18n")("modified"); ?></th>
+									<th><?php $app("i18n")("actions"); ?></th>
 								</tr>
 							</thead>
 							<tbody>
@@ -81,15 +79,19 @@
 										<td><?php echo date($app->getSetting("date_format", "Y-m-d"), $item->created); ?></td>
 										<td><?php echo date($app->getSetting("date_format", "Y-m-d"), $item->modified); ?></td>
 										<td>
-											<a class="btn btn-primary btn-sm" href="<?php echo Config::WEBROOT; ?>/backend/menu_items/editor?edit_id=<?php echo $item->id; ?>"><i class="bi bi-pencil"></i> Edit</a>
-											<a class="btn btn-danger btn-sm" href="<?php echo Config::WEBROOT; ?>/backend/menu_items/delete?delete_id=<?php echo $item->id; ?>"><i class="bi bi-trash"></i> Delete</a>
+											<a class="btn btn-primary btn-sm" href="<?php echo Config::WEBROOT; ?>/backend/menu_items/editor?edit_id=<?php echo $item->id; ?>">
+												<i class="bi bi-pencil"></i> <?php $app("i18n")("edit"); ?>
+											</a>
+											<a class="btn btn-danger btn-sm" href="<?php echo Config::WEBROOT; ?>/backend/menu_items/delete?delete_id=<?php echo $item->id; ?>">
+												<i class="bi bi-trash"></i> <?php $app("i18n")("delete"); ?>
+											</a>
 										</td>
 									</tr>
 								<?php } ?>
 							</tbody>
 						</table>
 					<?php } else { ?>
-						<p>No items match your criteria!</p>
+						<p><?php $app("i18n")("no_menu_items_match"); ?></p>
 					<?php } ?>
 				</div>
 			</div>

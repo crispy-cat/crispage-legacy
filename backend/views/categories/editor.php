@@ -10,139 +10,106 @@
 	defined("CRISPAGE") or die("Application must be started from index.php!");
 	require_once Config::APPROOT . "/backend/header.php";
 
-	if (!User::userHasPermissions(Session::getCurrentSession()->user, UserPermissions::MODIFY_CATEGORIES))
-		$app->redirectWithMessages("/backend/categories/list", array("type" => "error", "content" => "You do not have permission to modify categories"));
+	$currentUser = Session::getCurrentSession()->user;
+	$formFilled = FormHelper::formFieldsFilled(
+		"category_title", "category_content", "category_id", "category_state",
+		"category_parent", "category_tags", "category_meta_desc",
+		"category_meta_keys", "category_meta_robots", "category_options"
+	) && is_array($app->request->query["category_options"]);
 
-	function checkQuery() {
-		global $app;
+	$app->vars["category"] = new Category(array());
 
-		return	isset($app->request->query["category_title"]) &&
-				isset($app->request->query["category_content"]) &&
-				isset($app->request->query["category_id"]) &&
-				isset($app->request->query["category_state"]) &&
-				isset($app->request->query["category_parent"]) &&
-				isset($app->request->query["category_tags"]) &&
-				isset($app->request->query["category_meta_desc"]) &&
-				isset($app->request->query["category_meta_keys"]) &&
-				isset($app->request->query["category_meta_robots"]) &&
-				isset($app->request->query["category_options"]) &&
-				is_array($app->request->query["category_options"]);
-	}
-
-	$app->vars["category_title"]		= "";
-	$app->vars["category_content"]		= "";
-	$app->vars["category_id"]			= "";
-	$app->vars["category_published"]	= true;
-	$app->vars["category_parent"]		= null;
-	$app->vars["category_tags"]			= "";
-	$app->vars["category_meta_desc"]	= "";
-	$app->vars["category_meta_keys"]	= "";
-	$app->vars["category_meta_robots"]	= "";
-	$app->vars["category_options"]		= array();
+	if (!User::userHasPermissions($currentUser, UserPermissions::MODIFY_CATEGORIES))
+		$app->redirectWithMessages("/backend/categories/list", array("type" => "error", "content" => $app("i18n")->getString("no_permission_categories")));
 
 	if (isset($app->request->query["edit_id"])) {
 		if (!$app("categories")->exists($app->request->query["edit_id"]))
-			$app->redirectWithMessages("/backend/categories/list", array("type" => "error", "content" => "Category does not exist"));
+			$app->redirectWithMessages("/backend/categories/list", array("type" => "error", "content" => $app("i18n")->getString("category_does_not_exist")));
 
-		$category = $app("categories")->get($app->request->query["edit_id"]);
+		$app->vars["category"] = $app("categories")->get($app->request->query["edit_id"]);
 
-		if (checkQuery()) {
-			$id = $app->request->query["edit_id"];
+		if ($formFilled) {
+			$app->vars["category"]->id = $app->request->query["edit_id"];
 			if ($app->request->query["edit_id"] != $app->request->query["category_id"]) {
 				if ($app("categories")->exists($app->request->query["category_id"])) {
-					$app->page->alerts["id_taken"] = array("class" => "warning", "content" => "The ID '{$app->request->query["category_id"]}' is taken! Using '$id'.");
+					$app->page->alerts["id_taken"] = array("class" => "warning", "content" => $app("i18n")->getString("id_taken_using", null, $app->request->query["category_id"], $app->vars["category"]->id));
 				} else {
 					if ($app->request->query["category_id"] == "")
-						$id = $app->nameToId($app->request->query["category_title"]);
+						$app->vars["category"]->id = $app->nameToId($app->request->query["category_title"]);
 					else
-						$id = $app->nameToId($app->request->query["category_id"]);
+						$app->vars["category"]->id = $app->nameToId($app->request->query["category_id"]);
 
 					$app("categories")->delete($app->request->query["edit_id"]);
 				}
 			}
 
 			$parent = $app->request->query["category_parent"];
-			if ($parent == $id) {
+			if ($parent == $app->vars["category"]->id) {
 				$parent = null;
-				$app->page->alerts["parent_self"] = array("class" => "warning", "content" => "Parent category cannot be self.");
+				$app->page->alerts["parent_self"] = array("class" => "warning", "content" => $app("i18n")->getString("parent_cannot_be_self"));
 			}
 
-			$category->title	= $app->request->query["category_title"];
-			$category->content	= $app->request->query["category_content"];
-			$category->id		= $id;
-			$category->state	= $app->request->query["category_state"];
-			$category->modified	= time();
-			$category->parent	= $parent;
-			$category->tags		= $app->request->query["category_tags"];
-			$category->meta_desc= ($app->request->query["category_meta_desc"] != "") ? $app->request->query["category_meta_desc"] : $app->getSetting("meta_keys", "");
-			$category->meta_keys= ($app->request->query["category_meta_keys"] != "") ? $app->request->query["category_meta_keys"] : $app->getSetting("meta_keys", "");
-			$category->meta_robots= ($app->request->query["category_meta_robots"] != "") ? $app->request->query["category_meta_robots"] : $app->getSetting("meta_robots", "");
-			$category->options	= $app->request->query["category_options"];
+			$app->vars["category"]->title	= $app->request->query["category_title"];
+			$app->vars["category"]->content	= $app->request->query["category_content"];
+			$app->vars["category"]->id		= $app->vars["category"]->id;
+			$app->vars["category"]->state	= $app->request->query["category_state"];
+			$app->vars["category"]->modified	= time();
+			$app->vars["category"]->parent	= $parent;
+			$app->vars["category"]->tags		= $app->request->query["category_tags"];
+			$app->vars["category"]->meta_desc= ($app->request->query["category_meta_desc"] != "") ? $app->request->query["category_meta_desc"] : $app->getSetting("meta_desc", "");
+			$app->vars["category"]->meta_keys= ($app->request->query["category_meta_keys"] != "") ? $app->request->query["category_meta_keys"] : $app->getSetting("meta_keys", "");
+			$app->vars["category"]->meta_robots= ($app->request->query["category_meta_robots"] != "") ? $app->request->query["category_meta_robots"] : $app->getSetting("meta_robots", "");
+			$app->vars["category"]->options	= $app->request->query["category_options"];
 
-			$app("categories")->set($id, $category);
+			$app("categories")->set($app->vars["category"]->id, $app->vars["category"]);
 
-			if (Category::categoryParentLoop($id)) {
-				$category->parent = null;
-				$app("categories")->set($id, $category);
-				$app->page->alerts["parent_loop"] = array("class" => "warning", "content" => "Parent category cannot cause an infinite loop.");
+			if (Category::categoryParentLoop($app->vars["category"]->id)) {
+				$app->vars["category"]->parent = null;
+				$app("categories")->set($app->vars["category"]->id, $app->vars["category"]);
+				$app->page->alerts["parent_loop"] = array("class" => "warning", "content" => $app("i18n")->getString("parent_loop_avoided"));
 			}
 
 			if ($app->request->query["category_id"] == "")
-				$app->redirectWithMessages("/backend/categories/editor?edit_id=$id", array("type" => "success", "content" => "Changes saved."));
+				$app->redirectWithMessages("/backend/categories/editor?edit_id=" . $app->vars["category"]->id, array("type" => "success", "content" => $app("i18n")->getString("changes_saved")));
 
-			$app->page->alerts["edit_success"] = array("class" => "success", "content" => "Changes saved.");
+			$app->page->alerts["edit_success"] = array("class" => "success", "content" => $app("i18n")->getString("changes_saved"));
 		}
 
-		$app->vars["title"] = "Edit Category";
-
-		$app->vars["category_title"]	= htmlentities($category->title);
-		$app->vars["category_content"]	= htmlentities($category->content);
-		$app->vars["category_id"]		= $category->id;
-		$app->vars["category_published"]= $category->state == "published";
-		$app->vars["category_parent"]	= htmlentities($category->parent);
-		$app->vars["category_tags"]		= htmlentities($category->tags);
-		$app->vars["category_meta_desc"]= htmlentities($category->meta_desc);
-		$app->vars["category_meta_keys"]= htmlentities($category->meta_keys);
-		$app->vars["category_meta_robots"]= htmlentities($category->meta_robots);
-		$app->vars["category_options"]	= $category->options;
+		$app->vars["title"] = $app("i18n")->getString("edit_category");
 	} else {
-		$app->vars["title"] = "New Category";
+		$app->vars["title"] = $app("i18n")->getString("new_category");
 
-		if (checkQuery()) {
+		if ($formFilled) {
 			if ($app->request->query["category_id"] == "")
-				$id = $app->nameToId($app->request->query["category_title"]);
+				$app->vars["category"]->id = $app->nameToId($app->request->query["category_title"]);
 			else
-				$id = $app->nameToId($app->request->query["category_id"]);
+				$app->vars["category"]->id = $app->nameToId($app->request->query["category_id"]);
 
-			while ($app("categories")->exists($id)) $id .= "_1";
+			while ($app("categories")->exists($app->vars["category"]->id)) $app->vars["category"]->id .= "_1";
 
 			$parent = $app->request->query["category_parent"];
-			if ($parent == $id) {
+			if ($parent == $app->vars["category"]->id) {
 				$parent = null;
-				$app->page->alerts["parent_self"] = array("class" => "warning", "content" => "Parent category cannot be self.");
+				$app->page->alerts["parent_self"] = array("class" => "warning", "content" => $app("i18n")->getString("parent_cannot_be_self"));
 			}
-			// TODO: Check for loop
 
-			$id = $app->nameToId($id);
+			$app->vars["category"]->id = $app->nameToId($app->vars["category"]->id);
 
-			$category = new Category(array(
-				"id"		=> $id,
-				"title"		=> $app->request->query["category_title"],
-				"content"	=> $app->request->query["category_content"],
-				"state"		=> $app->request->query["category_state"],
-				"created"	=> time(),
-				"modified"	=> time(),
-				"parent"	=> $parent,
-				"tags"		=> $app->request->query["category_tags"],
-				"meta_desc" => ($app->request->query["category_meta_desc"] != "") ? $app->request->query["category_meta_desc"] : $app->getSetting("meta_desc", ""),
-				"meta_keys" => ($app->request->query["category_meta_keys"] != "") ? $app->request->query["category_meta_keys"] : $app->getSetting("meta_keys", ""),
-				"meta_robots" => ($app->request->query["category_meta_robots"] != "") ? $app->request->query["category_meta_robots"] : $app->getSetting("meta_robots", ""),
-				"options"	=> $app->request->query["category_options"]
-			));
+			$app->vars["category"]->title =			$app->request->query["category_title"];
+			$app->vars["category"]->content =		$app->request->query["category_content"];
+			$app->vars["category"]->state =			$app->request->query["category_state"];
+			$app->vars["category"]->created =		time();
+			$app->vars["category"]->modified =		time();
+			$app->vars["category"]->parent =		$parent;
+			$app->vars["category"]->tags =			$app->request->query["category_tags"];
+			$app->vars["category"]->meta_desc =		($app->request->query["category_meta_desc"] != "") ? $app->request->query["category_meta_desc"] : $app->getSetting("meta_desc", "");
+			$app->vars["category"]->meta_keys =		($app->request->query["category_meta_keys"] != "") ? $app->request->query["category_meta_keys"] : $app->getSetting("meta_keys", "");
+			$app->vars["category"]->meta_robots =	($app->request->query["category_meta_robots"] != "") ? $app->request->query["category_meta_robots"] : $app->getSetting("meta_robots", "");
+			$app->vars["category"]->options =		$app->request->query["category_options"];
 
-			$app("categories")->set($id, $category);
+			$app("categories")->set($app->vars["category"]->id, $app->vars["category"]);
 
-			$app->redirectWithMessages("/backend/categories/editor?edit_id=$id", array("type" => "success", "content" => "Changes saved."));
+			$app->redirectWithMessages("/backend/categories/editor?edit_id=" . $app->vars["category"]->id, array("type" => "success", "content" => $app("i18n")->getString("changes_saved")));
 		}
 	}
 
@@ -155,8 +122,8 @@
 			<div class="row">
 				<div class="col">
 					<h1><?php echo $app->vars["title"]; ?></h1>
-					<?php if ($app->vars["category_id"] != "") { ?>
-						<a href="<?php echo Config::WEBROOT . "/" . Router::getCategoryRoute($app->vars["category_id"]); ?>">View category page</a>
+					<?php if ($app->vars["category"]->id != "") { ?>
+						<a target="_blank" href="<?php echo Config::WEBROOT . "/" . Router::getCategoryRoute($app->vars["category"]->id); ?>"><?php $app("i18n")("view_category"); ?></a>
 					<?php } ?>
 				</div>
 			</div>
@@ -169,72 +136,56 @@
 					<div class="col-12 col-lg-8 pe-lg-2">
 						<ul class="nav nav-tabs" role="tablist">
 							<li class="nav-item" role="presentation">
-								<button type="button" class="nav-link active" role="tab" data-bs-toggle="tab" data-bs-target="#category_content">Content</button>
+								<button type="button" class="nav-link active" role="tab" data-bs-toggle="tab" data-bs-target="#category_content"><?php $app("i18n")("content"); ?></button>
 							</li>
 							<li class="nav-item" role="presentation">
-								<button type="button" class="nav-link" role="tab" data-bs-toggle="tab" data-bs-target="#category_options">Options</button>
+								<button type="button" class="nav-link" role="tab" data-bs-toggle="tab" data-bs-target="#category_options"><?php $app("i18n")("options"); ?></button>
 							</li>
 						</ul>
 						<div class="tab-content">
 							<div id="category_content" class="tab-pane show active" role="tabpanel">
-								<label for="category_title">Category Title:</label>
-								<input type="text" class="form-control" name="category_title" value="<?php echo $app->vars["category_title"]; ?>" required />
+								<label for="category_title"><?php $app("i18n")("category_title_c"); ?></label>
+								<input type="text" class="form-control" name="category_title" value="<?php echo $app->vars["category"]->title; ?>" required />
 
-								<label for="category_content">Category Content:</label>
-								<textarea class="form-control" name="category_content" style="height: 300px; font-family: monospace;" required onkeydown="if(event.keyCode===9){var v=this.value,s=this.selectionStart,e=this.selectionEnd;this.value=v.substring(0, s)+'\t'+v.substring(e);this.selectionStart=this.selectionEnd=s+1;return false;}"><?php echo $app->vars["category_content"]; ?></textarea>
+								<label for="category_content"><?php $app("i18n")("category_content_c"); ?></label>
+								<?php RenderHelper::renderEditor("category_content", htmlentities($app->vars["category"]->content)); ?>
 							</div>
 							<div id="category_options" class="tab-pane" role="tabpanel">
-								<label for="category_options[show_title]">Show Title:</label>
-								<select class="form-control" name="category_options[show_title]">
-									<?php if ($app->getSetting("categories.show_info", "yes") == "yes") { ?>
-										<option value="yes" <?php if (($app->vars["category_options"]["show_title"] ?? "yes") == "yes") echo "selected"; ?>>Yes (Default)</option>
-										<option value="no" <?php if (($app->vars["category_options"]["show_title"] ?? "yes") == "no") echo "selected"; ?>>No</option>
-									<?php } else { ?>
-										<option value="yes" <?php if (($app->vars["category_options"]["show_title"] ?? "no") == "yes") echo "selected"; ?>>Yes</option>
-										<option value="no" <?php if (($app->vars["category_options"]["show_title"] ?? "no") == "no") echo "selected"; ?>>No (Default)</option>
-									<?php } ?>
-								</select>
+								<label for="category_options[show_title]"><?php $app("i18n")("show_title_c"); ?></label>
+								<?php RenderHelper::renderYesNo("category_options[show_title]", $app->vars["category"]->options["show_title"] ?? $app->getSetting("categories.show_title", "yes")); ?>
 
-								<label for="category_options[show_sidebar]">Show Sidebar</label>
-								<select class="form-control" name="category_options[show_sidebar]">
-									<?php if ($app->getSetting("category.show_sidebar", "yes") == "yes") { ?>
-										<option value="yes" <?php if (($app->vars["category_options"]["show_sidebar"] ?? "yes") == "yes") echo "selected"; ?>>Yes (Default)</option>
-										<option value="no" <?php if (($app->vars["category_options"]["show_sidebar"] ?? "yes") == "no") echo "selected"; ?>>No</option>
-									<?php } else { ?>
-										<option value="yes" <?php if (($app->vars["category_options"]["show_sidebar"] ?? "no") == "yes") echo "selected"; ?>>Yes</option>
-										<option value="no" <?php if (($app->vars["category_options"]["show_sidebar"] ?? "no") == "no") echo "selected"; ?>>No (Default)</option>
-									<?php } ?>
-								</select>
+								<label for="category_options[show_title]"><?php $app("i18n")("show_sidebar_c"); ?></label>
+								<?php RenderHelper::renderYesNo("category_options[show_sidebar]", $app->vars["category"]->options["show_sidebar"] ?? $app->getSetting("categories.show_sidebar", "yes")); ?>
 							</div>
 						</div>
 					</div>
 					<div class="col-12 col-lg-4 ps-lg-2">
-						<label for="category_id">Category ID:</label>
-						<input type="text" class="form-control" name="category_id" placeholder="auto-generate" value="<?php echo $app->vars["category_id"]; ?>" />
+						<label for="category_id"><?php $app("i18n")("category_id_c"); ?></label>
+						<input type="text" class="form-control" name="category_id" placeholder="auto-generate" value="<?php echo $app->vars["category"]->id; ?>" />
 
-						<label for="category_state">Category Status:</label>
+						<label for="category_state"><?php $app("i18n")("category_state_c"); ?></label>
 						<select class="form-select" name="category_state">
-							<option value="published" <?php if ($app->vars["category_published"]) echo "selected"; ?>>Published</option>
-							<option value="unpublished" <?php if (!$app->vars["category_published"]) echo "selected"; ?>>Unpublished</option>
+							<option value="published" <?php if ($app->vars["category"]->state == "published") echo "selected"; ?>><?php $app("i18n")("published"); ?></option>
+							<option value="unpublished" <?php if ($app->vars["category"]->state == "unpublished") echo "selected"; ?>><?php $app("i18n")("unpublished"); ?></option>
 						</select>
 
-						<label for="category_parent">Parent:</label>
-						<?php RenderHelper::renderCategoryPicker("category_parent", $app->vars["category_parent"], array("title" => "[none]", "value" => "")); ?>
+						<label for="category_parent"><?php $app("i18n")("category_parent_c"); ?></label>
+						<?php RenderHelper::renderCategoryPicker("category_parent", $app->vars["category"]->parent, array("title" => "[none]", "value" => "")); ?>
 
-						<label for="category_tags">Category Tags:</label>
-						<input type="text" class="form-control" name="category_tags" value="<?php echo $app->vars["category_tags"]; ?>" />
+						<label for="category_tags"><?php $app("i18n")("category_tags_c"); ?></label>
+						<input type="text" class="form-control" name="category_tags" value="<?php echo $app->vars["category"]->tags; ?>" />
 
-						<label for="category_meta_desc">Category Description:</label>
-						<textarea class="form-control" name="category_meta_desc" style="height: 160px;" placeholder="<?php echo $app->getSetting("meta_desc"); ?>"><?php echo $app->vars["category_meta_desc"]; ?></textarea>
+						<label for="category_meta_desc"><?php $app("i18n")("meta_description_c"); ?></label>
+						<textarea class="form-control" name="category_meta_desc" style="height: 160px;" placeholder="<?php echo $app->getSetting("meta_desc"); ?>"><?php echo $app->vars["category"]->meta_desc; ?></textarea>
 
-						<label for="category_meta_keys">Category Keywords:</label>
-						<input type="text" class="form-control" name="category_meta_keys" placeholder="<?php echo $app->getSetting("meta_keys"); ?>" value="<?php echo $app->vars["category_meta_keys"]; ?>" />
+						<label for="category_meta_keys"><?php $app("i18n")("meta_keywords_c"); ?></label>
+						<input type="text" class="form-control" name="category_meta_keys" placeholder="<?php echo $app->getSetting("meta_keys"); ?>" value="<?php echo $app->vars["category"]->meta_keys; ?>" />
 
-						<label for="category_meta_robots">Category Meta Robots:</label>
-						<input type="text" class="form-control" name="category_meta_robots" placeholder="<?php echo $app->getSetting("meta_robots"); ?>" value="<?php echo $app->vars["category_meta_robots"]; ?>" />
+						<label for="category_meta_robots"><?php $app("i18n")("meta_robots_c"); ?></label>
+						<input type="text" class="form-control" name="category_meta_robots" placeholder="<?php echo $app->getSetting("meta_robots"); ?>" value="<?php echo $app->vars["category"]->meta_robots; ?>" />
 
-						<a class="btn btn-secondary btn-lg mt-3 pe-2" href="<?php echo Config::WEBROOT; ?>/backend/categories/list" style="width: calc(50% - 0.375rem);">Back</a>
-						<button class="btn btn-success btn-lg mt-3" type="submit" style="width: calc(50% - 0.375rem);">Save</button>
+						<a class="btn btn-secondary btn-lg mt-3 pe-2" href="<?php echo Config::WEBROOT; ?>/backend/categories/list" style="width: calc(50% - 0.375rem);"><?php $app("i18n")("back"); ?></a>
+						<button class="btn btn-success btn-lg mt-3" type="submit" style="width: calc(50% - 0.375rem);"><?php $app("i18n")("save"); ?></button>
 					</div>
 				</div>
 			</form>

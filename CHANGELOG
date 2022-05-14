@@ -1,3 +1,11 @@
+# 0.10.2 alpha
+- Added FormHelper
+- Added Paginator::paginationQuery and Paginator::paginateNum
+- Finished backend multi-language support
+- Refactored some backend code
+- Added yesno field
+- Bug fixes
+
 # 0.10.1 alpha
 - Bug fixes
 
