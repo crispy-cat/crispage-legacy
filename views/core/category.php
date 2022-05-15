@@ -13,7 +13,7 @@
 	$app->vars["category"] = $app("categories")->get($app->request->route["item_id"]);
 
 	$session = Session::getCurrentSession();
-	if ($app->vars["category"]->state != "published" && (!$session || !User::userHasPermissions($session->user, UserPermissions::VIEW_UNPUBLISHED)))
+	if (!$app->vars["category"] || ($app->vars["category"]->state != "published" && (!$session || !User::userHasPermissions($session->user, UserPermissions::VIEW_UNPUBLISHED))))
 		$app->error(new ApplicationException(404, $app("i18n")->getString("page_not_found"), $app("i18n")->getString("page_not_found_ex")));
 
 	$app->vars["articles"] = $app("articles")->getAllArr(array("category" => $app->request->route["item_id"]), "modified");

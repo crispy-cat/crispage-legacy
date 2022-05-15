@@ -241,7 +241,7 @@
 		}
 
 		public static function renderEditor(string $name, string $value = "") {
-			echo "<textarea class=\"form-control\" name=\"$name\" style=\"height: 300px; font-family: monospace;\" required onkeydown=\"if(event.keyCode===9){var v=this.value,s=this.selectionStart,e=this.selectionEnd;this.value=v.substring(0, s)+'\\t'+v.substring(e);this.selectionStart=this.selectionEnd=s+1;return false;}\">" . htmlentities($value ?? "") . "</textarea>";
+			echo "<textarea class=\"form-control\" name=\"$name\" style=\"height: 300px; font-family: monospace;\" required onkeydown=\"if(event.keyCode===9){var v=this.value,s=this.selectionStart,e=this.selectionEnd;this.value=v.substring(0, s)+'\\t'+v.substring(e);this.selectionStart=this.selectionEnd=s+1;return false;}\">" . ($value ?? "") . "</textarea>";
 		}
 
 		public static function renderField(string $name, string $type = "string", string $value = null) {

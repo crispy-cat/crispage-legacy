@@ -139,7 +139,7 @@
 								<label for="article_content"><?php $app("i18n")("article_content_c"); ?></label>
 								<?php RenderHelper::renderEditor("article_content", htmlentities($app->vars["article"]->content)); ?>
 
-								<label for="article_summary"><?php $app("i18n")("article_summary"); ?></label>
+								<label for="article_summary"><?php $app("i18n")("article_summary_c"); ?></label>
 								<textarea class="form-control" name="article_summary" style="height: 170px;" required><?php echo htmlentities($app->vars["article"]->summary); ?></textarea>
 							</div>
 							<div id="article_options" class="tab-pane" role="tabpanel">

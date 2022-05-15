@@ -14,7 +14,7 @@
 		$app->redirect(Config::WEBROOT . "/login?ploc=/backend");
 
 	if (!User::userHasPermissions($session->user, UserPermissions::LOGIN_BACKEND))
-		$app->redirectWithMessages("/", array("type" => "error", "content" => "You do not have permission to use the backend"));
+		$app->redirectWithMessages("/", array("type" => "error", "content" => $app("i18n")->getString("no_permission_backend")));
 
 	Session::refreshCurrentSession();
 

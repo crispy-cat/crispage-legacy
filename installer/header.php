@@ -15,7 +15,7 @@
 			$app->redirect(Config::WEBROOT . "/login?ploc=/installer");
 
 		if (!User::userHasPermissions($session->user, UserPermissions::USE_INSTALLER))
-			$app->redirectWithMessages("/", array("type" => "error", "content" => "You do not have permission to use the installer"));
+			$app->redirectWithMessages("/", array("type" => "error", "content" => $app("i18n")->getString("no_permission_installer")));
 
 		Session::refreshCurrentSession();
 	}
