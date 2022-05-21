@@ -10,24 +10,24 @@
 	defined("CRISPAGE") or die("Application must be started from index.php!");
 	require_once Config::APPROOT . "/installer/header.php";
 
-	$app->page->setTitle("Extensions");
+	$app->page->setTitle($app("i18n")->getString("extensions"));
 
 	$app->vars["extensions"] = $app->database->readRows("installation");
 
 	$app->page->setContent(function($app) {
 ?>
-		<h1>Extensions</h1>
+		<h1><?php $app("i18n")("extensions"); ?></h1>
 		<div style="float: right;">
-			<a class="btn btn-success" href="<?php echo Config::WEBROOT; ?>/installer/extensions/install">Install Extension Pack</a>
+			<a class="btn btn-success" href="<?php echo Config::WEBROOT; ?>/installer/extensions/install"><?php $app("i18n")("install_extension"); ?></a>
 		</div>
 		<table class="table table-striped">
 			<thead>
 				<tr>
-					<th>ID</th>
-					<th>Scope</th>
-					<th>Type</th>
-					<th>Extension</th>
-					<th>Actions</th>
+					<th><?php $app("i18n")("id"); ?></th>
+					<th><?php $app("i18n")("scope"); ?></th>
+					<th><?php $app("i18n")("type"); ?></th>
+					<th><?php $app("i18n")("extension"); ?></th>
+					<th><?php $app("i18n")("actions"); ?></th>
 				</tr>
 			</thead>
 			<tbody>
@@ -39,7 +39,7 @@
 					<td><?php echo $extension["scope"]; ?></td>
 					<td><?php echo $extension["type"]; ?></td>
 					<td><?php echo $extension["class"]; ?></td>
-					<td><a class="btn btn-sm btn-danger" href="<?php echo Config::WEBROOT; ?>/installer/extensions/uninstall?uninstall_id=<?php echo $extension["id"]; ?>">Uninstall</a></td>
+					<td><a class="btn btn-sm btn-danger" href="<?php echo Config::WEBROOT; ?>/installer/extensions/uninstall?uninstall_id=<?php echo $extension["id"]; ?>"><?php $app("i18n")("uninstall"); ?></a></td>
 				</tr>
 <?php
 			}

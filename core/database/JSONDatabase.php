@@ -203,12 +203,16 @@
 
 			if ($ordby !== null && in_array($ordby, $data["Columns"])) {
 				global $o;
+				global $d;
 				$o = $ordby;
+				$d = $desc;
+				//die(var_dump($o, $d));
 				usort($rdata, function($a, $b) {
 					global $o;
+					global $d;
 					if ($a[$o] == $b[$o]) return 0;
-					if ($a[$o] > $b[$o]) return ($desc) ? -1 : 1;
-					return ($desc) ? 1 : -1;
+					if ($a[$o] > $b[$o]) return ($d) ? -1 : 1;
+					return ($d) ? 1 : -1;
 				});
 			}
 			return $rdata;

@@ -15,7 +15,7 @@
 	$app->vars["group"] = $app->request->query["group"] ?? null;
 	Paginator::paginationQuery($app->vars);
 
-	$users = $app("users")->getAllArr(($app->vars["group"]) ? array("group" => $app->vars["group"]) : null, "modified");
+	$users = $app("users")->getAllArr(($app->vars["group"]) ? array("group" => $app->vars["group"]) : null, "modified", true);
 
 	Paginator::paginateNum($app->vars, $users, "users");
 

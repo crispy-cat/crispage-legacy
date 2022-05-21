@@ -1,6 +1,8 @@
 <?php
+	define("STARTTIME", microtime(true));
+
 	class Config {
-		public const CONFIG_VERSION = "0.2.0";
+		public const CONFIG_VERSION = "0.10.0";
 		// Should not be changed unless you know what you're doing!
 		public const APPROOT = "{{approot}}";
 		// Should be changed to the request URI of this directory, e.g. if your

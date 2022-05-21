@@ -14,7 +14,7 @@
 
 	Paginator::paginationQuery($app->vars);
 
-	$groups = $app("usergroups")->getAllArr(null, "rank");
+	$groups = $app("usergroups")->getAllArr(null, "rank", true);
 
 	Paginator::paginateNum($app->vars, $groups, "groups");
 

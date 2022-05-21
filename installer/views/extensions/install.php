@@ -10,19 +10,19 @@
 	defined("CRISPAGE") or die("Application must be started from index.php!");
 	require_once Config::APPROOT . "/installer/header.php";
 
-	$app->page->setTitle("Install Extension");
+	$app->page->setTitle($app("i18n")->getString("install_extension"));
 
 	$app->page->setContent(function($app) {
 ?>
-	<h1>Install Extension</h1>
+	<h1><?php $app("i18n")("install_extension"); ?></h1>
 
-	<p>Please upload the extension package. Extension packs should be in .tar.gz or .zip format.</p>
+	<p><?php $app("i18n")("please_select_package", null, ".tar.gz, .zip"); ?></p>
 
-	<form action="<?php echo Config::WEBROOT; ?>/installer/extensions/run_installation" method="post" enctype="multipart/form-data">
-		<label for="extension_pack">Extension Pack:</label>
-		<input type="file" class="form-control" name="extension_pack" required />
-
-		<input type="submit" class="btn btn-success mt-2" value="Install Extension Pack" />
+	<form action="<?php echo Config::WEBROOT; ?>/installer/script/package" method="post" enctype="multipart/form-data">
+		<label for="package"><?php $app("i18n")("package_c"); ?></label>
+		<input type="file" class="form-control" name="package" required />
+		<input type="hidden" name="ploc" value="/installer/extensions/list" />
+		<input type="submit" class="btn btn-success mt-2" value="<?php $app("i18n")("install_extension"); ?>" />
 	</form>
 <?php
 	});

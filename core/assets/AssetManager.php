@@ -74,7 +74,7 @@
 			$assets = array();
 			foreach ($app->database->readRows($this->table, $filter ?? array(), $order, $desc) as $asset)
 				$assets[] = new $class($asset);
-
+				
 			return $assets;
 		}
 	}

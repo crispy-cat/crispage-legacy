@@ -148,6 +148,10 @@
 		{
 			"id": "categories.show_sidebar",
 			"value": "yes"
+		},
+		{
+			"id": "language",
+			"value": "en-US"
 		}
 	]
 }

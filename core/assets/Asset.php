@@ -32,4 +32,37 @@
 			foreach ($this as $k => $v) $props[$k] = $v;
 			return $props;
 		}
+		
+		public static function parentLoop(string $table, string $id = null) : bool {
+			global $app;
+			if (!$id) return false;
+
+			$names = array();
+
+			@$parent = ($app->assets)($table)->get($id)->parent;
+			if (!$parent) return false;
+
+			while ($parent !== null) {
+				if (in_array($parent, $names)) return true;
+				array_push($names, $parent);
+				$category = $app($table)->get($parent);
+				if (!$category) return false;
+				$parent = $category->parent;
+			}
+
+			return false;
+		}
+		
+		public static function nestingLevel(string $table, string $id = null) : int {
+			global $app;
+			if (!$id) return -1;
+			
+			$count = 0;
+			@$parent = $app($table)->get($id)->parent;
+			
+			while (true) {
+				if (!$parent) return $count;
+				$count++;
+			}
+		}
 	}

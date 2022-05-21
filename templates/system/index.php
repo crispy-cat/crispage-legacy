@@ -12,7 +12,7 @@
 	");
 ?>
 <!DOCTYPE html>
-<html>
+<html lang="<?php echo $app("i18n")->getLanguage(); ?>">
 	<head>
 		<title><?php echo $app->page->getBrowserTitle(); ?></title>
 		<?php $app->page->renderMetas(); ?>
@@ -23,5 +23,7 @@
 		<?php $app->page->renderContent(); ?>
 		<?php $app->page->renderStyles(); ?>
 		<?php $app->page->renderScripts(); ?>
+		<hr />
+		<p><?php $app->page->renderFooter(); ?></p>
 	</body>
 </html>

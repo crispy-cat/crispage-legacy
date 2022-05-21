@@ -58,7 +58,13 @@
 			$app->vars["item"]->modified= time();
 
 			$app("menu_items")->set($app->vars["item"]->id, $app->vars["item"]);
-
+			
+			if (Asset::parentLoop("menu_items", $app->vars["item"]->id)) {
+				$app->vars["item"]->parent = null;
+				$app("menu_items")->set($app->vars["item"]->id, $app->vars["item"]);
+				$app->page->alerts["parent_loop"] = array("class" => "warning", "content" => $app("i18n")->getString("parent_loop_avoided"));
+			}
+			
 			if ($app->request->query["item_id"] == "")
 				$app->redirectWithMessages("/backend/menu_items/editor?edit_id=" . $app->vars["item"]->id, array("type" => "success", "content" => $app("i18n")->getString("changes_saved")));
 

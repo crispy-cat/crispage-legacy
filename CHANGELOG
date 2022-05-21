@@ -1,3 +1,14 @@
+# 0.11.0 alpha
+- Added Application->start()
+- Fixed database sort ordering
+- Added Page::renderFooter()
+- Added RenderHelper::render{Comment,Plugin,Ban}Picker()
+- RenderHelper::render*Picker() now sorts items
+- Moved *::*ParentLoop to Asset
+- Added Asset::nestingLevel()
+- Rewrote some of the installer
+- Bug fixes
+
 # 0.10.3 alpha
 - Bug fixes
 
@@ -116,7 +127,6 @@
 - Bug fixes and improvements
 
 # 0.4.11 alpha
-- i is dumbass
 - Bug fixes
 
 # 0.4.10 alpha

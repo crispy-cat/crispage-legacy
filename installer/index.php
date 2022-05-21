@@ -27,5 +27,5 @@
 		"name" => Config::DB_JSON_NAME,
 		"pretty" => Config::DB_JSON_PRETTY
 	));
-	Router::routeRequest("/installer", "default");
+	$app->start("/installer", "default");
 ?>

@@ -13,7 +13,7 @@
 		public string $label;
 		public string $type;
 		public string $menu;
-		public string $parent;
+		public ?string $parent;
 		public int $ord;
 		public $content;
 
@@ -40,23 +40,6 @@
 				default:
 					return $this->type;
 			}
-		}
-
-		public static function menuItemParentLoop(string $id = null) : bool {
-			global $app;
-			if ($id == null) return false;
-
-			$names = array();
-
-			$parent = ($app->assets)("menu_items")->get($id)->parent;
-
-			while ($parent !== null) {
-				if (in_array($parent, $names)) return true;
-				array_push($names, $parent);
-				$parent = ($app->assets)("menu_items")->get($parent)->parent;
-			}
-
-			return false;
 		}
 	}
 ?>

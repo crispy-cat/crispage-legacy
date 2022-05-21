@@ -12,7 +12,7 @@
 
 	$id = $app->request->query["uninstall_id"] ?? null;
 
-	if (!$id) $app->redirectWithMessages("/installer/extensions/list", array("type" => "error", "content" => "No ID specified"));
+	if (!$id) $app->redirectWithMessages("/installer/extensions/list", array("type" => "error", "content" => $app("i18n")->getString("no_id_given")));
 
 	$ext = $app->database->readRow("installation", $id);
 
@@ -37,5 +37,5 @@
 		default:
 	}
 
-	$app->redirectWithMessages("/installer/extensions/list", array("type" => "success", "content" => "Extension uninstalled"));
+	$app->redirectWithMessages("/installer/extensions/list", array("type" => "success", "content" => $app("i18n")->getString("extension_uninstalled")));
 ?>

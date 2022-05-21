@@ -18,12 +18,12 @@
 		}
 
 		public function getLanguage() : string {
-			return $this->$currentLang;
+			return $this->currentLang;
 		}
 
 		public function setLanguage(string $lang) : void {
 			global $app;
-			if (preg_match("/[a-z]{2}[-_][a-z]{2}/i", $lang, $match)) {
+			if (preg_match("/([a-z]{2})[-_]([a-z]{2})/i", $lang, $match)) {
 				$this->currentLang = strtolower($match[1]) . "-" . strtoupper($match[2]);
 				$app->events->trigger("language.set", $this->currentLang);
 			}

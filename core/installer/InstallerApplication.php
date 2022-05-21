@@ -9,9 +9,21 @@
 
 	defined("CRISPAGE") or die("Application must be started from index.php!");
 
+	define("IMSG_SUCCESS",	-2);
+	define("IMSG_INFO",		-1);
+	define("IMSG_NORMAL",	 0);
+	define("IMSG_WARNING",	 1);
+	define("IMSG_ERROR",	 2);
+
 	require_once Config::APPROOT . "/core/Application.php";
 
 	class InstallerApplication extends Application {
+		public const IMSG_SUCCESS =	IMSG_SUCCESS;
+		public const IMSG_INFO =	IMSG_INFO;
+		public const IMSG_NORMAL =	IMSG_NORMAL;
+		public const IMSG_WARNING =	IMSG_WARNING;
+		public const IMSG_ERROR =	IMSG_ERROR;
+
 		public function __construct() {
 			$this->page = new Page();
 			$this->events = new EventManager();
@@ -32,7 +44,6 @@
 			$this->assets->addAssetManager("sessions",		new AssetManager("sessions", "Session"));
 
 			$this->template = new Template(array("backend" => true, "template_name" => "installer"));
-			require_once Config::APPROOT . "/core/events/defaultevents.php";
 		}
 
 		public function initDatabase(string $type, array $options) : void {
@@ -61,6 +72,32 @@
 				parent::error(new ApplicationException($e->getHttpStatus(), $e->getPageTitle(), $e->getMessage(), null, $e, false));
 			else
 				parent::error(new ApplicationException(500, "Internal Server Error", $e->getMessage(), null, $e, false));
+		}
+
+		public function installerMessage(string $msg, int $type = self::IMSG_NORMAL) {
+			switch ($type) {
+				case self::IMSG_SUCCESS:
+					$color = "#008800";
+					$el = "b";
+					break;
+				case self::IMSG_INFO:
+					$color = "#3300ff";
+					$el = "i";
+					break;
+				case self::IMSG_WARNING:
+					$color = "#ff8800";
+					$el = "b";
+					break;
+				case self::IMSG_ERROR:
+					$color = "#ff0000";
+					$el = "b";
+					break;
+				default:
+					$color = "#000000";
+					$el = "span";
+			}
+			echo "<$el style=\"color: $color;\">$msg</$el><br />";
+			if ($type == IMSG_ERROR) throw new Exception("The installer encountered an error.");
 		}
 	}
 ?>

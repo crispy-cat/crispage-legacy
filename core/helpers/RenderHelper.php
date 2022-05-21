@@ -48,7 +48,7 @@
 					<option value="<?php echo $extra["value"]; ?>"><?php echo $extra["title"]; ?></option>
 				<?php } ?>
 				<?php
-					foreach ($app("articles")->getAll() as $art) {
+					foreach ($app("articles")->getAll(null, "title") as $art) {
 						if ($selart) {
 				?>
 							<option value="<?php echo $art->id; ?>" <?php if ($art->id == $selart) echo "selected"; ?>><?php echo $art->title; ?></option>
@@ -73,7 +73,7 @@
 					<option value="<?php echo $extra["value"]; ?>"><?php echo $extra["title"]; ?></option>
 				<?php } ?>
 				<?php
-					foreach ($app("categories")->getAll() as $cat) {
+					foreach ($app("categories")->getAll(null, "title") as $cat) {
 						if ($selcat) {
 				?>
 							<option value="<?php echo $cat->id; ?>" <?php if ($cat->id == $selcat) echo "selected"; ?>><?php echo $cat->title; ?></option>
@@ -81,6 +81,30 @@
 						} else {
 				?>
 							<option value="<?php echo $cat->id; ?>"><?php echo $cat->title; ?></option>
+				<?php
+						}
+					}
+				?>
+			</select>
+<?php
+		}
+		
+		public static function renderCommentPicker(string $selname, string $selcomm = null, array $extra = null) {
+			global $app;
+?>
+			<select class="form-select" name="<?php echo $selname; ?>">
+				<?php if ($extra != null) { ?>
+					<option value="<?php echo $extra["value"]; ?>"><?php echo $extra["title"]; ?></option>
+				<?php } ?>
+				<?php
+					foreach ($app("comments")->getAll(null, "modified", true) as $comm) {
+						if ($selcomm) {
+				?>
+							<option value="<?php echo $comm->id; ?>" <?php if ($comm->id == $selcomm) echo "selected"; ?>><?php echo $comm->title; ?></option>
+				<?php
+						} else {
+				?>
+							<option value="<?php echo $comm->id; ?>"><?php echo $comm->title; ?></option>
 				<?php
 						}
 					}
@@ -97,7 +121,7 @@
 					<option value="<?php echo $extra["value"]; ?>"><?php echo $extra["title"]; ?></option>
 				<?php } ?>
 				<?php
-					foreach ($app("menus")->getAll() as $menu) {
+					foreach ($app("menus")->getAll(null, "title") as $menu) {
 						if ($selmenu) {
 				?>
 							<option value="<?php echo $menu->id; ?>" <?php if ($menu->id == $selmenu) echo "selected"; ?>><?php echo $menu->title; ?></option>
@@ -122,7 +146,7 @@
 					<option value="<?php echo $extra["value"]; ?>"><?php echo $extra["title"]; ?></option>
 				<?php } ?>
 				<?php
-					foreach ($app("menu_items")->getAll() as $item) {
+					foreach ($app("menu_items")->getAll(null, "menu") as $item) {
 						if ($selitem) {
 				?>
 							<option value="<?php echo $item->id; ?>" <?php if ($item->id == $selitem) echo "selected"; ?>><?php echo $item->label; ?></option>
@@ -146,7 +170,7 @@
 					<option value="<?php echo $extra["value"]; ?>"><?php echo $extra["title"]; ?></option>
 				<?php } ?>
 				<?php
-					foreach ($app("modules")->getAll() as $mod) {
+					foreach ($app("modules")->getAll(null, "pos") as $mod) {
 						if ($selmod) {
 				?>
 							<option value="<?php echo $mod->id; ?>" <?php if ($mod->id == $selmod) echo "selected"; ?>><?php echo $mod->title; ?></option>
@@ -154,6 +178,30 @@
 						} else {
 				?>
 							<option value="<?php echo $mod->id; ?>"><?php echo $mod->label; ?></option>
+				<?php
+						}
+					}
+				?>
+			</select>
+<?php
+		}
+		
+		public static function renderPluginPicker(string $selname, string $selplug = null, array $extra = null) {
+			global $app;
+?>
+			<select class="form-select" name="<?php echo $selname; ?>">
+				<?php if ($extra != null) { ?>
+					<option value="<?php echo $extra["value"]; ?>"><?php echo $extra["title"]; ?></option>
+				<?php } ?>
+				<?php
+					foreach ($app("plugins")->getAll(null, "class") as $plug) {
+						if ($selplug) {
+				?>
+							<option value="<?php echo $plug->id; ?>" <?php if ($plug->id == $selplug) echo "selected"; ?>><?php echo $plug->title; ?></option>
+				<?php
+						} else {
+				?>
+							<option value="<?php echo $plug->id; ?>"><?php echo $plug->label; ?></option>
 				<?php
 						}
 					}
@@ -170,7 +218,7 @@
 					<option value="<?php echo $extra["value"]; ?>"><?php echo $extra["title"]; ?></option>
 				<?php } ?>
 				<?php
-					foreach ($app("users")->getAll() as $user) {
+					foreach ($app("users")->getAll(null, "modified", true) as $user) {
 						if ($seluser) {
 				?>
 							<option value="<?php echo $user->id; ?>" <?php if ($user->id == $seluser) echo "selected"; ?>><?php echo $user->name; ?></option>
@@ -195,7 +243,7 @@
 					<option value="<?php echo $extra["value"]; ?>"><?php echo $extra["title"]; ?></option>
 				<?php } ?>
 				<?php
-					foreach ($app("usergroups")->getAll() as $group) {
+					foreach ($app("usergroups")->getAll(null, "rank", true) as $group) {
 						if ($selgroup) {
 				?>
 							<option value="<?php echo $group->id; ?>" <?php if ($group->id == $selgroup) echo "selected"; ?>><?php echo $group->name; ?></option>
@@ -203,6 +251,30 @@
 						} else {
 				?>
 							<option value="<?php echo $group->id; ?>"><?php echo $group->name; ?></option>
+				<?php
+						}
+					}
+				?>
+			</select>
+<?php
+		}
+		
+		public static function renderBanPicker(string $selname, string $selban = null, array $extra = null) {
+			global $app;
+?>
+			<select class="form-select" name="<?php echo $selname; ?>">
+				<?php if ($extra != null) { ?>
+					<option value="<?php echo $extra["value"]; ?>"><?php echo $extra["title"]; ?></option>
+				<?php } ?>
+				<?php
+					foreach ($app("bans")->getAll(null, "expires", true) as $ban) {
+						if ($selban) {
+				?>
+							<option value="<?php echo $ban->id; ?>" <?php if ($ban->id == $selban) echo "selected"; ?>><?php echo $ban->name; ?></option>
+				<?php
+						} else {
+				?>
+							<option value="<?php echo $ban->id; ?>"><?php echo $ban->name; ?></option>
 				<?php
 						}
 					}
@@ -252,14 +324,29 @@
 				case "category":
 					self::renderCategoryPicker($name, $value ?? null);
 					break;
+				case "comment":
+					self::renderCommentPicker($name, $value ?? null);
+					break;
 				case "menu":
 					self::renderMenuPicker($name, $value ?? null);
+					break;
+				case "menu_item":
+					self::renderMenuItemPicker($name, $value ?? null);
+					break;
+				case "module":
+					self::renderModulePicker($name, $value ?? null);
+					break;
+				case "plugin":
+					self::renderPluginPicker($name, $value ?? null);
 					break;
 				case "user":
 					self::renderUserPicker($name, $value ?? null);
 					break;
 				case "usergroup":
 					self::renderUserGroupPicker($name, $value ?? null);
+					break;
+				case "ban":
+					self::renderBanPicker($name, $value ?? null);
 					break;
 				case "boolean":
 					self::renderBooleanField($name, $value ?? false);

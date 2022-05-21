@@ -66,7 +66,7 @@
 
 			$app("usergroups")->set($app->vars["group"]->id, $app->vars["group"]);
 
-			if (UserGroup::userGroupParentLoop($app->vars["group"]->id)) {
+			if (Asset::parentLoop("usergroups", $app->vars["group"]->id)) {
 				$app->vars["group"]->parent = null;
 				$app("usergroups")->set($app->vars["group"]->id, $app->vars["group"]);
 				$app->page->alerts["parent_loop"] = array("class" => "warning", "content" => $app("i18n")->getString("parent_loop_avoided"));

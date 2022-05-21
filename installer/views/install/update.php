@@ -10,19 +10,19 @@
 	defined("CRISPAGE") or die("Application must be started from index.php!");
 	require_once Config::APPROOT . "/installer/header.php";
 
-	$app->page->setTitle("Update Crispage");
+	$app->page->setTitle($app("i18n")->getString("update"));
 
 	$app->page->setContent(function($app) {
 ?>
-	<h1>Update Crispage</h1>
+	<h1><?php $app("i18n")("update_crispage"); ?></h1>
 
-	<p>Please upload the update package. Update packs should be in .tar.gz or .zip format.</p>
+	<p><?php $app("i18n")("please_select_package", null, ".tar.gz, .zip"); ?></p>
 
-	<form action="<?php echo Config::WEBROOT; ?>/installer/install/run_update" method="post" enctype="multipart/form-data">
-		<label for="update_pack">Extension Pack:</label>
-		<input type="file" class="form-control" name="update_pack" required />
-
-		<input type="submit" class="btn btn-success mt-2" value="Install Update" />
+	<form action="<?php echo Config::WEBROOT; ?>/installer/script/package" method="post" enctype="multipart/form-data">
+		<label for="package"><?php $app("i18n")("package_c"); ?></label>
+		<input type="file" class="form-control" name="package" required />
+		<input type="hidden" name="ploc" value="/installer/install/update" />
+		<input type="submit" class="btn btn-success mt-2" value="<?php $app("i18n")("install_update"); ?>" />
 	</form>
 <?php
 	});

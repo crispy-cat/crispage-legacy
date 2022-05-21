@@ -66,19 +66,21 @@
 									<div class="col-md-6 col-lg-4">
 										<h2>General</h2>
 										<label for="settings[sitename]">Site Name:</label>
-										<input type="text" class="form-control" name="settings[sitename]" value="<?php echo htmlentities($app->getSetting("sitename", "Crispage Site")); ?>" required />
+										<input type="text" class="form-control" name="settings[sitename]" value="<?php echo htmlentities($app->getSetting("sitename", "Crispage Site")); ?>" />
 										<label for="settings[site_desc]">Site Description:</label>
-										<input type="text" class="form-control" name="settings[site_desc]" value="<?php echo htmlentities($app->getSetting("site_desc", "Powered by Crispage")); ?>" required />
+										<input type="text" class="form-control" name="settings[site_desc]" value="<?php echo htmlentities($app->getSetting("site_desc", "Powered by Crispage")); ?>" />
 										<label for="settings[charset]">Character Set:</label>
-										<input type="text" class="form-control" name="settings[charset]" value="<?php echo htmlentities($app->getSetting("charset", "UTF-8")); ?>" required />
+										<input type="text" class="form-control" name="settings[charset]" value="<?php echo htmlentities($app->getSetting("charset", "UTF-8")); ?>" />
+										<label for="settings[language]">Site Language:</label>
+										<input type="text" class="form-control" name="settings[language]" value="<?php echo htmlentities($app->getSetting("language", "en-US")); ?>" />
 										<label for="settings[date_format]">Short Date Format:</label>
-										<input type="text" class="form-control" name="settings[date_format]" value="<?php echo htmlentities($app->getSetting("date_format", "Y-m-d")); ?>" required />
+										<input type="text" class="form-control" name="settings[date_format]" value="<?php echo htmlentities($app->getSetting("date_format", "Y-m-d")); ?>" />
 										<label for="settings[date_format_long]">Long Date Format:</label>
-										<input type="text" class="form-control" name="settings[date_format_long]" value="<?php echo htmlentities($app->getSetting("date_format_long", "Y, F j")); ?>" required />
+										<input type="text" class="form-control" name="settings[date_format_long]" value="<?php echo htmlentities($app->getSetting("date_format_long", "Y, F j")); ?>" />
 										<label for="settings[time_format]">Short Time Format:</label>
-										<input type="text" class="form-control" name="settings[time_format]" value="<?php echo htmlentities($app->getSetting("time_format", "H:i")); ?>" required />
+										<input type="text" class="form-control" name="settings[time_format]" value="<?php echo htmlentities($app->getSetting("time_format", "H:i")); ?>" />
 										<label for="settings[time_format_long]">Long Time Format:</label>
-										<input type="text" class="form-control" name="settings[time_format_long]" value="<?php echo htmlentities($app->getSetting("time_format_long", "H:i:s")); ?>" required />
+										<input type="text" class="form-control" name="settings[time_format_long]" value="<?php echo htmlentities($app->getSetting("time_format_long", "H:i:s")); ?>" />
 									</div>
 								</div>
 							</div>
@@ -91,7 +93,7 @@
 										<label for="settings[meta_keys]">Default Meta Keywords:</label>
 										<textarea class="form-control" name="settings[meta_keys]" required><?php echo htmlentities($app->getSetting("meta_keys", "crispage,crispycat")); ?></textarea>
 										<label for="settings[meta_robots]">Default Meta Robots:</label>
-										<input type="text" class="form-control" name="settings[meta_robots]" value="<?php echo htmlentities($app->getSetting("meta_robots", "index, follow")); ?>" required />
+										<input type="text" class="form-control" name="settings[meta_robots]" value="<?php echo htmlentities($app->getSetting("meta_robots", "index, follow")); ?>" />
 									</div>
 								</div>
 							</div>
@@ -100,19 +102,19 @@
 									<div class="col-md-6 col-lg-4">
 										<h2>Appearance</h2>
 										<label for="settings[logopath]">Site Logo Path:</label>
-										<input type="text" class="form-control" name="settings[logopath]" value="<?php echo htmlentities($app->getSetting("logopath", Config::WEBROOT . "/media/crispage.png")); ?>" required />
+										<input type="text" class="form-control" name="settings[logopath]" value="<?php echo htmlentities($app->getSetting("logopath", Config::WEBROOT . "/media/crispage.png")); ?>" />
 										<label for="settings[title_sep]">Page Title Separator:</label>
-										<input type="text" class="form-control" name="settings[title_sep]" value="<?php echo htmlentities($app->getSetting("title_sep", " ‹ ")); ?>" required />
+										<input type="text" class="form-control" name="settings[title_sep]" value="<?php echo htmlentities($app->getSetting("title_sep", " ‹ ")); ?>" />
 										<label for="settings[template]">Site Template:</label>
-										<input type="text" class="form-control" name="settings[template]" value="<?php echo htmlentities($app->getSetting("template", "crispy")); ?>" required />
+										<input type="text" class="form-control" name="settings[template]" value="<?php echo htmlentities($app->getSetting("template", "crispy")); ?>" />
 										<label for="settings[backend_template]">Backend Template:</label>
-										<input type="text" class="form-control" name="settings[backend_template]" value="<?php echo htmlentities($app->getSetting("backend_template", "crispage")); ?>" required />
+										<input type="text" class="form-control" name="settings[backend_template]" value="<?php echo htmlentities($app->getSetting("backend_template", "crispage")); ?>" />
 										<label for="settings[colors.primary]">Primary Color:</label>
-										<input type="text" class="form-control" name="settings[colors.primary]" value="<?php echo htmlentities($app->getSetting("colors.primary", "#002060")); ?>" required />
+										<input type="text" class="form-control" name="settings[colors.primary]" value="<?php echo htmlentities($app->getSetting("colors.primary", "#002060")); ?>" />
 										<label for="settings[colors.secondary]">Secondary Color:</label>
-										<input type="text" class="form-control" name="settings[colors.secondary]" value="<?php echo htmlentities($app->getSetting("colors.secondary", "#0d6efd")); ?>" required />
+										<input type="text" class="form-control" name="settings[colors.secondary]" value="<?php echo htmlentities($app->getSetting("colors.secondary", "#0d6efd")); ?>" />
 										<label for="settings[icons_location]">Icon Folder Location:</label>
-										<input type="text" class="form-control" name="settings[icons_location]" value="<?php echo htmlentities($app->getSetting("icons_location", Config::WEBROOT . "/media/icons")); ?>" required />
+										<input type="text" class="form-control" name="settings[icons_location]" value="<?php echo htmlentities($app->getSetting("icons_location", Config::WEBROOT . "/media/icons")); ?>" />
 									</div>
 								</div>
 							</div>
@@ -210,15 +212,15 @@
 										<label for="settings[users.default_group]">Default group:</label>
 										<?php RenderHelper::renderUserGroupPicker("settings[users.default_group]", $app->getSetting("users.default_group", "member")); ?>
 										<label for="settings[users.password_min]">Minimum Password Length:</label>
-										<input type="number" class="form-control" name="settings[users.password_min]" value="<?php echo htmlentities($app->getSetting("users.password_min", "8")); ?>" required />
+										<input type="number" class="form-control" name="settings[users.password_min]" value="<?php echo htmlentities($app->getSetting("users.password_min", "8")); ?>" />
 										<label for="settings[users.password_min_letters]">Minimum Letters in Password:</label>
-										<input type="number" class="form-control" name="settings[users.password_min_letters]" value="<?php echo htmlentities($app->getSetting("users.password_min_letters", "2")); ?>" required />
+										<input type="number" class="form-control" name="settings[users.password_min_letters]" value="<?php echo htmlentities($app->getSetting("users.password_min_letters", "2")); ?>" />
 										<label for="settings[users.password_min_numbers]">Minimum Numbers in Password:</label>
-										<input type="number" class="form-control" name="settings[users.password_min_numbers]" value="<?php echo htmlentities($app->getSetting("users.password_min_numbers", "2")); ?>" required />
+										<input type="number" class="form-control" name="settings[users.password_min_numbers]" value="<?php echo htmlentities($app->getSetting("users.password_min_numbers", "2")); ?>" />
 										<label for="settings[users.password_min_special]">Minimum Special Characters in Password:</label>
-										<input type="number" class="form-control" name="settings[users.password_min_special]" value="<?php echo htmlentities($app->getSetting("users.password_min_special", "1")); ?>" required />
+										<input type="number" class="form-control" name="settings[users.password_min_special]" value="<?php echo htmlentities($app->getSetting("users.password_min_special", "1")); ?>" />
 										<label for="settings[users.session_timeout]">Session Timeout (Seconds):</label>
-										<input type="number" class="form-control" name="settings[users.session_timeout]" value="<?php echo htmlentities($app->getSetting("users.session_timeout", "3600")); ?>" required />
+										<input type="number" class="form-control" name="settings[users.session_timeout]" value="<?php echo htmlentities($app->getSetting("users.session_timeout", "3600")); ?>" />
 									</div>
 								</div>
 							</div>
@@ -227,11 +229,11 @@
 									<div class="col-md-6 col-lg-4">
 										<h2>Mail</h2>
 										<label for="settings[mail.hostname]">Mail server:</label>
-										<input type="text" class="form-control" name="settings[mail.hostname]" value="<?php echo htmlentities($app->getSetting("mail.hostname", "mail.myserver.com")); ?>" required />
+										<input type="text" class="form-control" name="settings[mail.hostname]" value="<?php echo htmlentities($app->getSetting("mail.hostname", "mail.myserver.com")); ?>" />
 										<label for="settings[mail.port]">Mail server port:</label>
-										<input type="number" class="form-control" name="settings[mail.port]" value="<?php echo htmlentities($app->getSetting("mail.port", "587")); ?>" required />
+										<input type="number" class="form-control" name="settings[mail.port]" value="<?php echo htmlentities($app->getSetting("mail.port", "587")); ?>" />
 										<label for="settings[mail.from]">From address:</label>
-										<input type="email" class="form-control" name="settings[mail.from]" value="<?php echo htmlentities($app->getSetting("mail.from", "me@example.com")); ?>" required />
+										<input type="email" class="form-control" name="settings[mail.from]" value="<?php echo htmlentities($app->getSetting("mail.from", "me@example.com")); ?>" />
 										<label for="settings[mail.username]">Server username:</label>
 										<input type="text" class="form-control" name="settings[mail.username]" value="<?php echo htmlentities($app->getSetting("mail.username")); ?>" />
 										<label for="settings[mail.password]">Server password:</label>

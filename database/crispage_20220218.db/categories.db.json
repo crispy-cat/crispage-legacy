@@ -100,16 +100,17 @@
 			"parent": "",
 			"state": "published",
 			"created": 1646600389,
-			"modified": 1646600389,
+			"modified": 1647483098,
 			"title": "Category 3",
 			"content": "Category 3",
 			"tags": "",
 			"meta_desc": "CrispyCMS",
 			"meta_keys": "crispycms,crispycat",
 			"meta_robots": "index, follow",
-			"options": [
-				""
-			]
+			"options": {
+				"show_title": "yes",
+				"show_sidebar": "yes"
+			}
 		}
 	]
 }

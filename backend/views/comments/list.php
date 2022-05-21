@@ -15,7 +15,7 @@
 	$app->vars["art"] = $app->request->query["art"] ?? null;
 	Paginator::paginationQuery($app->vars);
 
-	$comments = $app("comments")->getAllArr(($app->vars["art"]) ? array("article" => $app->vars["art"]) : null, "modified");
+	$comments = $app("comments")->getAllArr(($app->vars["art"]) ? array("article" => $app->vars["art"]) : null, "modified", true);
 
 	Paginator::paginateNum($app->vars, $comments, "comments");
 
@@ -43,7 +43,7 @@
 				<div class="col-12 col-md-8 col-xxl-10">
 					<div style="float: right;">
 						<?php
-							$baseurl = Config::WEBROOT . "/backend/comments/list?show=" . (($app->vars["show"]) ? $app->vars["show"] : "all") . "&page=";
+							$baseurl = Config::WEBROOT . "/backend/comments/list?art=" . (($app->vars["art"]) ? $app->vars["art"] : "") . "&show=" . (($app->vars["show"]) ? $app->vars["show"] : "all") . "&page=";
 							RenderHelper::renderPagination($baseurl, $app->vars["npages"], $app->vars["page"] ?? 1);
 						?>
 					</div>

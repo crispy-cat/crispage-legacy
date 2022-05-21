@@ -147,13 +147,13 @@
 								<?php RenderHelper::renderYesNo("article_options[show_comments]", $app->vars["article"]->options["show_comments"] ?? $app->getSetting("articles.show_comments", "yes")); ?>
 
 								<label for="article_options[show_info]"><?php $app("i18n")("show_article_info_c"); ?></label>
-								<?php RenderHelper::renderYesNo("article_options[show_comments]", $app->vars["article"]->options["show_info"] ?? $app->getSetting("articles.show_info", "yes")); ?>
+								<?php RenderHelper::renderYesNo("article_options[show_info]", $app->vars["article"]->options["show_info"] ?? $app->getSetting("articles.show_info", "yes")); ?>
 
 								<label for="article_options[show_title]"><?php $app("i18n")("show_title_c"); ?></label>
-								<?php RenderHelper::renderYesNo("article_options[show_comments]", $app->vars["article"]->options["show_title"] ?? $app->getSetting("articles.show_title", "yes")); ?>
+								<?php RenderHelper::renderYesNo("article_options[show_title]", $app->vars["article"]->options["show_title"] ?? $app->getSetting("articles.show_title", "yes")); ?>
 
 								<label for="article_options[show_sidebar]"><?php $app("i18n")("show_sidebar_c"); ?></label>
-								<?php RenderHelper::renderYesNo("article_options[show_comments]", $app->vars["article"]->options["show_sidebar"] ?? $app->getSetting("articles.show_sidebar", "yes")); ?>
+								<?php RenderHelper::renderYesNo("article_options[show_sidebar]", $app->vars["article"]->options["show_sidebar"] ?? $app->getSetting("articles.show_sidebar", "yes")); ?>
 							</div>
 						</div>
 					</div>

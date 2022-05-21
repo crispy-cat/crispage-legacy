@@ -48,65 +48,70 @@
 
 	<p>Please fill in the information needed below. If a field is already filled in you may not need to change it.</p>
 
-	<form action="<?php echo Config::WEBROOT; ?>/installer/install/run_installation" method="post">
-		<label for="approot">Application Files Root:</label>
-		<input type="text" class="form-control" name="approot" value="<?php echo Config::APPROOT; ?>" required />
+	<form action="<?php echo Config::WEBROOT; ?>/installer/script/package" method="post">
+		<input type="hidden" name="name" value="default" />
 
-		<label for="webroot">URL Root:</label>
-		<input type="text" class="form-control" name="webroot" value="<?php echo Config::WEBROOT; ?>" />
+		<label for="iopts[approot]">Application Files Root:</label>
+		<input type="text" class="form-control" name="iopts[approot]" value="<?php echo Config::APPROOT; ?>" required />
 
-		<hr />
-
-		<label for="password_table">Password Table:</label>
-		<input type="text" class="form-control" name="password_table" value="<?php echo "auth_" . Randomizer::randomString(8, 16); ?>" required />
-
-		<label for="db_loc">Database Files Location:</label>
-		<input type="text" class="form-control" name="db_json_loc" value="<?php echo Config::APPROOT . "/database"; ?>" required />
-
-		<label for="db_name">Database Name:</label>
-		<input type="text" class="form-control" name="db_json_name" required />
+		<label for="iopts[webroot]">URL Root:</label>
+		<input type="text" class="form-control" name="iopts[webroot]" value="<?php echo Config::WEBROOT; ?>" />
 
 		<hr />
 
-		<label for="sitename">Site Name:</label>
-		<input type="text" class="form-control" name="sitename" required />
+		<label for="iopts[password_table]">Password Table:</label>
+		<input type="text" class="form-control" name="iopts[password_table]" value="<?php echo "auth_" . Randomizer::randomString(8, 16); ?>" required />
 
-		<label for="sitedesc">Site Description:</label>
-		<input type="text" class="form-control" name="sitedesc" required />
+		<label for="iopts[db_json_loc]">Database Files Location:</label>
+		<input type="text" class="form-control" name="iopts[db_json_loc]" value="<?php echo Config::APPROOT . "/database"; ?>" required />
 
-		<label for="charset">Site Charset:</label>
-		<input type="text" class="form-control" name="charset" value="UTF-8" required />
-
-		<hr />
-
-		<label for="timezone">Site Timezone:</label>
-		<input type="text" class="form-control" name="timezone" value="America/New_York" required />
-
-		<label for="date_format">Date Format:</label>
-		<input type="text" class="form-control" name="date_format" value="Y-m-d" required />
-
-		<label for="time_format">Time Format:</label>
-		<input type="text" class="form-control" name="time_format" value="H:i" required />
-
-		<label for="date_format_long">Long Date Format:</label>
-		<input type="text" class="form-control" name="date_format_long" value="Y, F j" required />
-
-		<label for="time_format_long">Long Time Format:</label>
-		<input type="text" class="form-control" name="time_format_long" value="H:i:s" required />
+		<label for="iopts[db_json_name]">Database Name:</label>
+		<input type="text" class="form-control" name="iopts[db_json_name]" required />
 
 		<hr />
 
-		<label for="super_user_name">Super User Name:</label>
-		<input type="text" class="form-control" name="super_user_name" required />
+		<label for="iopts[sitename]">Site Name:</label>
+		<input type="text" class="form-control" name="iopts[sitename]" required />
 
-		<label for="super_user_id">Super User ID:</label>
-		<input type="text" class="form-control" name="super_user_id" required />
+		<label for="iopts[sitedesc]">Site Description:</label>
+		<input type="text" class="form-control" name="iopts[sitedesc]" required />
 
-		<label for="super_user_email">Super User Email:</label>
-		<input type="email" class="form-control" name="super_user_email" required />
+		<label for="iopts[language]">Site Language:</label>
+		<input type="text" class="form-control" name="iopts[language]" value="en-US" required />
 
-		<label for="super_user_password">Super User Password:</label>
-		<input type="password" class="form-control" name="super_user_password" required />
+		<label for="iopts[charset]">Site Charset:</label>
+		<input type="text" class="form-control" name="iopts[charset]" value="UTF-8" required />
+
+		<hr />
+
+		<label for="iopts[timezone]">Site Timezone:</label>
+		<input type="text" class="form-control" name="iopts[timezone]" value="America/New_York" required />
+
+		<label for="iopts[date_format]">Date Format:</label>
+		<input type="text" class="form-control" name="iopts[date_format]" value="Y-m-d" required />
+
+		<label for="iopts[time_format]">Time Format:</label>
+		<input type="text" class="form-control" name="iopts[time_format]" value="H:i" required />
+
+		<label for="iopts[date_format_long]">Long Date Format:</label>
+		<input type="text" class="form-control" name="iopts[date_format_long]" value="Y, F j" required />
+
+		<label for="iopts[time_format_long]">Long Time Format:</label>
+		<input type="text" class="form-control" name="iopts[time_format_long]" value="H:i:s" required />
+
+		<hr />
+
+		<label for="iopts[super_user_name]">Super User Name:</label>
+		<input type="text" class="form-control" name="iopts[super_user_name]" required />
+
+		<label for="iopts[super_user_id]">Super User ID:</label>
+		<input type="text" class="form-control" name="iopts[super_user_id]" required />
+
+		<label for="iopts[super_user_email]">Super User Email:</label>
+		<input type="email" class="form-control" name="iopts[super_user_email]" required />
+
+		<label for="iopts[super_user_password]">Super User Password:</label>
+		<input type="password" class="form-control" name="iopts[super_user_password]" required />
 
 		<hr />
 

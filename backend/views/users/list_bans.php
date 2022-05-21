@@ -21,7 +21,7 @@
 
 	Paginator::paginationQuery($app->vars);
 
-	$bans = $app("bans")->getAllArr(array("user" => $app->request->query["user_id"]), "modified");
+	$bans = $app("bans")->getAllArr(array("user" => $app->request->query["user_id"]), "expires", true);
 
 	Paginator::paginateNum($app->vars, $bans, "bans");
 

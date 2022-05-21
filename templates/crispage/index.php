@@ -28,7 +28,7 @@
 	$app->page->scripts["bootstrap"] = array("content" => file_get_contents(Config::APPROOT . "/media/system/js/bootstrap.bundle.min.js"), "defer" => "");
 ?>
 <!DOCTYPE html>
-<html>
+<html lang="<?php echo $app("i18n")->getLanguage(); ?>">
 	<head>
 		<title><?php echo $app->page->getBrowserTitle(); ?></title>
 		<?php $app->page->renderMetas(); ?>
@@ -58,7 +58,7 @@
 			<div class="row">
 				<div class="col">
 					<hr />
-					<small class="text-muted">Crispage v<?php echo CRISPAGE; ?> &bull; <?php $app("i18n")("software_licensed_under"); ?> &bull; <?php $app("i18n")("rendered_in", null, microtime(true) - STARTTIME); ?></small>
+					<small class="text-muted"><?php $app->page->renderFooter(); ?></small>
 				</div>
 			</div>
 		</div>

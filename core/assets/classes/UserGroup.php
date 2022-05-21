@@ -24,27 +24,6 @@
 			$this->permissions = $data["permissions"] ?? 0;
 		}
 
-		public static function userGroupParentLoop(string $id = null) : bool {
-			global $app;
-			if ($id == null) return false;
-
-			$names = array();
-
-			$group = $app("usergroups")->get($id);
-			if (!$group) return false;
-			$parent = $group->parent;
-			if ($parent == null) return false;
-
-			while ($parent !== null) {
-				if (in_array($parent, $names)) return true;
-				array_push($names, $parent);
-				$parent = $app("usergroups")->get($parent);
-				if ($parent) $parent = $parent->parent;
-			}
-
-			return false;
-		}
-
 		public static function getGroupPermissions(string $id = null) : int {
 			global $app;
 			$group = $app("usergroups")->get($id);

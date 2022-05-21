@@ -7,8 +7,8 @@
 	$primary = $app->getSetting("colors.primary", "#002060");
 	$secondary = $app->getSetting("colors.secondary", "#0d6efd");
 	$iconsloc = $app->getSetting("icons_location", Config::WEBROOT . "/media/icons");
-	$showtitle = $app->page->options["show_title"] ?? "yes";
-	$showsidebar = $app->page->options["show_sidebar"] ?? "yes";
+	$showtitle = $app->page->options["show_title"] ?? $app->getSetting("articles.show_title", "yes");
+	$showsidebar = $app->page->options["show_sidebar"] ?? $app->getSetting("articles.show_sidebar", "yes");
 
 	$app->page->metas["viewport"] = array("name" => "viewport", "content" => "width=device-width, initial-scale=1");
 
@@ -28,7 +28,7 @@
 	$app->page->scripts["bootstrap"] = array("content" => file_get_contents(Config::APPROOT . "/media/system/js/bootstrap.bundle.min.js"), "defer" => "");
 ?>
 <!DOCTYPE html>
-<html>
+<html lang="<?php echo $app("i18n")->getLanguage(); ?>">
 	<head>
 		<title><?php echo $app->page->getBrowserTitle(); ?></title>
 		<?php $app->page->renderMetas(); ?>

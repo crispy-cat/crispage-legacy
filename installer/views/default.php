@@ -10,26 +10,25 @@
 	defined("CRISPAGE") or die("Application must be started from index.php!");
 	require_once Config::APPROOT . "/installer/header.php";
 
-	$app->page->setTitle("Install & Manage");
+	$app->page->setTitle($app("i18n")->getString("install_amp_manage"));
 
 	$app->page->setContent(function($app) {
 ?>
-	<h1>Install & Manage</h1>
-	<p>Welcome to the Crispage installer. Please select an option from the menu below.</p>
+	<h1><?php $app("i18n")("install_amp_manage"); ?></h1>
 
 	<table class="table">
 		<tbody>
 			<tr>
-				<td><a href="<?php echo Config::WEBROOT; ?>/installer/install/default"><h2>Install</h2></a></td>
-				<td>Install or update Crispage.</td>
+				<td><a href="<?php echo Config::WEBROOT; ?>/installer/install/default"><h2><?php $app("i18n")("install"); ?></h2></a></td>
+				<td><?php $app("i18n")("install_ex"); ?></td>
 			</tr>
 			<tr>
-				<td><a href="<?php echo Config::WEBROOT; ?>/installer/extensions/list"><h2>Extensions</h2></a></td>
-				<td>Install or uninstall extensions.</td>
+				<td><a href="<?php echo Config::WEBROOT; ?>/installer/extensions/list"><h2><?php $app("i18n")("extensions"); ?></h2></a></td>
+				<td><?php $app("i18n")("extensions_ex"); ?></td>
 			</tr>
 			<tr>
-				<td><a href="<?php echo Config::WEBROOT; ?>/installer/repair/default"><h2>Repair</h2></a></td>
-				<td>Fix common issues with Crispage.</td>
+				<td><a href="<?php echo Config::WEBROOT; ?>/installer/repair/default"><h2><?php $app("i18n")("repair"); ?></h2></a></td>
+				<td><?php $app("i18n")("repair_ex"); ?></td>
 			</tr>
 		</tbody>
 	</table>

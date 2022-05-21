@@ -59,6 +59,7 @@
 
 		public array $loadedPlugins	= array();
 		public bool $pluginsExecd	= false;
+		public bool $hasError		= false;
 		public array $vars			= array();
 
 		public function __construct() {
@@ -86,8 +87,6 @@
 			$this->assets->addAssetManager("usergroups",	new AssetManager("usergroups", "UserGroup"));
 			$this->assets->addAssetManager("bans",			new AssetManager("bans", "Ban"));
 			$this->assets->addAssetManager("sessions",		new AssetManager("sessions", "Session"));
-
-			require_once Config::APPROOT . "/core/events/defaultevents.php";
 		}
 
 		public function __invoke(string $name) {
@@ -99,6 +98,11 @@
 
 		public function __destruct() {
 			if (isset($this->database)) $this->database->writeChanges();
+		}
+
+		public function start(string $basepath = "", string $default = "index") : void {
+			require_once Config::APPROOT . "/core/runstart.php";
+			Router::routeRequest($basepath, $default);
 		}
 
 		public function loadPlugin(Plugin $plugin) : void {
@@ -131,7 +135,7 @@
 
 		public function executePlugins() : void {
 			if ($this->pluginsExecd) return;
-			$this->pluginsExeced = true;
+			$this->pluginsExecd = true;
 			foreach ($this->loadedPlugins as $plugin) {
 				try {
 					$plugin->execute();
@@ -149,6 +153,7 @@
 		protected abstract function request(Request $request) : void;
 
 		public function error(Throwable $e) : void {
+			$this->hasError = true;
 			if ($e instanceof ApplicationException) {
 				$http = $e->getHttpStatus();
 				$title = $e->getPageTitle();
@@ -169,7 +174,7 @@
 			$this->events->trigger("app.languages.pre_load");
 			$this->loadLanguages();
 			$this->events->trigger("app.languages.post_load");
-			if ($lp) {
+			if (!$lp) {
 				$this->events->trigger("app.plugins.pre_load");
 				$this->loadPlugins();
 				$this->executePlugins();
@@ -253,6 +258,16 @@
 			$name = preg_replace("/--/", "-", $name);
 	 		$name = trim($name, "-");
 			return $name;
+		}
+
+		public function parseVersionString(string $vs = "0.0.0") : array {
+			preg_match("/v?(\d+)(?:\.(\d+)(?:\.(\d+))?)?(?:[ \-]?([a-zA-Z0-9_]+))?/", $vs, $matches);
+			return array(
+				"major" => $matches[1] ?? 0,
+				"minor" => $matches[2] ?? 0,
+				"patch" => $matches[3] ?? 0,
+				"stage" => $matches[4] ?? "release"
+			);
 		}
 	}
 ?>

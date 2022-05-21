@@ -21,5 +21,5 @@
 		global $app;
 		$app->error($e);
 	});
-	Router::routeRequest();
+	$app->start();
 ?>

@@ -16,5 +16,5 @@
 		global $app;
 		$app->error($e);
 	});
-	Router::routeRequest("/backend", "dashboard");
+	$app->start("/backend", "dashboard");
 ?>

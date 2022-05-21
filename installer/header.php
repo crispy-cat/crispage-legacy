@@ -9,7 +9,7 @@
 
 	defined("CRISPAGE") or die("Application must be started from index.php!");
 
-	if (defined("IS_INSTALLED") && IS_INSTALLED) {
+	if (defined("IS_INSTALLED") && IS_INSTALLED && !(defined("IS_REPAIR_PAGE") && IS_REPAIR_PAGE)) {
 		$session = Session::getCurrentSession();
 		if (!$session)
 			$app->redirect(Config::WEBROOT . "/login?ploc=/installer");
@@ -24,7 +24,7 @@
 		if (file_exists(Config::APPROOT . "/config.php"))
 			$app->redirectWithMessages("/installer/install/default", array("type" => "error", "content" => "Crispage is already installed."));
 	} else {
-		if ((!defined("IS_INSTALL_PAGE")) && !file_exists(Config::APPROOT . "/config.php"))
+		if (!(defined("IS_INSTALL_PAGE") && IS_INSTALL_PAGE) && !(defined("IS_PACKAGE_PAGE") && IS_PACKAGE_PAGE) && !file_exists(Config::APPROOT . "/config.php"))
 			$app->redirect(Config::WEBROOT . "/installer/install/install");
 	}
 

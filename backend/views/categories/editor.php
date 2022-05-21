@@ -63,7 +63,7 @@
 
 			$app("categories")->set($app->vars["category"]->id, $app->vars["category"]);
 
-			if (Category::categoryParentLoop($app->vars["category"]->id)) {
+			if (Asset::parentLoop("categories", $app->vars["category"]->id)) {
 				$app->vars["category"]->parent = null;
 				$app("categories")->set($app->vars["category"]->id, $app->vars["category"]);
 				$app->page->alerts["parent_loop"] = array("class" => "warning", "content" => $app("i18n")->getString("parent_loop_avoided"));
@@ -154,7 +154,7 @@
 								<label for="category_options[show_title]"><?php $app("i18n")("show_title_c"); ?></label>
 								<?php RenderHelper::renderYesNo("category_options[show_title]", $app->vars["category"]->options["show_title"] ?? $app->getSetting("categories.show_title", "yes")); ?>
 
-								<label for="category_options[show_title]"><?php $app("i18n")("show_sidebar_c"); ?></label>
+								<label for="category_options[show_sidebar]"><?php $app("i18n")("show_sidebar_c"); ?></label>
 								<?php RenderHelper::renderYesNo("category_options[show_sidebar]", $app->vars["category"]->options["show_sidebar"] ?? $app->getSetting("categories.show_sidebar", "yes")); ?>
 							</div>
 						</div>
