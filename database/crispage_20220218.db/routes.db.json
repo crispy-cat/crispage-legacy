@@ -110,6 +110,11 @@
 			"id": "category-2\/unpublished-article",
 			"item_id": "unpublished-article",
 			"view": "core\/article"
+		},
+		{
+			"id": "category-1\/ckeditor-test",
+			"item_id": "ckeditor-test",
+			"view": "core\/article"
 		}
 	]
 }

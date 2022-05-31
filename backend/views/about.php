@@ -14,6 +14,7 @@
 
 	$app->page->setContent(function($app) {
 ?>
+	<div id="main" class="page-content">
 	<h1>About Crispage</h1>
 	<p>Crispage is made for developers who want a CMS without the bulky overhead of traditional options.</p>
 	<br />
@@ -22,7 +23,7 @@
 	<p>You are currently using Crispage version <?php echo CRISPAGE; ?>.</p>
 	<p><a class="btn btn-success btn-lg" href="<?php echo Config::WEBROOT; ?>/installer/install/update" target="_blank">Check for updates</a></p>
 	<br />
-	
+
 	<h2>Links</h2>
 	<p><a href="https://crispage.crispy.cat/">Website</a></p>
 	<p><a href="https://crispage.crispy.cat/docs">Documentation</a></p>
@@ -43,6 +44,7 @@
 
 	<p>You should have received a copy of the GNU General Public License
 	along with this program. If not, see <a href="https://www.gnu.org/licenses/">https://www.gnu.org/licenses/</a>.</p>
+	</div>
 <?php
 	});
 

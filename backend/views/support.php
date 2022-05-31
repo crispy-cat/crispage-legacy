@@ -14,6 +14,7 @@
 
 	$app->page->setContent(function($app) {
 ?>
+	<div id="main" class="page-content">
 		<h1>Crispage Support</h1>
 		<p>Limited support is offered by <a href="mailto:the@crispy.cat">email</a>
 		to users of Crispage for things such as database management and site
@@ -51,6 +52,7 @@
 
 #     JSON Database Name:       <?php echo Config::DB_JSON_NAME; ?>
 </pre>
+	</div>
 <?php
 	});
 

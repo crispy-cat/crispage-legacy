@@ -39,7 +39,7 @@
 
 	// == Do not edit below this line ==
 
-	define("CRISPAGE", "0.11.0 alpha");
+	define("CRISPAGE", "0.11.1 alpha");
 
 	ini_set("display_errors", "1");
 	ini_set("display_startup_errors", "1");

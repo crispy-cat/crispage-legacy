@@ -44,5 +44,5 @@
 	ini_set("display_errors", "1");
 	ini_set("display_startup_errors", "1");
 	error_reporting(Config::ERRORLVL);
-	ob_start(null, null, PHP_OUTPUT_HANDLER_CLEANABLE);
+	ob_start(null, 0, PHP_OUTPUT_HANDLER_CLEANABLE);
 ?>

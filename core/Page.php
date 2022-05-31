@@ -91,7 +91,7 @@
 			foreach ($this->scripts as $script) {
 				$s = "<script";
 				$defer = (isset($script["defer"])) ? " defer" : "";
-				if (isset($script["src"])) $s .= " src=\"{$script["src"]}\"></script>\n";
+				if (isset($script["src"])) $s .= " src=\"{$script["src"]}\"$defer></script>\n";
 				else $s .= "$defer>{$script["content"]}</script>\n";
 				echo $s;
 			}
@@ -168,13 +168,13 @@
 			setcookie($id, "_", time());
 			unset($_COOKIE[$id]);
 		}
-		
+
 		public function renderFooter() : void {
 			global $app;
 			$version = CRISPAGE;
 			$lu = $app("i18n")->getString("software_licensed_under");
 			$rendered = $app("i18n")->getString("rendered_in", null, microtime(true) - STARTTIME);
-			$mem = floor(memory_get_peak_usage(false) / 1000000) . "/" . ini_get("memory_limit");
+			$mem = $app("i18n")->getString("memory_used", null, floor(memory_get_peak_usage(false) / 1000000), ini_get("memory_limit"));
 			echo "Crispage v$version &bull; $lu &bull; $rendered &bull; $mem";
 		}
 	}

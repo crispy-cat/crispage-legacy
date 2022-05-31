@@ -88,7 +88,7 @@
 			</select>
 <?php
 		}
-		
+
 		public static function renderCommentPicker(string $selname, string $selcomm = null, array $extra = null) {
 			global $app;
 ?>
@@ -185,7 +185,7 @@
 			</select>
 <?php
 		}
-		
+
 		public static function renderPluginPicker(string $selname, string $selplug = null, array $extra = null) {
 			global $app;
 ?>
@@ -258,7 +258,7 @@
 			</select>
 <?php
 		}
-		
+
 		public static function renderBanPicker(string $selname, string $selban = null, array $extra = null) {
 			global $app;
 ?>
@@ -313,7 +313,7 @@
 		}
 
 		public static function renderEditor(string $name, string $value = "") {
-			echo "<textarea class=\"form-control\" name=\"$name\" style=\"height: 300px; font-family: monospace;\" required onkeydown=\"if(event.keyCode===9){var v=this.value,s=this.selectionStart,e=this.selectionEnd;this.value=v.substring(0, s)+'\\t'+v.substring(e);this.selectionStart=this.selectionEnd=s+1;return false;}\">" . ($value ?? "") . "</textarea>";
+			echo "<textarea class=\"editor\" id=\"editor_$name\" name=\"$name\">$value</textarea>";
 		}
 
 		public static function renderField(string $name, string $type = "string", string $value = null) {
@@ -358,6 +358,8 @@
 					echo "<input type=\"number\" class=\"form-control\" name=\"$name\" value=\"" . ($value ?? 0) . "\" required />";
 					break;
 				case "longtext":
+					echo "<textarea class=\"form-control\" name=\"$name\" value=\"" . ($value ?? "") . "\" required /></textarea>";
+					break;
 				case "editor":
 					self::renderEditor($name, $value ?? "");
 					break;
