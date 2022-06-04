@@ -8,9 +8,9 @@
 	*/
 
 	defined("CRISPAGE") or die("Application must be started from index.php!");
-	require_once Config::APPROOT . "/backend/header.php";
+	require_once \Config::APPROOT . "/backend/header.php";
 
-	if (!User::userHasPermissions(Session::getCurrentSession()->user, UserPermissions::MODIFY_MENUS))
+	if (!\Crispage\Assets\User::userHasPermissions(\Crispage\Assets\Session::getCurrentSession()->user, \Crispage\Users\UserPermissions::MODIFY_MENUS))
 		$app->redirectWithMessages("/backend/menus/list", array("type" => "error", "content" => $app("i18n")->getString("no_permission_menus")));
 
 	if (!isset($app->request->query["delete_id"]))

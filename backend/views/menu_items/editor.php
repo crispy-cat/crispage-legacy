@@ -8,17 +8,17 @@
 	*/
 
 	defined("CRISPAGE") or die("Application must be started from index.php!");
-	require_once Config::APPROOT . "/backend/header.php";
+	require_once \Config::APPROOT . "/backend/header.php";
 
-	$currentUser = Session::getCurrentSession()->user;
-	$formFilled = FormHelper::formFieldsFilled(
+	$currentUser = \Crispage\Assets\Session::getCurrentSession()->user;
+	$formFilled = \Crispage\Helpers\FormHelper::formFieldsFilled(
 		"item_label", "item_id", "item_type", "item_menu",
 		"item_parent", "item_ord"
 	);
 
-	$app->vars["item"] = new MenuItem(array());
+	$app->vars["item"] = new \Crispage\Assets\MenuItem(array());
 
-	if (!User::userHasPermissions($currentUser, UserPermissions::MODIFY_MENUS))
+	if (!\Crispage\Assets\User::userHasPermissions($currentUser, \Crispage\Users\UserPermissions::MODIFY_MENUS))
 		$app->redirectWithMessages("/backend/menu_items/list", array("type" => "error", "content" => $app("i18n")->getString("no_permission_menus")));
 
 	if (isset($app->request->query["edit_id"])) {
@@ -58,13 +58,13 @@
 			$app->vars["item"]->modified= time();
 
 			$app("menu_items")->set($app->vars["item"]->id, $app->vars["item"]);
-			
-			if (Asset::parentLoop("menu_items", $app->vars["item"]->id)) {
+
+			if (\Crispage\Assets\Asset::parentLoop("menu_items", $app->vars["item"]->id)) {
 				$app->vars["item"]->parent = null;
 				$app("menu_items")->set($app->vars["item"]->id, $app->vars["item"]);
 				$app->page->alerts["parent_loop"] = array("class" => "warning", "content" => $app("i18n")->getString("parent_loop_avoided"));
 			}
-			
+
 			if ($app->request->query["item_id"] == "")
 				$app->redirectWithMessages("/backend/menu_items/editor?edit_id=" . $app->vars["item"]->id, array("type" => "success", "content" => $app("i18n")->getString("changes_saved")));
 
@@ -182,10 +182,10 @@
 						<input type="text" class="form-control" name="item_id" placeholder="auto-generate" value="<?php echo $app->vars["item"]->id; ?>" />
 
 						<label for="item_menu"><?php $app("i18n")("item_menu_c"); ?></label>
-						<?php RenderHelper::renderMenuPicker("item_menu", $app->vars["item"]->menu); ?>
+						<?php \Crispage\Helpers\RenderHelper::renderMenuPicker("item_menu", $app->vars["item"]->menu); ?>
 
 						<label for="item_parent"><?php $app("i18n")("item_parent_c"); ?></label>
-						<?php RenderHelper::renderMenuItemPicker("item_parent", $app->vars["item"]->parent, array("title" => "[none]", "value" => "")); ?>
+						<?php \Crispage\Helpers\RenderHelper::renderMenuItemPicker("item_parent", $app->vars["item"]->parent, array("title" => "[none]", "value" => "")); ?>
 
 						<label for="item_ord"><?php $app("i18n")("item_order_c"); ?></label>
 						<input type="number" class="form-control" name="item_ord" value="<?php echo $app->vars["item"]->ord; ?>" />

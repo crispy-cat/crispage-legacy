@@ -8,16 +8,16 @@
 	*/
 
 	defined("CRISPAGE") or die("Application must be started from index.php!");
-	require_once Config::APPROOT . "/backend/header.php";
+	require_once \Config::APPROOT . "/backend/header.php";
 
 	$app->page->setTitle($app("i18n")->getString("menu_items"));
 
 	$app->vars["menu"] = $app->request->query["menu"] ?? null;
-	Paginator::paginationQuery($app->vars);
+	\Crispage\Helpers\Paginator::paginationQuery($app->vars);
 
 	$items = $app("menu_items")->getAllArr(($app->vars["menu"]) ? array("menu" => $app->vars["menu"]) : null, "menu");
 
-	Paginator::paginateNum($app->vars, $items, "items");
+	\Crispage\Helpers\Paginator::paginateNum($app->vars, $items, "items");
 
 	$app->page->setContent(function($app) {
 ?>
@@ -27,7 +27,7 @@
 					<h1><?php $app("i18n")("menu_items"); ?></h1>
 					<span>Show only:</span>
 					<form class="d-flex">
-						<?php RenderHelper::renderMenuPicker("menu", null, array("title" => "All Menus", "value" => "")); ?>
+						<?php \Crispage\Helpers\RenderHelper::renderMenuPicker("menu", null, array("title" => "All Menus", "value" => "")); ?>
 						<select class="form-select ms-2" name="show">
 							<option value="15">15</option>
 							<option value="30">30</option>
@@ -45,7 +45,7 @@
 						<a class="btn btn-success mt-4 mb-2 d-block ms-auto" href="<?php echo Config::WEBROOT; ?>/backend/menu_items/editor" style="width: 130px;"><?php $app("i18n")("new_menu_item"); ?></a>
 						<?php
 							$baseurl = Config::WEBROOT . "/backend/menu_items/list?menu=" . (($app->vars["menu"]) ? $app->vars["menu"] : "") . "&show=" . (($app->vars["show"]) ? $app->vars["show"] : "all") . "&page=";
-							RenderHelper::renderPagination($baseurl, $app->vars["npages"], $app->vars["page"] ?? 1);
+							\Crispage\Helpers\RenderHelper::renderPagination($baseurl, $app->vars["npages"], $app->vars["page"] ?? 1);
 						?>
 					</div>
 				</div>

@@ -1,11 +1,13 @@
 <?php
 	/*
 		Crispage - A lightweight CMS for developers
-		core/users/Session.php - Session class
+		core/assets/classes/Session.php - Session class
 
 		Author: crispycat <the@crispy.cat> <https://crispy.cat>
 		Since: 0.0.1
 	*/
+
+	namespace Crispage\Assets;
 
 	defined("CRISPAGE") or die("Application must be started from index.php!");
 
@@ -16,14 +18,14 @@
 		public function __construct(array $data) {
 			parent::__construct("Session", $data);
 			if (!is_array($data)) return;
-			$this->user = $data["user"] ?? "";
-			$this->ip = $data["ip"] ?? "0.0.0.0";
+			$this->user = (string)($data["user"] ?? "");
+			$this->ip = (string)($data["ip"] ?? "0.0.0.0");
 		}
 
 		public static function startSession(string $user) : void {
 			global $app;
-			$sid = Randomizer::randomString();
-			$app("sessions")->set($sid, new Session(array(
+			$sid = \Crispage\Helpers\Randomizer::randomString();
+			$app("sessions")->set($sid, new self(array(
 				"id" => $sid,
 				"user" => $user,
 				"ip" => $_SERVER["REMOTE_ADDR"],
@@ -34,7 +36,7 @@
 			$app->events->trigger("session.session_start", $sid);
 		}
 
-		public static function getCurrentSession() : ?Session {
+		public static function getCurrentSession() : ?self {
 			global $app;
 			if (!isset($app->request->cookies["session_id"])) return null;
 			$session = $app("sessions")->get($app->request->cookies["session_id"]);

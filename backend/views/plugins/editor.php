@@ -8,22 +8,22 @@
 	*/
 
 	defined("CRISPAGE") or die("Application must be started from index.php!");
-	require_once Config::APPROOT . "/backend/header.php";
+	require_once \Config::APPROOT . "/backend/header.php";
 
-	$currentUser = Session::getCurrentSession()->user;
-	$formFilled = FormHelper::formFieldsFilled(
+	$currentUser = \Crispage\Assets\Session::getCurrentSession()->user;
+	$formFilled = \Crispage\Helpers\FormHelper::formFieldsFilled(
 		"plugin_options", "plugin_priority"
 	) && is_array($app->request->query["plugin_options"]);
 
-	$app->vars["plugin"] = new Plugin(array());
+	$app->vars["plugin"] = new \Crispage\Assets\Plugin(array());
 
-	if (!User::userHasPermissions($currentUser, UserPermissions::MODIFY_PLUGINS))
+	if (!\Crispage\Assets\User::userHasPermissions($currentUser, \Crispage\Users\UserPermissions::MODIFY_PLUGINS))
 		$app->redirectWithMessages("/backend/plugins/list", array("type" => "error", "content" => $app("i18n")->getString("no_permission_plugins")));
 
 	if (!isset($app->request->query["class"]))
 		$app->redirectWithMessages("/backend/plugins/select", array("type" => "info", "content" => $app("i18n")->getString("invalid_plugin_type")));
 
-	$app->vars["plugin_info"] = ExtensionHelper::getPluginInfo($app->request->query["class"]);
+	$app->vars["plugin_info"] = \Crispage\Helpers\ExtensionHelper::getPluginInfo($app->request->query["class"]);
 
 	if (!$app->vars["plugin_info"])
 		$app->redirectWithMessages("/backend/plugins/list", array("type" => "error", "content" => $app("i18n")->getString("invalid_plugin_type")));
@@ -77,7 +77,7 @@
 						<?php
 							foreach ($app->vars["plugin_info"]["options"] as $option) {
 								echo "<label for=\"plugin_options[{$option["name"]}]\">{$option["label"]}:</label>";
-								RenderHelper::renderField("plugin_options[{$option["name"]}]", $option["type"], $app->vars["plugin"]->options[$option["name"]] ?? null);
+								\Crispage\Helpers\RenderHelper::renderField("plugin_options[{$option["name"]}]", $option["type"], $app->vars["plugin"]->options[$option["name"]] ?? null);
 							}
 						?>
 					</div>

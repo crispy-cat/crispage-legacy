@@ -7,17 +7,19 @@
 		Since: 0.9.0
 	*/
 
+	namespace Crispage\Assets;
+
 	defined("CRISPAGE") or die("Application must be started from index.php!");
 
-	require_once Config::APPROOT . "/core/assets/Asset.php";
+	require_once \Config::APPROOT . "/core/assets/Asset.php";
 
 	class AssetManager {
 		public string $table;
 		public string $class;
 
 		public function __construct(string $table, string $class) {
-			if (!is_subclass_of($class, "Asset"))
-				throw new Exception("$class must be an Asset!");
+			if (!is_subclass_of($class, "\Crispage\Assets\Asset"))
+				throw new \Crispage\ApplicationException(500, "Asset Error", "$class must be an Asset!", 1005, null, false);
 			$this->table = $table;
 			$this->class = $class;
 		}
@@ -74,7 +76,7 @@
 			$assets = array();
 			foreach ($app->database->readRows($this->table, $filter ?? array(), $order, $desc) as $asset)
 				$assets[] = new $class($asset);
-				
+
 			return $assets;
 		}
 	}

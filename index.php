@@ -14,9 +14,8 @@
 		die();
 	}
 
-	require_once Config::APPROOT . "/core/frontend/FrontendApplication.php";
-	require_once Config::APPROOT . "/core/Router.php";
-	$app = new FrontendApplication();
+	require_once \Config::APPROOT . "/core/application/FrontendApplication.php";
+	$app = new \Crispage\Application\FrontendApplication();
 	set_exception_handler(function($e) {
 		global $app;
 		$app->error($e);

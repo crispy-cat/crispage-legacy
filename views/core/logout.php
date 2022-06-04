@@ -8,17 +8,17 @@
 	*/
 
 	defined("CRISPAGE") or die("Application must be started from index.php!");
-	require_once Config::APPROOT . "/header.php";
+	require_once \Config::APPROOT . "/header.php";
 
 	$ploc = preg_replace("/\/\//", "/", "/" . ($app->request->query["ploc"] ?? "/"));
 
 	$app->events->trigger("frontend.view.logout.submit");
 
-	$session = Session::getCurrentSession();
+	$session = \Crispage\Assets\Session::getCurrentSession();
 	if (!$session)
 		$app->redirectWithMessages($ploc, array("type" => "error", "content" => $app("i18n")->getString("no_active_session")));
 
-	Session::endCurrentSession();
+	\Crispage\Assets\Session::endCurrentSession();
 	$app->events->trigger("users.log_out", $session->user);
 
 	$app->redirectWithMessages($ploc, array("type" => "success", "content" => $app("i18n")->getString("logged_out")));

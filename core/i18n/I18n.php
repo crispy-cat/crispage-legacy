@@ -7,6 +7,8 @@
 		Since: 0.10.0
 	*/
 
+	namespace Crispage\I18n;
+
 	defined("CRISPAGE") or die("Application must be started from index.php!");
 
 	class I18n {

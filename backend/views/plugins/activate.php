@@ -8,7 +8,7 @@
 	*/
 
 	defined("CRISPAGE") or die("Application must be started from index.php!");
-	require_once Config::APPROOT . "/backend/header.php";
+	require_once \Config::APPROOT . "/backend/header.php";
 
 	$app->page->setTitle($app("i18n")->getString("activate_plugin"));
 
@@ -18,7 +18,7 @@
 		if (!$ext)
 			$app->redirectWithMessages("/backend/plugins/list", array("type" => "error", "content" => $app("i18n")->getString("plugin_not_in_installation_table")));
 		if (!$app("plugins")->exists($ext["class"])) {
-			$plugin = new Plugin(array(
+			$plugin = new \Crispage\Assets\Plugin(array(
 				"id" => $app->nameToId(basename($ext["class"])),
 				"class" => $ext["class"],
 				"priority" => 0,

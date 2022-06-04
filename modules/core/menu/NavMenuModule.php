@@ -7,9 +7,11 @@
 		Since: 0.0.1
 	*/
 
+	namespace Crispage\Modules;
+
 	defined("CRISPAGE") or die("Application must be started from index.php!");
 
-	class NavMenuModule extends Module {
+	class NavMenuModule extends \Crispage\Assets\Module {
 		public function render() {
 			global $app;
 
@@ -24,11 +26,11 @@
 			foreach ($menuitems as $item) {
 				if ($item->parent) continue;
 
-				if ($item->type == "login" && Session::getCurrentSession()) continue;
-				if ($item->type == "register" && Session::getCurrentSession()) continue;
-				if ($item->type == "logout" && !Session::getCurrentSession()) continue;
-				if ($item->type == "reset_password" && Session::getCurrentSession()) continue;
-				if ($item->type == "user_profile" && !Session::getCurrentSession()) continue;
+				if ($item->type == "login" && \Crispage\Assets\Session::getCurrentSession()) continue;
+				if ($item->type == "register" && \Crispage\Assets\Session::getCurrentSession()) continue;
+				if ($item->type == "logout" && !\Crispage\Assets\Session::getCurrentSession()) continue;
+				if ($item->type == "reset_password" && \Crispage\Assets\Session::getCurrentSession()) continue;
+				if ($item->type == "user_profile" && !\Crispage\Assets\Session::getCurrentSession()) continue;
 
 				$children = array();
 				foreach ($menuitems as $citem) {
@@ -43,18 +45,18 @@
 				$class = "nav-link";
 				if ($item->getUrl() == $app->request->slug) $class .= " active";
 				if (count($children)) $class .= " dropdown-toggle";
-				echo "<a class=\"$class\" href=\"" . (($item->type == "url") ? "" : Config::WEBROOT . "/") . $item->getUrl() . "\"";
+				echo "<a class=\"$class\" href=\"" . (($item->type == "url") ? "" : \Config::WEBROOT . "/") . $item->getUrl() . "\"";
 				if (count($children)) echo " role=\"button\" data-bs-toggle=\"dropdown\"";
 				echo ">$item->label</a>\n";
 				if (count($children)) {
 					echo "<ul class=\"dropdown-menu\">\n";
 					foreach ($children as $child) {
-						if ($child->type == "login" && Session::getCurrentSession()) continue;
-						if ($child->type == "register" && Session::getCurrentSession()) continue;
-						if ($child->type == "logout" && !Session::getCurrentSession()) continue;
-						if ($child->type == "reset_password" && Session::getCurrentSession()) continue;
-						if ($child->type == "user_profile" && !Session::getCurrentSession()) continue;
-						echo "<li><a class=\"dropdown-item\" href=\"" . (($child->type == "url") ? "" : Config::WEBROOT . "/") . $child->getUrl() . "\">$child->label</a></li>\n";
+						if ($child->type == "login" && \Crispage\Assets\Session::getCurrentSession()) continue;
+						if ($child->type == "register" && \Crispage\Assets\Session::getCurrentSession()) continue;
+						if ($child->type == "logout" && !\Crispage\Assets\Session::getCurrentSession()) continue;
+						if ($child->type == "reset_password" && \Crispage\Assets\Session::getCurrentSession()) continue;
+						if ($child->type == "user_profile" && !\Crispage\Assets\Session::getCurrentSession()) continue;
+						echo "<li><a class=\"dropdown-item\" href=\"" . (($child->type == "url") ? "" : \Config::WEBROOT . "/") . $child->getUrl() . "\">$child->label</a></li>\n";
 					}
 					echo "</ul>\n";
 				}

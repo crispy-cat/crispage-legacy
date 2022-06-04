@@ -7,13 +7,15 @@
 		Since: 0.0.1
 	*/
 
+	namespace Crispage\Render;
+
 	defined("CRISPAGE") or die("Application must be started from index.php!");
 
 	class Template {
 		public string $directory;
 
 		public function __construct(array $data) {
-			$this->directory = Config::APPROOT . "/templates/" . $data["template_name"];
+			$this->directory = \Config::APPROOT . "/templates/" . $data["template_name"];
 		}
 
 		public function render() {
@@ -22,16 +24,16 @@
 				try {
 					$app->events->trigger("page.pre_render");
 					include $this->directory . "/index.php";
-				} catch (Throwable $e) {
+				} catch (\Throwable $e) {
 					if ($app->hasError) die($e);
-					$this->directory = Config::APPROOT . "/templates/system";
-					$app->error(new ApplicationException(500, $app("i18n")->getString("render_error"), $app("i18n")->getString("render_error_ex"), null, $e, false));
+					$this->directory = \Config::APPROOT . "/templates/system";
+					$app->error(new \Crispage\ApplicationException(500, $app("i18n")->getString("render_error"), $app("i18n")->getString("render_error_ex"), null, $e, false));
 				}
 			} else {
 				if ($app->hasError) die($e);
 				$dir = $this->directory;
-				$this->directory = Config::APPROOT . "/templates/system";
-				$app->error(new ApplicationException(500, $app("i18n")->getString("template_not_found"), $app("i18n")->getString("template_does_not_exist", null, $dir), null, null, false));
+				$this->directory = \Config::APPROOT . "/templates/system";
+				$app->error(new \Crispage\ApplicationException(500, $app("i18n")->getString("template_not_found"), $app("i18n")->getString("template_does_not_exist", null, $dir), null, null, false));
 			}
 		}
 	}

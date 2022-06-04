@@ -8,17 +8,17 @@
 	*/
 
 	defined("CRISPAGE") or die("Application must be started from index.php!");
-	require_once Config::APPROOT . "/backend/header.php";
+	require_once \Config::APPROOT . "/backend/header.php";
 
-	$currentUser = Session::getCurrentSession()->user;
-	$formFilled = FormHelper::formFieldsFilled(
+	$currentUser = \Crispage\Assets\Session::getCurrentSession()->user;
+	$formFilled = \Crispage\Helpers\FormHelper::formFieldsFilled(
 		"group_name", "group_id", "group_permissions", "group_rank",
 		"group_parent"
 	);
 
-	$app->vars["group"] = new UserGroup(array());
+	$app->vars["group"] = new \Crispage\Assets\UserGroup(array());
 
-	if (!User::userHasPermissions($currentUser, UserPermissions::MODIFY_USERGROUPS))
+	if (!\Crispage\Assets\User::userHasPermissions($currentUser, \Crispage\Users\UserPermissions::MODIFY_USERGROUPS))
 		$app->redirectWithMessages("/backend/usergroups/list", array("type" => "error", "content" => $app("i18n")->getString("no_permission_usergroups")));
 
 	if (isset($app->request->query["edit_id"])) {
@@ -27,7 +27,7 @@
 
 		$app->vars["group"] = $app("usergroups")->get($app->request->query["edit_id"]);
 
-		if (User::compareUserRank($currentUser, $app->vars["group"]->rank) !== 1)
+		if (\Crispage\Assets\User::compareUserRank($currentUser, $app->vars["group"]->rank) !== 1)
 			$app->redirectWithMessages("/backend/usergroups/list", array("type" => "error", "content" => $app("i18n")->getString("rank_must_be_less")));
 
 		if ($formFilled) {
@@ -52,7 +52,7 @@
 			}
 
 			$rank = $app->request->query["group_rank"];
-			if (User::compareUserRank($currentUser, $rank) !== 1) {
+			if (\Crispage\Assets\User::compareUserRank($currentUser, $rank) !== 1) {
 				$rank = 0;
 				$app->page->alerts["group_lower"] = array("class" => "warning", "content" => $app("i18n")->getString("rank_must_be_less"));
 			}
@@ -66,7 +66,7 @@
 
 			$app("usergroups")->set($app->vars["group"]->id, $app->vars["group"]);
 
-			if (Asset::parentLoop("usergroups", $app->vars["group"]->id)) {
+			if (\Crispage\Assets\Asset::parentLoop("usergroups", $app->vars["group"]->id)) {
 				$app->vars["group"]->parent = null;
 				$app("usergroups")->set($app->vars["group"]->id, $app->vars["group"]);
 				$app->page->alerts["parent_loop"] = array("class" => "warning", "content" => $app("i18n")->getString("parent_loop_avoided"));
@@ -99,7 +99,7 @@
 			$app->vars["group"]->id = $app->nameToId($app->vars["group"]->id);
 
 			$rank = $app->request->query["group_rank"];
-			if (User::compareUserRank($currentUser, $rank) !== 1) {
+			if (\Crispage\Assets\User::compareUserRank($currentUser, $rank) !== 1) {
 				$rank = 0;
 				$app->page->alerts["group_lower"] = array("class" => "warning", "content" => $app("i18n")->getString("rank_must_be_less"));
 			}
@@ -314,7 +314,7 @@
 						<input type="text" class="form-control" name="group_id" placeholder="auto-generate" value="<?php echo $app->vars["group"]->id; ?>" />
 
 						<label for="group_parent"><?php $app("i18n")("group_parent_c"); ?></label>
-						<?php RenderHelper::renderUserGroupPicker("group_parent", $app->vars["group"]->parent, array("title" => "[none]", "value" => "")); ?>
+						<?php \Crispage\Helpers\RenderHelper::renderUserGroupPicker("group_parent", $app->vars["group"]->parent, array("title" => "[none]", "value" => "")); ?>
 
 						<label for="group_rank"><?php $app("i18n")("group_rank_c"); ?></label>
 						<input type="number" class="form-control" name="group_rank" value="<?php echo $app->vars["group"]->rank; ?>" min="-1" />

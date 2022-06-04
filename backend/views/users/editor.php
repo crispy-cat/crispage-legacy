@@ -8,14 +8,14 @@
 	*/
 
 	defined("CRISPAGE") or die("Application must be started from index.php!");
-	require_once Config::APPROOT . "/backend/header.php";
+	require_once \Config::APPROOT . "/backend/header.php";
 
-	$currentUser = Session::getCurrentSession()->user;
-	$formFilled = FormHelper::formFieldsFilled(
+	$currentUser = \Crispage\Assets\Session::getCurrentSession()->user;
+	$formFilled = \Crispage\Helpers\FormHelper::formFieldsFilled(
 		"user_name", "user_id", "user_email", "user_group"
 	) && filter_var($app->request->query["user_email"], FILTER_VALIDATE_EMAIL);
 
-	$app->vars["user"] = new User(array());
+	$app->vars["user"] = new \Crispage\Assets\User(array());
 
 	if (isset($app->request->query["edit_id"])) {
 		if (!$app("users")->exists($app->request->query["edit_id"]))
@@ -24,13 +24,13 @@
 		$app->vars["user"] = $app("users")->get($app->request->query["edit_id"]);
 
 		if ($app->vars["user"]->id == $currentUser) {
-			if (!User::userHasPermissions($currentUser, UserPermissions::MODIFY_SELF))
+			if (!\Crispage\Assets\User::userHasPermissions($currentUser, \Crispage\Users\UserPermissions::MODIFY_SELF))
 				$app->redirectWithMessages("/backend/users/list", array("type" => "error", "content" => $app("i18n")->getString("no_permission_self")));
 		} else {
-			if (!User::userHasPermissions($currentUser, UserPermissions::MODIFY_USERS))
+			if (!\Crispage\Assets\User::userHasPermissions($currentUser, \Crispage\Users\UserPermissions::MODIFY_USERS))
 				$app->redirectWithMessages("/backend/users/list", array("type" => "error", "content" => $app("i18n")->getString("no_permission_users")));
 
-				if (User::compareUserRank($currentUser, $app->vars["user"]->id) !== 1)
+				if (\Crispage\Assets\User::compareUserRank($currentUser, $app->vars["user"]->id) !== 1)
 					$app->redirectWithMessages("/backend/users/list", array("type" => "error", "content" => $app("i18n")->getString("rank_must_be_less")));
 		}
 
@@ -50,7 +50,7 @@
 			}
 
 			$group = $app->request->query["user_group"];
-			if (User::compareUserRank($currentUser, UserGroup::getGroupRank($group)) !== 1) {
+			if (\Crispage\Assets\User::compareUserRank($currentUser, \Crispage\Assets\UserGroup::getGroupRank($group)) !== 1) {
 				$group = $app->getSetting("users.default_group");
 				$app->page->alerts["group_lower"] = array("class" => "warning", "content" => $app("i18n")->getString("rank_must_be_less"));
 			}
@@ -73,7 +73,7 @@
 		$app->vars["title"] = $app("i18n")->getString("new_user");
 
 		if ($formFilled) {
-			if (!User::userHasPermissions($currentUser, UserPermissions::MODIFY_USERS))
+			if (!\Crispage\Assets\User::userHasPermissions($currentUser, \Crispage\Users\UserPermissions::MODIFY_USERS))
 				$app->redirectWithMessages("/backend/users/list", array("type" => "error", "content" => $app("i18n")->getString("no_permission_users")));
 
 			if ($app->request->query["user_id"] == "")
@@ -86,7 +86,7 @@
 			$app->vars["user"]->id = $app->nameToId($app->vars["user"]->id);
 
 			$group = $app->request->query["user_group"];
-			if (User::compareUserRank($currentUser, UserGroup::getGroupRank($group)) !== 1) {
+			if (\Crispage\Assets\User::compareUserRank($currentUser, \Crispage\Assets\UserGroup::getGroupRank($group)) !== 1) {
 				$group = $app->getSetting("users.default_group");
 				$app->page->alerts["group_lower"] = array("class" => "warning", "content" => $app("i18n")->getString("rank_must_be_less"));
 			}
@@ -133,7 +133,7 @@
 						<input type="text" class="form-control" name="user_id" placeholder="auto-generate" value="<?php echo $app->vars["user"]->id; ?>" />
 
 						<label for="user_group"><?php $app("i18n")("user_group_c"); ?></label>
-						<?php RenderHelper::renderUserGroupPicker("user_group", $app->vars["user"]->group); ?>
+						<?php \Crispage\Helpers\RenderHelper::renderUserGroupPicker("user_group", $app->vars["user"]->group); ?>
 
 						<a class="btn btn-secondary btn-lg mt-3 pe-2" href="<?php echo Config::WEBROOT; ?>/backend/users/list" style="width: calc(50% - 0.375rem);"><?php $app("i18n")("back"); ?></a>
 						<button class="btn btn-success btn-lg mt-3" type="submit" style="width: calc(50% - 0.375rem);"><?php $app("i18n")("save"); ?></button>

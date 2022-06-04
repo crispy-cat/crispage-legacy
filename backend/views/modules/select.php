@@ -8,11 +8,11 @@
 	*/
 
 	defined("CRISPAGE") or die("Application must be started from index.php!");
-	require_once Config::APPROOT . "/backend/header.php";
+	require_once \Config::APPROOT . "/backend/header.php";
 
 	$app->page->setTitle($app("i18n")->getString("new_module"));
 
-	$app->vars["infos"] = ExtensionHelper::getAvailableModules();
+	$app->vars["infos"] = \Crispage\Helpers\ExtensionHelper::getAvailableModules();
 
 	$app->page->setContent(function($app) {
 ?>

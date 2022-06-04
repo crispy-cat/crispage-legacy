@@ -8,18 +8,18 @@
 	*/
 
 	defined("CRISPAGE") or die("Application must be started from index.php!");
-	require_once Config::APPROOT . "/header.php";
+	require_once \Config::APPROOT . "/header.php";
 
 	$app->vars["category"] = $app("categories")->get($app->request->route["item_id"]);
 
-	$session = Session::getCurrentSession();
-	if (!$app->vars["category"] || ($app->vars["category"]->state != "published" && (!$session || !User::userHasPermissions($session->user, UserPermissions::VIEW_UNPUBLISHED))))
-		$app->error(new ApplicationException(404, $app("i18n")->getString("page_not_found"), $app("i18n")->getString("page_not_found_ex")));
+	$session = \Crispage\Assets\Session::getCurrentSession();
+	if (!$app->vars["category"] || ($app->vars["category"]->state != "published" && (!$session || !\Crispage\Assets\User::userHasPermissions($session->user, \Crispage\Assets\Session::VIEW_UNPUBLISHED))))
+		$app->error(new \Crispage\ApplicationException(404, $app("i18n")->getString("page_not_found"), $app("i18n")->getString("page_not_found_ex")));
 
 	$app->vars["articles"] = $app("articles")->getAllArr(array("category" => $app->request->route["item_id"]), "modified");
 	$app->vars["subcategories"] = $app("categories")->getAllArr(array("parent" => $app->request->route["item_id"]), "title");
 
-	if (!$session || !User::userHasPermissions($session->user, UserPermissions::VIEW_UNPUBLISHED)) {
+	if (!$session || !\Crispage\Assets\User::userHasPermissions($session->user, \Crispage\Assets\Session::VIEW_UNPUBLISHED)) {
 		foreach ($app->vars["articles"] as $key => $article)
 			if ($article->state != "published")
 				array_splice($app->vars["articles"], $key, 1);
@@ -28,8 +28,8 @@
 	$app->vars["show"] = (is_numeric($app->request->query["show"])) ? $app->request->query["show"] : 5;
 	$app->vars["page"] = (is_numeric($app->request->query["page"])) ? $app->request->query["page"] : 1;
 
-	$app->vars["npages"] = Paginator::numPages($app->vars["articles"], $app->vars["show"]);
-	$app->vars["articles"] = Paginator::Paginate($app->vars["articles"], $app->vars["show"], $app->vars["page"]);
+	$app->vars["npages"] = \Crispage\Helpers\Paginator::numPages($app->vars["articles"], $app->vars["show"]);
+	$app->vars["articles"] = \Crispage\Helpers\Paginator::Paginate($app->vars["articles"], $app->vars["show"], $app->vars["page"]);
 
 	$app->page->options["show_title"] = $app->vars["category"]->options["show_title"] ?? $app->getSetting("categories.show_title", "yes");
 	$app->page->options["show_sidebar"] = $app->vars["category"]->options["show_sidebar"] ?? $app->getSetting("categories.show_sidebar", "yes");
@@ -60,8 +60,8 @@
 				<button class="btn btn-primary ms-2" type="submit"><?php $app("i18n")("go"); ?></button>
 			</form>
 			<?php
-				$baseurl = Config::WEBROOT . "/" . Router::getCategoryRoute($app->request->route["item_id"]) . "?show=" . (($app->vars["show"]) ? $app->vars["show"] : "all") . "&page=";
-				RenderHelper::renderPagination($baseurl, $app->vars["npages"], $app->vars["page"] ?? 1);
+				$baseurl = \Config::WEBROOT . "/" . \Crispage\Routing\Router::getCategoryRoute($app->request->route["item_id"]) . "?show=" . (($app->vars["show"]) ? $app->vars["show"] : "all") . "&page=";
+				\Crispage\Helpers\RenderHelper::renderPagination($baseurl, $app->vars["npages"], $app->vars["page"] ?? 1);
 			?>
 
 			<?php if (count($app->vars["subcategories"])) { ?>
@@ -69,7 +69,7 @@
 					<div class="card-body">
 						<small><?php $app("i18n")("subcategories"); ?></small>
 						<?php foreach ($app->vars["subcategories"] as $sub) { ?>
-							<h5><a href="<?php echo Config::WEBROOT . "/" . Router::getCategoryRoute($sub->id); ?>"><?php echo htmlentities($sub->title); ?></a></h5>
+							<h5><a href="<?php echo \Config::WEBROOT . "/" . \Crispage\Routing\Router::getCategoryRoute($sub->id); ?>"><?php echo htmlentities($sub->title); ?></a></h5>
 						<?php } ?>
 					</div>
 				</div>
@@ -85,7 +85,7 @@
 			?>
 					<div class="card mt-3">
 						<div class="card-body">
-							<h2 class="card-title"><a href="<?php echo Config::WEBROOT . "/" . Router::getArticleRoute($article->id); ?>"><?php echo htmlentities($article->title); ?></a></h2>
+							<h2 class="card-title"><a href="<?php echo \Config::WEBROOT . "/" . \Crispage\Routing\Router::getArticleRoute($article->id); ?>"><?php echo htmlentities($article->title); ?></a></h2>
 							<?php echo $article->summary; ?>
 						</div>
 						<ul class="list-group list-group-flush">

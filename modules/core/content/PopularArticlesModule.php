@@ -7,9 +7,11 @@
 		Since: 0.0.1
 	*/
 
+	namespace Crispage\Modules;
+
 	defined("CRISPAGE") or die("Application must be started from index.php!");
 
-	class PopularArticlesModule extends Module {
+	class PopularArticlesModule extends \Crispage\Assets\Module {
 		public function render() {
 			global $app;
 
@@ -31,7 +33,7 @@
 			for ($i = 0; $i < $this->options["numarticles"]; $i++) {
 				if (!isset($articles[$i])) break;
 				echo "<li class=\"nav-item\">";
-				echo "<a class=\"nav-link\" href=\"" . Config::WEBROOT . "/" . Router::getArticleRoute($articles[$i]->id) . "\">{$articles[$i]->title}</a>";
+				echo "<a class=\"nav-link\" href=\"" . \Config::WEBROOT . "/" . \Crispage\Routing\Router::getArticleRoute($articles[$i]->id) . "\">{$articles[$i]->title}</a>";
 				echo "</li>\n";
 			}
 

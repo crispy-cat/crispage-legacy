@@ -1,21 +1,22 @@
 <?php
 	defined("CRISPAGE") or die();
 
-	$approot = $app->request->query["iopts"]["approot"] ?? Config::APPROOT;
-	$webroot = $app->request->query["iopts"]["webroot"] ?? Config::WEBROOT;
-	$dbloc = $app->request->query["iopts"]["db_json_loc"] ?? ($approot . "/database");
-	$dbname = $app->request->query["iopts"]["db_json_name"] ?? "database";
+	$approot = $app->request->query["iopts"]["approot"] ?? \Config::APPROOT;
+	$webroot = $app->request->query["iopts"]["webroot"] ?? \Config::WEBROOT;
+	$db_type = $app->request->query["iopts"]["db_type"] ?? "JSONDatabase";
+	$db_loc = $app->request->query["iopts"]["db_loc"] ?? ($approot . "/database");
+	$db_name = $app->request->query["iopts"]["db_name"] ?? "database";
+	$db_json_pretty = (bool)($app->request->query["iopts"]["db_json_pretty"] ?? false);
+	$db_user = $app->request->query["iopts"]["db_user"] ?? "";
+	$db_pass = $app->request->query["iopts"]["db_pass"] ?? "";
 	$passtable = $app->request->query["iopts"]["password_table"] ?? "auth";
 
 	$app->installerMessage("Initializing database");
-	$app->initDatabase("JSONDatabase", array(
-		"location" => $dbloc,
-		"name" => $dbname,
-		"pretty" => false
-	));
+	$app->initDatabase($db_type, $db_loc, $db_name, array("USERNAME" => $db_user, "PASSWORD" => $db_pass, "JSON_PRETTY" => $db_json_pretty));
 
 	$app->installerMessage("Creating database");
-	mkdir($dbloc . "/" . $dbname);
+	if (!file_exists($db_loc)) mkdir($db_loc);
+	if ($db_type == "\\Crispage\\Database\\JSONDatabase") mkdir($dbloc . "/" . $dbname);
 
 	$app->installerMessage("Creating tables");
 	$app->database->createTable("activation", array(
@@ -189,9 +190,18 @@
 	));
 	$app->database->writeRow("usergroups", "super-user", array(
 		"name" => "Super User",
-		"parent" => "",
+		"parent" => "member",
 		"rank" => -1,
-		"permissions" => UserPermissions::ALL_PERMISSIONS,
+		"permissions" => \Crispage\Users\UserPermissions::ALL_PERMISSIONS,
+		"created" => time(),
+		"modified" => time(),
+		"options" => array()
+	));
+	$app->database->writeRow("usergroups", "member", array(
+		"name" => "Member",
+		"parent" => "",
+		"rank" => 10,
+		"permissions" => 28677,
 		"created" => time(),
 		"modified" => time(),
 		"options" => array()

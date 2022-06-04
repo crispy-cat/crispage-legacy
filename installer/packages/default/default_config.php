@@ -2,7 +2,7 @@
 	define("STARTTIME", microtime(true));
 
 	class Config {
-		public const CONFIG_VERSION = "0.10.0";
+		public const CONFIG_VERSION = "0.12.0";
 		// Should not be changed unless you know what you're doing!
 		public const APPROOT = "{{approot}}";
 		// Should be changed to the request URI of this directory, e.g. if your
@@ -25,16 +25,19 @@
 		// harder for attackers to obtain it
 		public const PASSWORD_TABLE = "{{password_table}}";
 
-		// Database type, as of 0.2.0 only JSONDatabase is implemented
-		public const DB_TYPE = "JSONDatabase";
-		// Should Crispage insert whitespace in database files? Set to false to
-		// save some space
-		public const DB_JSON_PRETTY = false;
+		// Database type, as of 0.12.0 options include JSONDatabase and
+		// SQLiteDatabase
+		public const DB_TYPE = "{{db_type}}";
 		// The directory where databases are stored, this could be anything as
 		// long as it's a real path and the webserver has correct permissions
-		public const DB_JSON_LOC = "{{db_json_loc}}";
-		// Name of the folder where the database's files are stored
-		public const DB_JSON_NAME = "{{db_json_name}}";
+		public const DB_LOC = "{{db_loc}}";
+		// The name of the actual database file(s)
+		public const DB_NAME = "{{db_name}}";
+		public const DB_OPTIONS = array(
+			"JSON_PRETTY" =>	{{db_json_pretty}},
+			"USERNAME" =>		"{{db_user}}",
+			"PASSWORD" =>		"{{db_pass}}",
+		);
 	}
 
 	// == Do not edit below this line ==

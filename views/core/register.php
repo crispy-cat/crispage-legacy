@@ -9,9 +9,9 @@
 
 
 	defined("CRISPAGE") or die("Application must be started from index.php!");
-	require_once Config::APPROOT . "/header.php";
+	require_once \Config::APPROOT . "/header.php";
 
-	$session = Session::getCurrentSession();
+	$session = \Crispage\Assets\Session::getCurrentSession();
 	if ($session)
 		$app->redirectWithMessages("/", array("type" => "error", "content" => $app("i18n")->getString("active_session")));
 
@@ -56,7 +56,7 @@
 			$app->redirectWithMessages("/register", array("type" => "error", "content" => $app("i18n")->getString("password_min_special", null, $password_min_special)));
 
 		$token = Randomizer::randomString(64, 36);
-		$url = (($_SERVER["HTTPS"]) ? "https://" : "http://") . $_SERVER["SERVER_NAME"] . Config::WEBROOT . "/activate_account?user_id=$id&token=$token";
+		$url = (($_SERVER["HTTPS"]) ? "https://" : "http://") . $_SERVER["SERVER_NAME"] . \Config::WEBROOT . "/activate_account?user_id=$id&token=$token";
 
 		$sent = Mailer::sendMail(
 			array($email),
@@ -110,7 +110,7 @@
 				<input type="password" class="form-control" name="user_confirm" required />
 
 				<button type="submit" class="btn btn-primary mt-3"><?php $app("i18n")("register"); ?></button>
-				<a class="btn btn-link mt-3" href="<?php echo Config::WEBROOT; ?>/login"><?php $app("i18n")("log_in"); ?></a>
+				<a class="btn btn-link mt-3" href="<?php echo \Config::WEBROOT; ?>/login"><?php $app("i18n")("log_in"); ?></a>
 			</form>
 		</div>
 <?php

@@ -8,7 +8,7 @@
 	*/
 
 	defined("CRISPAGE") or die("Application must be started from index.php!");
-	require_once Config::APPROOT . "/installer/header.php";
+	require_once \Config::APPROOT . "/installer/header.php";
 
 	$app->page->setTitle($app("i18n")->getString("install_amp_manage"));
 
@@ -19,15 +19,15 @@
 	<table class="table">
 		<tbody>
 			<tr>
-				<td><a href="<?php echo Config::WEBROOT; ?>/installer/install/default"><h2><?php $app("i18n")("install"); ?></h2></a></td>
+				<td><a href="<?php echo \Config::WEBROOT; ?>/installer/install/default"><h2><?php $app("i18n")("install"); ?></h2></a></td>
 				<td><?php $app("i18n")("install_ex"); ?></td>
 			</tr>
 			<tr>
-				<td><a href="<?php echo Config::WEBROOT; ?>/installer/extensions/list"><h2><?php $app("i18n")("extensions"); ?></h2></a></td>
+				<td><a href="<?php echo \Config::WEBROOT; ?>/installer/extensions/list"><h2><?php $app("i18n")("extensions"); ?></h2></a></td>
 				<td><?php $app("i18n")("extensions_ex"); ?></td>
 			</tr>
 			<tr>
-				<td><a href="<?php echo Config::WEBROOT; ?>/installer/repair/default"><h2><?php $app("i18n")("repair"); ?></h2></a></td>
+				<td><a href="<?php echo \Config::WEBROOT; ?>/installer/repair/default"><h2><?php $app("i18n")("repair"); ?></h2></a></td>
 				<td><?php $app("i18n")("repair_ex"); ?></td>
 			</tr>
 		</tbody>

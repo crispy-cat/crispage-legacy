@@ -8,9 +8,9 @@
 	*/
 
 	defined("CRISPAGE") or die("Application must be started from index.php!");
-	require_once Config::APPROOT . "/backend/header.php";
+	require_once \Config::APPROOT . "/backend/header.php";
 
-	if (!User::userHasPermissions(Session::getCurrentSession()->user, UserPermissions::MODIFY_PLUGINS))
+	if (!\Crispage\Assets\User::userHasPermissions(\Crispage\Assets\Session::getCurrentSession()->user, \Crispage\Users\UserPermissions::MODIFY_PLUGINS))
 		$app->redirectWithMessages("/backend/plugins/list", array("type" => "error", "content" => $app("i18n")->getString("no_permission_plugins")));
 
 	if (!isset($app->request->query["deactivate_id"]))
@@ -23,7 +23,7 @@
 		$app("plugins")->delete($app->request->query["deactivate_id"]);
 		$app->redirectWithMessages("/backend/plugins/list", array("type" => "success", "content" => $app("i18n")->getString("plugin_deactivated")));
 	}
-	
+
 	$app->vars["deactivate_id"] = $app->request->query["deactivate_id"];
 
 	$app->page->setTitle($app("i18n")->getString("delete_v", null, $app->vars["deactivate_id"]));

@@ -8,7 +8,7 @@
 	*/
 
 	defined("CRISPAGE") or die("Application must be started from index.php!");
-	require_once Config::APPROOT . "/backend/header.php";
+	require_once \Config::APPROOT . "/backend/header.php";
 
 	if (!isset($app->request->query["user_id"]))
 		$app->redirectWithMessages("/backend/users/list", array("type" => "error", "content" => $app("i18n")->getString("no_id_given")));
@@ -18,13 +18,13 @@
 
 	$user = $app("users")->get($app->request->query["user_id"]);
 
-	if ($app->request->query["user_id"] == Session::getCurrentSession()->user) {
+	if ($app->request->query["user_id"] == \Crispage\Assets\Session::getCurrentSession()->user) {
 		$app->redirectWithMessages("/backend/users/list_bans?user_id={$user->id}", array("type" => "error", "content" => $app("i18n")->getString("target_not_current_user")));
 	} else {
-		if (!User::userHasPermissions(Session::getCurrentSession()->user, UserPermissions::BAN_USERS))
+		if (!\Crispage\Assets\User::userHasPermissions(\Crispage\Assets\Session::getCurrentSession()->user, \Crispage\Users\UserPermissions::BAN_USERS))
 			$app->redirectWithMessages("/backend/users/list_bans?user_id={$user->id}", array("type" => "error", "content" => $app("i18n")->getString("no_permission_bans")));
 
-		if (User::compareUserRank(Session::getCurrentSession()->user, $app->request->query["user_id"]) !== 1)
+		if (\Crispage\Assets\User::compareUserRank(\Crispage\Assets\Session::getCurrentSession()->user, $app->request->query["user_id"]) !== 1)
 			$app->redirectWithMessages("/backend/users/list_bans?user_id={$user->id}", array("type" => "error", "content" => $app("i18n")->getString("rank_less_than_own")));
 	}
 
@@ -36,7 +36,7 @@
 		$reason = $app->request->query["ban_reason"] ?? null;
 
 		$id = Randomizer::randomString(16, 62);
-		$ban = new Ban(array(
+		$ban = new \Crispage\Assets\Ban(array(
 			"id"		=> $id,
 			"user"		=> $user->id,
 			"created"	=> time(),

@@ -8,7 +8,7 @@
 	*/
 
 	defined("CRISPAGE") or die("Application must be started from index.php!");
-	require_once Config::APPROOT . "/header.php";
+	require_once \Config::APPROOT . "/header.php";
 
 	$query = $app->request->query["q"] ?? $app->request->query["s"] ?? "";
 	$app->vars["results"] = array();
@@ -35,7 +35,7 @@
 			$app->vars["results"][] = array(
 				"nkeys" => $nkeys,
 				"type" => $app("i18n")->getString("article"),
-				"route" => Router::getArticleRoute($article->id),
+				"route" => \Crispage\Routing\Router::getArticleRoute($article->id),
 				"title" => htmlentities($article->title),
 				"body" => htmlentities($article->summary)
 			);
@@ -54,7 +54,7 @@
 			$app->vars["results"][] = array(
 				"nkeys" => $nkeys,
 				"type" => $app("i18n")->getString("category"),
-				"route" => Router::getCategoryRoute($category->id),
+				"route" => \Crispage\Routing\Router::getCategoryRoute($category->id),
 				"title" => htmlentities($category->title),
 				"body" => htmlentities($category->content)
 			);
@@ -65,8 +65,8 @@
 			return ($a["nkeys"] < $b["nkeys"]) ? -1 : 1;
 		});
 
-		$app->vars["npages"] = Paginator::numPages($app->vars["results"], $app->vars["show"]);
-		$app->vars["results"] = Paginator::Paginate($app->vars["results"], $app->vars["show"], $app->vars["page"]);
+		$app->vars["npages"] = \Crispage\Helpers\Paginator::numPages($app->vars["results"], $app->vars["show"]);
+		$app->vars["results"] = \Crispage\Helpers\Paginator::Paginate($app->vars["results"], $app->vars["show"], $app->vars["page"]);
 	}
 
 	if (strlen($query)) $app->page->setTitle($app("i18n")->getString("search_results_for", null, $query));
@@ -92,15 +92,15 @@
 			<hr />
 
 			<?php
-				$baseurl = Config::WEBROOT . "/search?q=" . ($app->request->query["q"] ?? $app->request->query["s"] ?? "") . "&show=" . (($app->vars["show"]) ? $app->vars["show"] : "all") . "&page=";
-				RenderHelper::renderPagination($baseurl, $app->vars["npages"], $app->vars["page"] ?? 1);
+				$baseurl = \Config::WEBROOT . "/search?q=" . ($app->request->query["q"] ?? $app->request->query["s"] ?? "") . "&show=" . (($app->vars["show"]) ? $app->vars["show"] : "all") . "&page=";
+				\Crispage\Helpers\RenderHelper::renderPagination($baseurl, $app->vars["npages"], $app->vars["page"] ?? 1);
 			?>
 <?php
 			foreach ($app->vars["results"] as $result) {
 ?>
 				<div class="card mt-2">
 					<div class="card-body">
-						<a href="<?php echo Config::WEBROOT . "/" . $result["route"]; ?>">
+						<a href="<?php echo \Config::WEBROOT . "/" . $result["route"]; ?>">
 							<h3 class="mb-0"><?php echo $result["title"]; ?></h3>
 						</a>
 						<small><?php echo $result["type"]; ?></small><br />

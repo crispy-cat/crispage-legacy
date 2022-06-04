@@ -9,7 +9,7 @@
 
 	defined("CRISPAGE") or die("Application must be started from index.php!");
 	define("IS_INSTALL_PAGE", true);
-	require_once Config::APPROOT . "/installer/header.php";
+	require_once \Config::APPROOT . "/installer/header.php";
 
 	$app->page->setTitle("Install");
 
@@ -48,25 +48,38 @@
 
 	<p>Please fill in the information needed below. If a field is already filled in you may not need to change it.</p>
 
-	<form action="<?php echo Config::WEBROOT; ?>/installer/script/package" method="post">
+	<form action="<?php echo \Config::WEBROOT; ?>/installer/script/package" method="post">
 		<input type="hidden" name="name" value="default" />
 
 		<label for="iopts[approot]">Application Files Root:</label>
-		<input type="text" class="form-control" name="iopts[approot]" value="<?php echo Config::APPROOT; ?>" required />
+		<input type="text" class="form-control" name="iopts[approot]" value="<?php echo \Config::APPROOT; ?>" required />
 
 		<label for="iopts[webroot]">URL Root:</label>
-		<input type="text" class="form-control" name="iopts[webroot]" value="<?php echo Config::WEBROOT; ?>" />
+		<input type="text" class="form-control" name="iopts[webroot]" value="<?php echo \Config::WEBROOT; ?>" />
 
 		<hr />
 
+		<label for="iopts[db_type]">Database Type:</label>
+		<select class="form-control" name="iopts[db_type]">
+			<option value="\Crispage\Database\JSONDatabase">JSON</option>
+			<option value="\Crispage\Database\SQLiteDatabase">SQLite3</option>
+			<option value="\Crispage\Database\MySQLDatabase">MySQL</option>
+		</select>
+
+		<label for="iopts[db_loc]">Database Location or Host:</label>
+		<input type="text" class="form-control" name="iopts[db_loc]" value="<?php echo \Config::APPROOT . "/database"; ?>" required />
+
+		<label for="iopts[db_name]">Database Name:</label>
+		<input type="text" class="form-control" name="iopts[db_name]" required />
+
+		<label for="iopts[db_user]">Database Username (Optional):</label>
+		<input type="text" class="form-control" name="iopts[db_user]" />
+
+		<label for="iopts[db_pass]">Database Password (Optional):</label>
+		<input type="password" class="form-control" name="iopts[db_pass]" />
+
 		<label for="iopts[password_table]">Password Table:</label>
-		<input type="text" class="form-control" name="iopts[password_table]" value="<?php echo "auth_" . Randomizer::randomString(8, 16); ?>" required />
-
-		<label for="iopts[db_json_loc]">Database Files Location:</label>
-		<input type="text" class="form-control" name="iopts[db_json_loc]" value="<?php echo Config::APPROOT . "/database"; ?>" required />
-
-		<label for="iopts[db_json_name]">Database Name:</label>
-		<input type="text" class="form-control" name="iopts[db_json_name]" required />
+		<input type="text" class="form-control" name="iopts[password_table]" value="<?php echo "auth_" . \Crispage\Helpers\Randomizer::randomString(8, 16); ?>" required />
 
 		<hr />
 

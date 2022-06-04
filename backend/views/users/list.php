@@ -8,16 +8,16 @@
 	*/
 
 	defined("CRISPAGE") or die("Application must be started from index.php!");
-	require_once Config::APPROOT . "/backend/header.php";
+	require_once \Config::APPROOT . "/backend/header.php";
 
 	$app->page->setTitle($app("i18n")->getString("users"));
 
 	$app->vars["group"] = $app->request->query["group"] ?? null;
-	Paginator::paginationQuery($app->vars);
+	\Crispage\Helpers\Paginator::paginationQuery($app->vars);
 
 	$users = $app("users")->getAllArr(($app->vars["group"]) ? array("group" => $app->vars["group"]) : null, "modified", true);
 
-	Paginator::paginateNum($app->vars, $users, "users");
+	\Crispage\Helpers\Paginator::paginateNum($app->vars, $users, "users");
 
 	$app->page->setContent(function($app) {
 ?>
@@ -27,7 +27,7 @@
 					<h1><?php $app("i18n")("users"); ?></h1>
 					<span><?php $app("i18n")("show_c"); ?></span>
 					<form class="d-flex">
-						<?php RenderHelper::renderUserGroupPicker("group", null, array("title" => $app("i18n")->getString("all_usergroups"), "value" => "")); ?>
+						<?php \Crispage\Helpers\RenderHelper::renderUserGroupPicker("group", null, array("title" => $app("i18n")->getString("all_usergroups"), "value" => "")); ?>
 						<select class="form-select ms-2" name="show">
 							<option value="15">15</option>
 							<option value="30">30</option>
@@ -45,7 +45,7 @@
 						<a class="btn btn-success mt-4 mb-2 d-block ms-auto" href="<?php echo Config::WEBROOT; ?>/backend/users/editor" style="width: 120px;"><?php $app("i18n")("new_user"); ?></a>
 						<?php
 							$baseurl = Config::WEBROOT . "/backend/users/list?show=" . (($app->vars["show"]) ? $app->vars["show"] : "all") . "&page=";
-							RenderHelper::renderPagination($baseurl, $app->vars["npages"], $app->vars["page"] ?? 1);
+							\Crispage\Helpers\RenderHelper::renderPagination($baseurl, $app->vars["npages"], $app->vars["page"] ?? 1);
 						?>
 					</div>
 				</div>

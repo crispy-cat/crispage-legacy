@@ -1,11 +1,13 @@
 <?php
 	/*
 		Crispage - A lightweight CMS for developers
-		core/users/UserGroup.php - User group class
+		core/assets/classes/UserGroup.php - User group class
 
 		Author: crispycat <the@crispy.cat> <https://crispy.cat>
 		Since: 0.0.1
 	*/
+
+	namespace Crispage\Assets;
 
 	defined("CRISPAGE") or die("Application must be started from index.php!");
 
@@ -18,16 +20,16 @@
 		public function __construct(array $data) {
 			parent::__construct("UserGroup", $data);
 			if (!is_array($data)) return;
-			$this->name = $data["name"] ?? "";
-			$this->parent = $data["parent"] ?? "";
-			$this->rank = $data["rank"] ?? 0;
-			$this->permissions = $data["permissions"] ?? 0;
+			$this->name = (string)($data["name"] ?? "");
+			$this->parent = (string)($data["parent"] ?? "");
+			$this->rank = (int)($data["rank"] ?? 0);
+			$this->permissions = (int)($data["permissions"] ?? 0);
 		}
 
 		public static function getGroupPermissions(string $id = null) : int {
 			global $app;
 			$group = $app("usergroups")->get($id);
-			if (!$group) return UserPermissions::NO_PERMISSIONS;
+			if (!$group) return \Crispage\Users\UserPermissions::NO_PERMISSIONS;
 			if ($group->parent) return $group->permissions | self::getGroupPermissions($group->parent);
 			else return $group->permissions;
 		}

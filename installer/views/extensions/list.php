@@ -8,7 +8,7 @@
 	*/
 
 	defined("CRISPAGE") or die("Application must be started from index.php!");
-	require_once Config::APPROOT . "/installer/header.php";
+	require_once \Config::APPROOT . "/installer/header.php";
 
 	$app->page->setTitle($app("i18n")->getString("extensions"));
 
@@ -18,7 +18,7 @@
 ?>
 		<h1><?php $app("i18n")("extensions"); ?></h1>
 		<div style="float: right;">
-			<a class="btn btn-success" href="<?php echo Config::WEBROOT; ?>/installer/extensions/install"><?php $app("i18n")("install_extension"); ?></a>
+			<a class="btn btn-success" href="<?php echo \Config::WEBROOT; ?>/installer/extensions/install"><?php $app("i18n")("install_extension"); ?></a>
 		</div>
 		<table class="table table-striped">
 			<thead>
@@ -39,7 +39,7 @@
 					<td><?php echo $extension["scope"]; ?></td>
 					<td><?php echo $extension["type"]; ?></td>
 					<td><?php echo $extension["class"]; ?></td>
-					<td><a class="btn btn-sm btn-danger" href="<?php echo Config::WEBROOT; ?>/installer/extensions/uninstall?uninstall_id=<?php echo $extension["id"]; ?>"><?php $app("i18n")("uninstall"); ?></a></td>
+					<td><a class="btn btn-sm btn-danger" href="<?php echo \Config::WEBROOT; ?>/installer/extensions/uninstall?uninstall_id=<?php echo $extension["id"]; ?>"><?php $app("i18n")("uninstall"); ?></a></td>
 				</tr>
 <?php
 			}

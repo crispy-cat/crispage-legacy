@@ -8,7 +8,7 @@
 	*/
 
 	defined("CRISPAGE") or die("Application must be started from index.php!");
-	require_once Config::APPROOT . "/backend/header.php";
+	require_once \Config::APPROOT . "/backend/header.php";
 
 	$app->page->setTitle("About Crispage");
 
@@ -21,7 +21,7 @@
 
 	<h2>Version Information</h2>
 	<p>You are currently using Crispage version <?php echo CRISPAGE; ?>.</p>
-	<p><a class="btn btn-success btn-lg" href="<?php echo Config::WEBROOT; ?>/installer/install/update" target="_blank">Check for updates</a></p>
+	<p><a class="btn btn-success btn-lg" href="<?php echo \Config::WEBROOT; ?>/installer/install/update" target="_blank">Check for updates</a></p>
 	<br />
 
 	<h2>Links</h2>

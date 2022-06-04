@@ -1,11 +1,13 @@
 <?php
 	/*
 		Crispage - A lightweight CMS for developers
-		core/content/Article.php - Article class
+		core/assets/classes/Article.php - Article class
 
 		Author: crispycat <the@crispy.cat> <https://crispy.cat>
 		Since: 0.0.1
 	*/
+
+	namespace Crispage\Assets;
 
 	defined("CRISPAGE") or die("Application must be started from index.php!");
 
@@ -25,17 +27,17 @@
 		public function __construct(array $data) {
 			parent::__construct("Article", $data);
 			if (!is_array($data)) return;
-			$this->category = $data["category"] ?? "";
-			$this->state	= $data["state"] ?? "";
-			$this->author	= $data["author"] ?? "";
-			$this->title	= $data["title"] ?? "";
-			$this->summary	= $data["summary"] ?? "";
-			$this->tags		= $data["tags"] ?? "";
-			$this->content	= $data["content"] ?? "";
-			$this->meta_desc= $data["meta_desc"] ?? "";
-			$this->meta_keys= $data["meta_keys"] ?? "";
-			$this->meta_robots= $data["meta_robots"] ?? "";
-			$this->hits		= $data["hits"] ?? 0;
+			$this->category = (string)($data["category"] ?? "");
+			$this->state	= (string)($data["state"] ?? "");
+			$this->author	= (string)($data["author"] ?? "");
+			$this->title	= (string)($data["title"] ?? "");
+			$this->summary	= (string)($data["summary"] ?? "");
+			$this->tags		= (string)($data["tags"] ?? "");
+			$this->content	= (string)($data["content"] ?? "");
+			$this->meta_desc= (string)($data["meta_desc"] ?? "");
+			$this->meta_keys= (string)($data["meta_keys"] ?? "");
+			$this->meta_robots= (string)($data["meta_robots"] ?? "");
+			$this->hits		= (int)($data["hits"] ?? 0);
 		}
 	}
 ?>

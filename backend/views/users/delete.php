@@ -8,7 +8,7 @@
 	*/
 
 	defined("CRISPAGE") or die("Application must be started from index.php!");
-	require_once Config::APPROOT . "/backend/header.php";
+	require_once \Config::APPROOT . "/backend/header.php";
 
 	if (!isset($app->request->query["delete_id"]))
 		$app->redirectWithMessages("/backend/users/list", array("type" => "error", "content" => $app("i18n")->getString("no_id_given")));
@@ -18,13 +18,13 @@
 
 	$user = $app("users")->get($app->request->query["delete_id"]);
 
-	if ($user->id == Session::getCurrentSession()->user) {
+	if ($user->id == \Crispage\Assets\Session::getCurrentSession()->user) {
 		$app->redirectWithMessages("/backend/users/list", array("type" => "error", "content" => $app("i18n")->getString("target_not_current_user")));
 	} else {
-		if (!User::userHasPermissions(Session::getCurrentSession()->user, UserPermissions::MODIFY_USERS))
+		if (!\Crispage\Assets\User::userHasPermissions(\Crispage\Assets\Session::getCurrentSession()->user, \Crispage\Users\UserPermissions::MODIFY_USERS))
 			$app->redirectWithMessages("/backend/users/list", array("type" => "error", "content" => $app("i18n")->getString("no_permission_users")));
 
-		if (User::compareUserRank(Session::getCurrentSession()->user, $app->request->query["delete_id"]) !== 1)
+		if (\Crispage\Assets\User::compareUserRank(\Crispage\Assets\Session::getCurrentSession()->user, $app->request->query["delete_id"]) !== 1)
 			$app->redirectWithMessages("/backend/users/list", array("type" => "error", "content" => $app("i18n")->getString("rank_less_than_own")));
 	}
 

@@ -8,7 +8,7 @@
 	*/
 
 	defined("CRISPAGE") or die("Application must be started from index.php!");
-	require_once Config::APPROOT . "/installer/header.php";
+	require_once \Config::APPROOT . "/installer/header.php";
 
 	$app->page->setTitle($app("i18n")->getString("update"));
 
@@ -18,7 +18,7 @@
 
 	<p><?php $app("i18n")("please_select_package", null, ".tar.gz, .zip"); ?></p>
 
-	<form action="<?php echo Config::WEBROOT; ?>/installer/script/package" method="post" enctype="multipart/form-data">
+	<form action="<?php echo \Config::WEBROOT; ?>/installer/script/package" method="post" enctype="multipart/form-data">
 		<label for="package"><?php $app("i18n")("package_c"); ?></label>
 		<input type="file" class="form-control" name="package" required />
 		<input type="hidden" name="ploc" value="/installer/install/update" />

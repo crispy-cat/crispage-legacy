@@ -7,9 +7,11 @@
 		Since: 0.0.1
 	*/
 
+	namespace Crispage\Events;
+
 	defined("CRISPAGE") or die("Application must be started from index.php!");
 
-	require_once Config::APPROOT . "/core/events/EventAction.php";
+	require_once \Config::APPROOT . "/core/events/EventAction.php";
 
 	class EventManager {
 		private array $eas = array();

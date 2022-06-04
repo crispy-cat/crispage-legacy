@@ -7,10 +7,9 @@
 		Since: 0.0.1
 	*/
 
-	defined("CRISPAGE") or die("Application must be started from index.php!");
+	namespace Crispage\Render;
 
-	define("WEBROOT", Config::WEBROOT);
-	define("SERVER_NAME", $_SERVER["SERVER_NAME"]);
+	defined("CRISPAGE") or die("Application must be started from index.php!");
 
 	class Page {
 		private string $title;
@@ -44,9 +43,9 @@
 				if (!isset($this->content)) throw new Exception("Page->content is null");
 				if (is_string($this->content)) echo $this->content;
 				elseif (is_callable($this->content)) ($this->content)($app);
-				else throw new Exception("Page->content not callable|string");
-			} catch (Throwable $e) {
-				$app->error(new ApplicationException(500, $app("i18n")->getString("render_error"), $app("i18n")->getString("render_error_ex2"), null, $e, true));
+				else throw new \Exception("Page->content not callable|string");
+			} catch (\Throwable $e) {
+				$app->error(new \Crispage\ApplicationException(500, $app("i18n")->getString("render_error"), $app("i18n")->getString("render_error_ex2"), null, $e, true));
 			}
 		}
 
@@ -104,11 +103,11 @@
 				echo "<div class=\"alert alert-{$alert["class"]}\">{$alert["content"]}</div>\n";
 		}
 
-		public function loadModule(Module $module) : void {
+		public function loadModule(\Crispage\Assets\Module $module) : void {
 			global $app;
 			$app->events->trigger("page.modules.pre_load", $module);
 			try {
-				$classname = ExtensionHelper::loadClass(Config::APPROOT . "/modules/$module->class.php");
+				$classname = \Crispage\Helpers\ExtensionHelper::loadClass(\Config::APPROOT . "/modules/$module->class.php", "\\Crispage\\Modules\\");
 				if (!isset($this->modules[$module->pos])) $this->modules[$module->pos] = array();
 				$this->modules[$module->pos][] = new $classname(array(
 					"id"	=> $module->id,
@@ -121,8 +120,8 @@
 					"options" => $module->options
 				));
 				$app->events->trigger("page.modules.post_load", $module);
-			} catch (Throwable $e) {
-				$app->error(new ApplicationException(500, $app("i18n")->getString("module_error"), $app("i18n")->getString("module_error_ex", null, $module->id), null, $e, false));
+			} catch (\Throwable $e) {
+				$app->error(new \Crispage\ApplicationException(500, $app("i18n")->getString("module_error"), $app("i18n")->getString("module_error_ex", null, $module->id), null, $e, false));
 			}
 		}
 
@@ -154,13 +153,13 @@
 			foreach ($this->modules[$pos] as $module) {
 				try {
 					$module->render();
-				} catch (Throwable $e) {
-					$app->error(new ApplicationException(500, $app("i18n")->getString("module_error"), $app("i18n")->getString("module_error_ex2", null, $module->id), null, $e, false));
+				} catch (\Throwable $e) {
+					$app->error(new \Crispage\ApplicationException(500, $app("i18n")->getString("module_error"), $app("i18n")->getString("module_error_ex2", null, $module->id), null, $e, false));
 				}
 			}
 		}
 
-		public function setCookie(string $id, string $content, int $expires = 0, string $path = WEBROOT, string $domain = null) : bool {
+		public function setCookie(string $id, string $content, int $expires = 0, string $path = \Config::WEBROOT, string $domain = null) : bool {
 			return setcookie($id, $content, $expires, $path, $domain);
 		}
 

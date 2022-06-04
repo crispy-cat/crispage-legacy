@@ -8,7 +8,7 @@
 	*/
 
 	defined("CRISPAGE") or die("Application must be started from index.php!");
-	require_once Config::APPROOT . "/installer/header.php";
+	require_once \Config::APPROOT . "/installer/header.php";
 
 	$app->page->setTitle($app("i18n")->getString("install"));
 
@@ -20,11 +20,11 @@
 	<table class="table">
 		<tbody>
 			<tr>
-				<td><a href="<?php echo Config::WEBROOT; ?>/installer/install/install"><h2><?php $app("i18n")("install"); ?></h2></a></td>
+				<td><a href="<?php echo \Config::WEBROOT; ?>/installer/install/install"><h2><?php $app("i18n")("install"); ?></h2></a></td>
 				<td><?php $app("i18n")("install_ex2"); ?></td>
 			</tr>
 			<tr>
-				<td><a href="<?php echo Config::WEBROOT; ?>/installer/install/update"><h2><?php $app("i18n")("update"); ?></h2></a></td>
+				<td><a href="<?php echo \Config::WEBROOT; ?>/installer/install/update"><h2><?php $app("i18n")("update"); ?></h2></a></td>
 				<td><?php $app("i18n")("update_ex"); ?></td>
 			</tr>
 		</tbody>

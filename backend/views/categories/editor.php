@@ -8,18 +8,18 @@
 	*/
 
 	defined("CRISPAGE") or die("Application must be started from index.php!");
-	require_once Config::APPROOT . "/backend/header.php";
+	require_once \Config::APPROOT . "/backend/header.php";
 
-	$currentUser = Session::getCurrentSession()->user;
-	$formFilled = FormHelper::formFieldsFilled(
+	$currentUser = \Crispage\Assets\Session::getCurrentSession()->user;
+	$formFilled = \Crispage\Helpers\FormHelper::formFieldsFilled(
 		"category_title", "category_content", "category_id", "category_state",
 		"category_parent", "category_tags", "category_meta_desc",
 		"category_meta_keys", "category_meta_robots", "category_options"
 	) && is_array($app->request->query["category_options"]);
 
-	$app->vars["category"] = new Category(array());
+	$app->vars["category"] = new \Crispage\Assets\Category(array());
 
-	if (!User::userHasPermissions($currentUser, UserPermissions::MODIFY_CATEGORIES))
+	if (!\Crispage\Assets\User::userHasPermissions($currentUser, \Crispage\Users\UserPermissions::MODIFY_CATEGORIES))
 		$app->redirectWithMessages("/backend/categories/list", array("type" => "error", "content" => $app("i18n")->getString("no_permission_categories")));
 
 	if (isset($app->request->query["edit_id"])) {
@@ -63,7 +63,7 @@
 
 			$app("categories")->set($app->vars["category"]->id, $app->vars["category"]);
 
-			if (Asset::parentLoop("categories", $app->vars["category"]->id)) {
+			if (\Crispage\Assets\Asset::parentLoop("categories", $app->vars["category"]->id)) {
 				$app->vars["category"]->parent = null;
 				$app("categories")->set($app->vars["category"]->id, $app->vars["category"]);
 				$app->page->alerts["parent_loop"] = array("class" => "warning", "content" => $app("i18n")->getString("parent_loop_avoided"));
@@ -123,7 +123,7 @@
 				<div class="col">
 					<h1><?php echo $app->vars["title"]; ?></h1>
 					<?php if ($app->vars["category"]->id != "") { ?>
-						<a target="_blank" href="<?php echo Config::WEBROOT . "/" . Router::getCategoryRoute($app->vars["category"]->id); ?>"><?php $app("i18n")("view_category"); ?></a>
+						<a target="_blank" href="<?php echo Config::WEBROOT . "/" . \Crispage\Routing\Router::getCategoryRoute($app->vars["category"]->id); ?>"><?php $app("i18n")("view_category"); ?></a>
 					<?php } ?>
 				</div>
 			</div>
@@ -148,14 +148,14 @@
 								<input type="text" class="form-control" name="category_title" value="<?php echo $app->vars["category"]->title; ?>" required />
 
 								<label for="category_content"><?php $app("i18n")("category_content_c"); ?></label>
-								<?php RenderHelper::renderEditor("category_content", htmlentities($app->vars["category"]->content)); ?>
+								<?php \Crispage\Helpers\RenderHelper::renderEditor("category_content", htmlentities($app->vars["category"]->content)); ?>
 							</div>
 							<div id="category_options" class="tab-pane" role="tabpanel">
 								<label for="category_options[show_title]"><?php $app("i18n")("show_title_c"); ?></label>
-								<?php RenderHelper::renderYesNo("category_options[show_title]", $app->vars["category"]->options["show_title"] ?? $app->getSetting("categories.show_title", "yes")); ?>
+								<?php \Crispage\Helpers\RenderHelper::renderYesNo("category_options[show_title]", $app->vars["category"]->options["show_title"] ?? $app->getSetting("categories.show_title", "yes")); ?>
 
 								<label for="category_options[show_sidebar]"><?php $app("i18n")("show_sidebar_c"); ?></label>
-								<?php RenderHelper::renderYesNo("category_options[show_sidebar]", $app->vars["category"]->options["show_sidebar"] ?? $app->getSetting("categories.show_sidebar", "yes")); ?>
+								<?php \Crispage\Helpers\RenderHelper::renderYesNo("category_options[show_sidebar]", $app->vars["category"]->options["show_sidebar"] ?? $app->getSetting("categories.show_sidebar", "yes")); ?>
 							</div>
 						</div>
 					</div>
@@ -170,7 +170,7 @@
 						</select>
 
 						<label for="category_parent"><?php $app("i18n")("category_parent_c"); ?></label>
-						<?php RenderHelper::renderCategoryPicker("category_parent", $app->vars["category"]->parent, array("title" => "[none]", "value" => "")); ?>
+						<?php \Crispage\Helpers\RenderHelper::renderCategoryPicker("category_parent", $app->vars["category"]->parent, array("title" => "[none]", "value" => "")); ?>
 
 						<label for="category_tags"><?php $app("i18n")("category_tags_c"); ?></label>
 						<input type="text" class="form-control" name="category_tags" value="<?php echo $app->vars["category"]->tags; ?>" />

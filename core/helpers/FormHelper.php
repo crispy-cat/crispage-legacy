@@ -7,6 +7,8 @@
 		Since: 0.10.2
 	*/
 
+	namespace Crispage\Helpers;
+
 	defined("CRISPAGE") or die("Application must be started from index.php!");
 
 	class FormHelper {

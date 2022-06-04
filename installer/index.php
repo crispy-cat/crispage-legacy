@@ -15,17 +15,12 @@
 		require_once __DIR__ . "/installer_config.php";
 	}
 
-	require_once Config::APPROOT . "/core/installer/InstallerApplication.php";
-	require_once Config::APPROOT . "/core/Router.php";
-	$app = new InstallerApplication();
+	require_once \Config::APPROOT . "/core/application/InstallerApplication.php";
+	$app = new \Crispage\Application\InstallerApplication();
 	set_exception_handler(function($e) {
 		global $app;
 		$app->error($e);
 	});
-	if (IS_INSTALLED) $app->initDatabase("JSONDatabase", array(
-		"location" => Config::DB_JSON_LOC,
-		"name" => Config::DB_JSON_NAME,
-		"pretty" => Config::DB_JSON_PRETTY
-	));
+	if (IS_INSTALLED) $app->initDatabase(\Config::DB_TYPE, \Config::DB_LOC, \Config::DB_NAME, \Config::DB_OPTIONS);
 	$app->start("/installer", "default");
 ?>

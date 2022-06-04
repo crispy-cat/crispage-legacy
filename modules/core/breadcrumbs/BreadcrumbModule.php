@@ -7,9 +7,11 @@
 		Since: 0.2.1
 	*/
 
+	namespace Crispage\Modules;
+
 	defined("CRISPAGE") or die("Application must be started from index.php!");
 
-	class BreadcrumbModule extends Module {
+	class BreadcrumbModule extends \Crispage\Assets\Module {
 		public function render() {
 			global $app;
 
@@ -17,13 +19,13 @@
 
 			$breadcrumbs = array(
 				array(
-					"url" => Config::WEBROOT . "/",
+					"url" => \Config::WEBROOT . "/",
 					"label" => $this->options["roottext"]
 				)
 			);
 			if ($app->request->slug != "index") {
 				foreach ($slug as $key => $part) {
-					$crumb = array("url" => Config::WEBROOT);
+					$crumb = array("url" => \Config::WEBROOT);
 					for ($i = 0; $i <= $key; $i++)
 						$crumb["url"] .= "/" . $slug[$i];
 					if (isset($app->request->route["view"]) && $key == count($slug) - 1) {

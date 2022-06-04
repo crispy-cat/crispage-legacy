@@ -7,6 +7,8 @@
 		Since: 0.0.1
 	*/
 
+	namespace Crispage\Database;
+
 	defined("CRISPAGE") or die("Application must be started from index.php!");
 
 	class JSONDatabase extends Database {
@@ -15,23 +17,23 @@
 
 		private array $dbdata = array();
 
-		public function __construct(string $loc, string $name, bool $pretty) {
+		public function __construct(string $loc, string $name, array $options) {
 			$this->dbfpre = $loc . "/" . $name . "/";
-			$this->pretty = $pretty;
+			$this->pretty = $options["JSON_PRETTY"] ?? false;
 		}
 
 		private function getData(string $table) : array {
 			if (!isset($this->dbdata[$table])) {
 				$file = "$this->dbfpre$table.db.json";
-				if (!file_exists($file) || !filesize($file)) throw new Exception("Attempted to read nonexistent database file $file");
+				if (!file_exists($file) || !filesize($file)) throw new \Exception("Attempted to read nonexistent database file $file");
 				$fc = fopen($file, "rb");
 				if (!$fc) throw new Exception("Could not open database file for reading $file");
-				if (!flock($fc, LOCK_SH)) throw new Exception("Could not get lock on database file $file");
+				if (!flock($fc, LOCK_SH)) throw new \Exception("Could not get lock on database file $file");
 				$data = fread($fc, filesize($file));
-				if (!flock($fc, LOCK_UN)) throw new Exception("Could not release lock on database file $file");
+				if (!flock($fc, LOCK_UN)) throw new \Exception("Could not release lock on database file $file");
 				fclose($fc);
 				$data = json_decode($data, true);
-				if (!$data) throw new Exception("Corrupted database file $file");
+				if (!$data) throw new \Exception("Corrupted database file $file");
 				$this->dbdata[$table] = $data;
 			}
 			return $this->dbdata[$table];
@@ -83,7 +85,7 @@
 			if (empty($column) || !in_array($type, self::COLUMN_TYPES)) return false;
 			$data = $this->getData($table);
 			if (!is_array($data["Columns"]) || !is_array($data["ColumnTypes"]))
-				throw new Exception("Corrupted table $table");
+				throw new \Exception("Corrupted table $table");
 			if (in_array($column, $data["Columns"])) return false;
 			$data["Columns"][] = $column;
 			$data["ColumnTypes"][$column] = self::COLUMN_TYPES[$type];
@@ -96,7 +98,7 @@
 			if (empty($column)) return false;
 			$data = $this->getData($table);
 			if (!is_array($data["Columns"]) || !is_array($data["ColumnTypes"]))
-				throw new Exception("Corrupted table $table");
+				throw new \Exception("Corrupted table $table");
 			if (in_array($column, $data["Columns"])) return false;
 			array_splice($data["Columns"], array_search($column, $data["Columns"]), 1);
 			unset($data["ColumnTypes"][$column]);
@@ -110,7 +112,7 @@
 				!is_array($data["Columns"]) ||
 				!is_array($data["ColumnTypes"]) ||
 				!is_array($data["TableData"])
-			) throw new Exception("Corrupted table $table");
+			) throw new \Exception("Corrupted table $table");
 			foreach ($data["TableData"] as $row) {
 				if ($row["id"] == $id) {
 					$nrow = array();
@@ -129,7 +131,7 @@
 				!is_array($data["Columns"]) ||
 				!is_array($data["ColumnTypes"]) ||
 				!is_array($data["TableData"])
-			) throw new Exception("Corrupted table $table");
+			) throw new \Exception("Corrupted table $table");
 			$drow = array("id" => $id);
 			foreach ($data["Columns"] as $col) {
 				if (!array_key_exists($col, $vals)) continue;
@@ -169,7 +171,7 @@
 		public function deleteRow(string $table, string $id) : bool {
 			global $app;
 			$data = $this->getData($table);
-			if (!is_array($data["TableData"])) throw new Exception("Corrupted table $table");
+			if (!is_array($data["TableData"])) throw new \Exception("Corrupted table $table");
 			foreach ($data["TableData"] as $irow => $row)
 				if ($row["id"] == $id)
 					array_splice($data["TableData"], $irow, 1);
@@ -180,15 +182,15 @@
 
 		public function existsRow(string $table, string $id) : bool {
 			$data = $this->getData($table);
-			if (!is_array($data["TableData"])) throw new Exception("Corrupted table $table");
+			if (!is_array($data["TableData"])) throw new \Exception("Corrupted table $table");
 			foreach ($data["TableData"] as $row)
 				if ($row["id"] == $id) return true;
 			return false;
 		}
 
-		public function readRows(string $table, array $filters = array(), $ordby = null, $desc = false) : array {
+		public function readRows(string $table, array $filters = array(), string $ordby = null, bool $desc = false) : array {
 			$data = $this->getData($table);
-			if (!is_array($data["Columns"]) || !is_array($data["TableData"])) throw new Exception("Corrupted table $table");
+			if (!is_array($data["Columns"]) || !is_array($data["TableData"])) throw new \Exception("Corrupted table $table");
 			$rdata = array();
 			if (count($filters)) {
 				foreach ($data["TableData"] as $irow => $row) {
@@ -206,7 +208,6 @@
 				global $d;
 				$o = $ordby;
 				$d = $desc;
-				//die(var_dump($o, $d));
 				usort($rdata, function($a, $b) {
 					global $o;
 					global $d;
@@ -218,9 +219,14 @@
 			return $rdata;
 		}
 
+		public function gRows(string $table, array $filters = array(), string $ordby = null, bool $desc = false) : ?\Generator {
+			foreach ($this->readRows($table, $filters, $ordby, $desc) as $row)
+				yield $row;
+		}
+
 		public function countRows(string $table) : int {
 			$data = $this->getData($table);
-			if (!is_array($data["TableData"])) throw new Exception("Corrupted table $table");
+			if (!is_array($data["TableData"])) throw new \Exception("Corrupted table $table");
 			return count($data["TableData"]);
 		}
 
@@ -230,19 +236,19 @@
 			foreach ($this->dbdata as $table => $data) {
 				$file = "$this->dbfpre$table.db.json";
 				$fc = fopen($file, "c+b");
-				if (!$fc) throw new Exception("Could not open database file for writing $file");
-				if (!flock($fc, LOCK_EX)) throw new Exception("Could not get lock on database file $file");
+				if (!$fc) throw new \Exception("Could not open database file for writing $file");
+				if (!flock($fc, LOCK_EX)) throw new \Exception("Could not get lock on database file $file");
 				if ($this->pretty)
 					$json = preg_replace("/    /", "\t", json_encode($data, JSON_PRETTY_PRINT));
 				else
 					$json = json_encode($data);
 				if (ftruncate($fc, 0)) {
 					fseek($fc, 0);
-					if (!fwrite($fc, $json)) throw new Exception("Could not write database file $file");
+					if (!fwrite($fc, $json)) throw new \Exception("Could not write database file $file");
 				} else {
-					throw new Exception("Could not truncate database file $file before write");
+					throw new \Exception("Could not truncate database file $file before write");
 				}
-				if (!flock($fc, LOCK_UN)) throw new Exception("Could not release lock on database file $file");
+				if (!flock($fc, LOCK_UN)) throw new \Exception("Could not release lock on database file $file");
 				fclose($fc);
 			}
 		}

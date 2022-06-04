@@ -1,11 +1,13 @@
 <?php
 	/*
 		Crispage - A lightweight CMS for developers
-		core/users/User.php - User class
+		core/assets/classes/User.php - User class
 
 		Author: crispycat <the@crispy.cat> <https://crispy.cat>
 		Since: 0.0.1
 	*/
+
+	namespace Crispage\Assets;
 
 	defined("CRISPAGE") or die("Application must be started from index.php!");
 
@@ -19,11 +21,11 @@
 		public function __construct(array $data) {
 			parent::__construct("User", $data);
 			if (!is_array($data)) return;
-			$this->name		= $data["name"] ?? "";
-			$this->email	= $data["email"] ?? "";
-			$this->group	= $data["group"] ?? "";
-			$this->loggedin = $data["loggedin"] ?? 0;
-			$this->activated = $data["activated"] ?? 0;
+			$this->name		= (string)($data["name"] ?? "");
+			$this->email	= (string)($data["email"] ?? "");
+			$this->group	= (string)($data["group"] ?? "");
+			$this->loggedin = (int)($data["loggedin"] ?? 0);
+			$this->activated = (int)($data["activated"] ?? 0);
 		}
 
 		public static function userHasPermissions(string $id = null, int $perm = 0) : bool {

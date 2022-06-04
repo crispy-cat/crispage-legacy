@@ -9,7 +9,7 @@
 
 	defined("CRISPAGE") or die("Application must be started from index.php!");
 
-	Session::refreshCurrentSession();
+	\Crispage\Assets\Session::refreshCurrentSession();
 
 	$app->page->metas["charset"] = array("charset" => $this->getSetting("charset", "UTF-8"));
 	$app->page->metas["robots"] = array("name" => "robots", "content" => $this->getSetting("meta_robots", "index, follow"));

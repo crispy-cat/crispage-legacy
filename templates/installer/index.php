@@ -6,7 +6,7 @@
 	$sitename = $app->getSetting("sitename", null);
 	$primary = $app->getSetting("colors.primary", "#002060");
 	$secondary = $app->getSetting("colors.secondary", "#0d6efd");
-	$iconsloc = $app->getSetting("icons_location", Config::WEBROOT . "/media/icons");
+	$iconsloc = $app->getSetting("icons_location", \Config::WEBROOT . "/media/icons");
 	$showtitle = $app->page->options["show_title"] ?? "yes";
 	$showsidebar = $app->page->options["show_sidebar"] ?? "yes";
 
@@ -19,13 +19,13 @@
 	$app->page->links["android-chrome-icon"] = array("rel" => "icon", "type" => "image/png", "sizes" => "192x192", "href" => $iconsloc . "/android-chrome-192x192.png");
 	$app->page->links["shortcut-icon"] = array("rel" => "shortcut icon","href" => $iconsloc . "/favicon.ico");
 
-	$app->page->styles["bootstrap"] = array("content" => file_get_contents(Config::APPROOT . "/media/system/css/bootstrap.min.css"));
+	$app->page->styles["bootstrap"] = array("content" => file_get_contents(\Config::APPROOT . "/media/system/css/bootstrap.min.css"));
 	$app->page->styles["fonts"] = array("content" => file_get_contents(__DIR__ . "/css/fonts.css"));
-	$app->page->styles["bs-icons"] = array("content" => file_get_contents(Config::APPROOT . "/media/system/css/bootstrap-icons.css"));
+	$app->page->styles["bs-icons"] = array("content" => file_get_contents(\Config::APPROOT . "/media/system/css/bootstrap-icons.css"));
 	$app->page->styles["template"] = array("content" => file_get_contents(__DIR__ . "/css/template.css"));
 
-	$app->page->scripts["jquery"] = array("content" => file_get_contents(Config::APPROOT . "/media/system/js/jquery.min.js"), "defer" => "");
-	$app->page->scripts["bootstrap"] = array("content" => file_get_contents(Config::APPROOT . "/media/system/js/bootstrap.bundle.min.js"), "defer" => "");
+	$app->page->scripts["jquery"] = array("content" => file_get_contents(\Config::APPROOT . "/media/system/js/jquery.min.js"), "defer" => "");
+	$app->page->scripts["bootstrap"] = array("content" => file_get_contents(\Config::APPROOT . "/media/system/js/bootstrap.bundle.min.js"), "defer" => "");
 ?>
 <!DOCTYPE html>
 <html lang="<?php echo $app("i18n")->getLanguage(); ?>">
@@ -39,14 +39,14 @@
 	<body>
 		<nav class="navbar navbar-expand-lg navbar-dark" style="background: <?php echo $primary; ?>;">
 			<div class="container-fluid">
-				<a class="navbar-brand" href="<?php echo Config::WEBROOT; ?>/backend"><?php echo ($uselogo) ? "<img src=\"$logopath\" alt=\"$sitename\" height=\"30\" />" : $sitename; ?></a>
+				<a class="navbar-brand" href="<?php echo \Config::WEBROOT; ?>/backend"><?php echo ($uselogo) ? "<img src=\"$logopath\" alt=\"$sitename\" height=\"30\" />" : $sitename; ?></a>
 				<button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar">
 					<span class="navbar-toggler-icon"></span>
 				</button>
 				<div class="collapse navbar-collapse" id="navbar">
 					<ul class="navbar-nav me-auto">
 						<li class="nav-item">
-							<a class="nav-link" href="<?php echo Config::WEBROOT; ?>/installer/default">Installer</a>
+							<a class="nav-link" href="<?php echo \Config::WEBROOT; ?>/installer/default">Installer</a>
 						</li>
 					</ul>
 				</div>

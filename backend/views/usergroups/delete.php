@@ -8,9 +8,9 @@
 	*/
 
 	defined("CRISPAGE") or die("Application must be started from index.php!");
-	require_once Config::APPROOT . "/backend/header.php";
+	require_once \Config::APPROOT . "/backend/header.php";
 
-	if (!User::userHasPermissions(Session::getCurrentSession()->user, UserPermissions::MODIFY_USERGROUPS))
+	if (!\Crispage\Assets\User::userHasPermissions(\Crispage\Assets\Session::getCurrentSession()->user, \Crispage\Users\UserPermissions::MODIFY_USERGROUPS))
 		$app->redirectWithMessages("/backend/usergroups/list", array("type" => "error", "content" => $app("i18n")->getString("no_permission_usergroups")));
 
 	if (!isset($app->request->query["delete_id"]))
@@ -20,7 +20,7 @@
 		$app->redirectWithMessages("/backend/usergroups/list", array("type" => "error", "content" => $app("i18n")->getString("usergroup_does_not_exist")));
 
 	if (isset($app->request->query["confirm"]) && $app->request->query["confirm"]) {
-		if (User::compareUserRank(Session::getCurrentSession()->user, UserGroup::getGroupRank($app->request->query["delete_id"])) !== 1)
+		if (\Crispage\Assets\User::compareUserRank(\Crispage\Assets\Session::getCurrentSession()->user, \Crispage\Assets\UserGroup::getGroupRank($app->request->query["delete_id"])) !== 1)
 			$app->redirectWithMessages("/backend/usergroups/list", array("type" => "error", "content" => $app("i18n")->getString("rank_less_than_own")));
 
 		if (count($app("usergroups")->getAllArr()) < 2)

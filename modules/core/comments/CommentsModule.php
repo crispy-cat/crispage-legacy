@@ -1,4 +1,3 @@
-
 <?php
 	/*
 		Crispage - A lightweight CMS for developers
@@ -8,9 +7,11 @@
 		Since: 0.0.1
 	*/
 
+	namespace Crispage\Modules;
+
 	defined("CRISPAGE") or die("Application must be started from index.php!");
 
-	class CommentsModule extends Module {
+	class CommentsModule extends \Crispage\Assets\Module {
 		public function render() {
 			global $app;
 
@@ -30,15 +31,15 @@
 				<hr />
 				<h3><?php echo $this->title; ?></h3>
 <?php
-				$session = Session::getCurrentSession();
-				if ($session && !User::userHasPermissions($session->user, UserPermissions::VIEW_COMMENTS)) {
+				$session = \Crispage\Assets\Session::getCurrentSession();
+				if ($session && !\Crispage\Assets\User::userHasPermissions($session->user, \Crispage\Users\UserPermissions::VIEW_COMMENTS)) {
 					echo "</div>";
 					return;
 				}
-				if ($session && User::userHasPermissions($session->user, UserPermissions::POST_COMMENTS)) {
+				if ($session && \Crispage\Assets\User::userHasPermissions($session->user, \Crispage\Users\UserPermissions::POST_COMMENTS)) {
 ?>
 					<small><?php $app("i18n")("posting_as", null, $app("users")->get($session->user)->name); ?></small>
-					<form method="post" action="<?php echo Config::WEBROOT; ?>/post_comment">
+					<form method="post" action="<?php echo \Config::WEBROOT; ?>/post_comment">
 						<input type="hidden" name="ploc" value="<?php echo $app->request->slug; ?>" />
 						<input type="hidden" name="article_id" value="<?php echo $article->id; ?>" />
 						<label for="comment"><?php $app("i18n")("comment_c"); ?></label>

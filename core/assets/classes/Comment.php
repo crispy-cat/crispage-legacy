@@ -1,11 +1,13 @@
 <?php
 	/*
 		Crispage - A lightweight CMS for developers
-		core/content/Comment.php - Comment class
+		core/assets/classes/Comment.php - Comment class
 
 		Author: crispycat <the@crispy.cat> <https://crispy.cat>
 		Since: 0.0.1
 	*/
+
+	namespace Crispage\Assets;
 
 	defined("CRISPAGE") or die("Application must be started from index.php!");
 
@@ -17,9 +19,9 @@
 		public function __construct(array $data) {
 			parent::__construct("Comment", $data);
 			if (!is_array($data)) return;
-			$this->article = $data["article"] ?? "";
-			$this->author	= $data["author"] ?? "";
-			$this->content	= $data["content"] ?? "";
+			$this->article = (string)($data["article"] ?? "");
+			$this->author	= (string)($data["author"] ?? "");
+			$this->content	= (string)($data["content"] ?? "");
 		}
 	}
 ?>

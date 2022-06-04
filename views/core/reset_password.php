@@ -8,9 +8,9 @@
 	*/
 
 	defined("CRISPAGE") or die("Application must be started from index.php!");
-	require_once Config::APPROOT . "/header.php";
+	require_once \Config::APPROOT . "/header.php";
 
-	$session = Session::getCurrentSession();
+	$session = \Crispage\Assets\Session::getCurrentSession();
 	if ($session)
 		$app->redirectWithMessages("/", array("type" => "error", "content" => $app("i18n")->getString("active_session")));
 
@@ -54,10 +54,10 @@
 		if ($email != $user->email)
 			$app->redirectWithMessages("/reset_password", array("type" => "error", "content" => $app("i18n")->getString("email_not_match")));
 
-		$token = Randomizer::randomString(64, 36);
-		$url = (($_SERVER["HTTPS"]) ? "https://" : "http://") . $_SERVER["SERVER_NAME"] . Config::WEBROOT . "/reset_password";
+		$token = \Crispage\Helpers\Randomizer::randomString(64, 36);
+		$url = (($_SERVER["HTTPS"]) ? "https://" : "http://") . $_SERVER["SERVER_NAME"] . \Config::WEBROOT . "/reset_password";
 
-		$sent = Mailer::sendMail(
+		$sent = \Crispage\Helpers\Mailer::sendMail(
 			array($email),
 			$app("i18n")->getString("mail_reset_subject", null, $app->getSetting("sitename")),
 			$app("i18n")->getString("mail_reset_body", null, $app->getSetting("sitename"), $url, $token)

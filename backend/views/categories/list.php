@@ -8,15 +8,15 @@
 	*/
 
 	defined("CRISPAGE") or die("Application must be started from index.php!");
-	require_once Config::APPROOT . "/backend/header.php";
+	require_once \Config::APPROOT . "/backend/header.php";
 
 	$app->page->setTitle($app("i18n")->getString("categories"));
 
-	Paginator::paginationQuery($app->vars);
+	\Crispage\Helpers\Paginator::paginationQuery($app->vars);
 
 	$categories = $app("categories")->getAllArr(null, "title");
 
-	Paginator::paginateNum($app->vars, $categories, "categories");
+	\Crispage\Helpers\Paginator::paginateNum($app->vars, $categories, "categories");
 
 	$app->page->setContent(function($app) {
 ?>
@@ -43,7 +43,7 @@
 						<a class="btn btn-success mt-4 mb-2 d-block ms-auto" href="<?php echo Config::WEBROOT; ?>/backend/categories/editor" style="width: 120px;"><?php $app("i18n")("new_category"); ?></a>
 						<?php
 							$baseurl = Config::WEBROOT . "/backend/categories/list?show=" . (($app->vars["show"]) ? $app->vars["show"] : "all") . "&page=";
-							RenderHelper::renderPagination($baseurl, $app->vars["npages"], $app->vars["page"] ?? 1);
+							\Crispage\Helpers\RenderHelper::renderPagination($baseurl, $app->vars["npages"], $app->vars["page"] ?? 1);
 						?>
 					</div>
 				</div>

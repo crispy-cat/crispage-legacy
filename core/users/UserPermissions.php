@@ -7,6 +7,8 @@
 		Since: 0.0.1
 	*/
 
+	namespace Crispage\Users;
+
 	defined("CRISPAGE") or die("Application must be started from index.php!");
 
 	class UserPermissions {

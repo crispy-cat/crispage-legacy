@@ -8,13 +8,13 @@
 	*/
 
 	defined("CRISPAGE") or die("Application must be started from index.php!");
-	require_once Config::APPROOT . "/header.php";
+	require_once \Config::APPROOT . "/header.php";
 
 	$app->vars["article"] = $app("articles")->get($app->request->route["item_id"] ?? "");
 
-	$session = Session::getCurrentSession();
-	if (!$app->vars["article"] || ($app->vars["article"]->state != "published" && (!$session || !User::userHasPermissions($session->user, UserPermissions::VIEW_UNPUBLISHED))))
-		$app->error(new ApplicationException(404, $app("i18n")->getString("page_not_found"), $app("i18n")->getString("page_not_found_ex")));
+	$session = \Crispage\Assets\Session::getCurrentSession();
+	if (!$app->vars["article"] || ($app->vars["article"]->state != "published" && (!$session || !User::userHasPermissions($session->user, \Crispage\Assets\Session::VIEW_UNPUBLISHED))))
+		$app->error(new \Crispage\ApplicationException(404, $app("i18n")->getString("page_not_found"), $app("i18n")->getString("page_not_found_ex")));
 
 	$app->page->options["show_title"] = $app->vars["article"]->options["show_title"] ?? $app->getSetting("articles.show_title", "yes");
 	$app->page->options["show_sidebar"] = $app->vars["article"]->options["show_sidebar"] ?? $app->getSetting("articles.show_sidebar", "yes");

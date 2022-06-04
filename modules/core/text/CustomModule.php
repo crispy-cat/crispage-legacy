@@ -7,9 +7,11 @@
 		Since: 0.0.1
 	*/
 
+	namespace Crispage\Modules;
+
 	defined("CRISPAGE") or die("Application must be started from index.php!");
 
-	class CustomModule extends Module {
+	class CustomModule extends \Crispage\Assets\Module {
 		public function render() {
 			if (!isset($this->options["content"])) return;
 

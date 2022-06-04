@@ -8,16 +8,16 @@
 	*/
 
 	defined("CRISPAGE") or die("Application must be started from index.php!");
-	require_once Config::APPROOT . "/backend/header.php";
+	require_once \Config::APPROOT . "/backend/header.php";
 
-	$currentUser = Session::getCurrentSession()->user;
-	$formFilled = FormHelper::formFieldsFilled(
+	$currentUser = \Crispage\Assets\Session::getCurrentSession()->user;
+	$formFilled = \Crispage\Helpers\FormHelper::formFieldsFilled(
 		"article_title", "article_content", "article_summary", "article_id",
 		"article_state", "article_category", "article_tags", "article_meta_desc",
 		"article_meta_keys", "article_meta_robots", "article_options"
 	) && is_array($app->request->query["article_options"]);
 
-	$app->vars["article"] = new Article(array());
+	$app->vars["article"] = new \Crispage\Assets\Article(array());
 
 	if (isset($app->request->query["edit_id"])) {
 		$app->vars["title"] = $app("i18n")->getString("edit_article");
@@ -28,10 +28,10 @@
 		$app->vars["article"] = $app("articles")->get($app->request->query["edit_id"]);
 
 		if ($app->vars["article"]->author == $currentUser) {
-			if (!User::userHasPermissions($currentUser, UserPermissions::MODIFY_ARTICLES_OWN))
+			if (!\Crispage\Assets\User::userHasPermissions($currentUser, \Crispage\Users\UserPermissions::MODIFY_ARTICLES_OWN))
 				$app->redirectWithMessages("/backend/articles/list", array("type" => "error", "content" => $app("i18n")->getString("no_permission_articles")));
 		} else {
-			if (!User::userHasPermissions($currentUser, UserPermissions::MODIFY_ARTICLES))
+			if (!\Crispage\Assets\User::userHasPermissions($currentUser, \Crispage\Users\UserPermissions::MODIFY_ARTICLES))
 				$app->redirectWithMessages("/backend/articles/list", array("type" => "error", "content" => $app("i18n")->getString("no_permission_articles_others")));
 		}
 
@@ -73,7 +73,7 @@
 		$app->vars["title"] = $app("i18n")->getString("new_article");
 
 		if ($formFilled) {
-			if (!User::userHasPermissions($currentUser, UserPermissions::MODIFY_ARTICLES_OWN))
+			if (!\Crispage\Assets\User::userHasPermissions($currentUser, \Crispage\Users\UserPermissions::MODIFY_ARTICLES_OWN))
 				$app->redirectWithMessages("/backend/articles/list", array("type" => "error", "content" => $app("i18n")->getString("no_permission_articles")));
 
 			if ($app->request->query["article_id"] == "")
@@ -113,7 +113,7 @@
 				<div class="col">
 					<h1><?php echo $app->vars["title"]; ?></h1>
 					<?php if ($app->vars["article"]->id != "") { ?>
-						<a target="_blank" href="<?php echo Config::WEBROOT . "/" . Router::getArticleRoute($app->vars["article"]->id); ?>"><?php $app("i18n")("view_article"); ?></a>
+						<a target="_blank" href="<?php echo Config::WEBROOT . "/" . \Crispage\Routing\Router::getArticleRoute($app->vars["article"]->id); ?>"><?php $app("i18n")("view_article"); ?></a>
 					<?php } ?>
 				</div>
 			</div>
@@ -137,23 +137,23 @@
 								<input type="text" class="form-control" name="article_title" value="<?php echo htmlentities($app->vars["article"]->title); ?>" required />
 
 								<label for="article_content"><?php $app("i18n")("article_content_c"); ?></label>
-								<?php RenderHelper::renderEditor("article_content", htmlentities($app->vars["article"]->content)); ?>
+								<?php \Crispage\Helpers\RenderHelper::renderEditor("article_content", htmlentities($app->vars["article"]->content)); ?>
 
 								<label for="article_summary"><?php $app("i18n")("article_summary_c"); ?></label>
 								<textarea class="form-control" name="article_summary" style="height: 170px;" required><?php echo htmlentities($app->vars["article"]->summary); ?></textarea>
 							</div>
 							<div id="article_options" class="tab-pane" role="tabpanel">
 								<label for="article_options[show_comments]"><?php $app("i18n")("show_comments_c"); ?></label>
-								<?php RenderHelper::renderYesNo("article_options[show_comments]", $app->vars["article"]->options["show_comments"] ?? $app->getSetting("articles.show_comments", "yes")); ?>
+								<?php \Crispage\Helpers\RenderHelper::renderYesNo("article_options[show_comments]", $app->vars["article"]->options["show_comments"] ?? $app->getSetting("articles.show_comments", "yes")); ?>
 
 								<label for="article_options[show_info]"><?php $app("i18n")("show_article_info_c"); ?></label>
-								<?php RenderHelper::renderYesNo("article_options[show_info]", $app->vars["article"]->options["show_info"] ?? $app->getSetting("articles.show_info", "yes")); ?>
+								<?php \Crispage\Helpers\RenderHelper::renderYesNo("article_options[show_info]", $app->vars["article"]->options["show_info"] ?? $app->getSetting("articles.show_info", "yes")); ?>
 
 								<label for="article_options[show_title]"><?php $app("i18n")("show_title_c"); ?></label>
-								<?php RenderHelper::renderYesNo("article_options[show_title]", $app->vars["article"]->options["show_title"] ?? $app->getSetting("articles.show_title", "yes")); ?>
+								<?php \Crispage\Helpers\RenderHelper::renderYesNo("article_options[show_title]", $app->vars["article"]->options["show_title"] ?? $app->getSetting("articles.show_title", "yes")); ?>
 
 								<label for="article_options[show_sidebar]"><?php $app("i18n")("show_sidebar_c"); ?></label>
-								<?php RenderHelper::renderYesNo("article_options[show_sidebar]", $app->vars["article"]->options["show_sidebar"] ?? $app->getSetting("articles.show_sidebar", "yes")); ?>
+								<?php \Crispage\Helpers\RenderHelper::renderYesNo("article_options[show_sidebar]", $app->vars["article"]->options["show_sidebar"] ?? $app->getSetting("articles.show_sidebar", "yes")); ?>
 							</div>
 						</div>
 					</div>
@@ -168,7 +168,7 @@
 						</select>
 
 						<label for="article_category"><?php $app("i18n")("article_category_c"); ?></label>
-						<?php RenderHelper::renderCategoryPicker("article_category", htmlentities($app->vars["article"]->category)); ?>
+						<?php \Crispage\Helpers\RenderHelper::renderCategoryPicker("article_category", htmlentities($app->vars["article"]->category)); ?>
 
 						<label for="article_tags"><?php $app("i18n")("article_tags_c"); ?></label>
 						<input type="text" class="form-control" name="article_tags" value="<?php echo htmlentities($app->vars["article"]->tags); ?>" />

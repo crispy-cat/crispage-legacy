@@ -8,7 +8,7 @@
 	*/
 
 	defined("CRISPAGE") or die("Application must be started from index.php!");
-	require_once Config::APPROOT . "/backend/header.php";
+	require_once \Config::APPROOT . "/backend/header.php";
 
 	if (!isset($app->request->query["delete_id"]))
 		$app->redirectWithMessages("/backend/articles/list", array("type" => "error", "content" => $app("i18n")->getString("no_id_given")));
@@ -18,11 +18,11 @@
 
 	$article = $app("articles")->get($app->request->query["delete_id"]);
 
-	if ($article->author == Session::getCurrentSession()->user) {
-		if (!User::userHasPermissions(Session::getCurrentSession()->user, UserPermissions::MODIFY_ARTICLES_OWN))
+	if ($article->author == \Crispage\Assets\Session::getCurrentSession()->user) {
+		if (!\Crispage\Assets\User::userHasPermissions(\Crispage\Assets\Session::getCurrentSession()->user, \Crispage\Users\UserPermissions::MODIFY_ARTICLES_OWN))
 			$app->redirectWithMessages("/backend/articles/list", array("type" => "error", "content" => $app("i18n")->getString("no_permission_articles")));
 	} else {
-		if (!User::userHasPermissions(Session::getCurrentSession()->user, UserPermissions::MODIFY_ARTICLES))
+		if (!\Crispage\Assets\User::userHasPermissions(\Crispage\Assets\Session::getCurrentSession()->user, \Crispage\Users\UserPermissions::MODIFY_ARTICLES))
 			$app->redirectWithMessages("/backend/articles/list", array("type" => "error", "content" => $app("i18n")->getString("no_permission_articles_others")));
 	}
 

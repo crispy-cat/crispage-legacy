@@ -7,6 +7,8 @@
 		Since: 0.1.0
 	*/
 
+	namespace Crispage\Assets;
+
 	defined("CRISPAGE") or die("Application must be started from index.php!");
 
 	class Asset {
@@ -20,19 +22,22 @@
 		public function __construct($class, array $data) {
 			if (!is_array($data)) return;
 			$this->className = $class;
-			$this->uid = $data["uid"] ?? (int)hexdec(md5(time() + random_int(PHP_INT_MIN, PHP_INT_MAX)));
-			$this->id = $data["id"] ?? "";
-			$this->created = $data["created"] ?? time();
-			$this->modified = $data["modified"] ?? time();
-			$this->options = $data["options"] ?? array();
+			$this->uid = (int)($data["uid"] ?? (int)hexdec(md5(time() + random_int(PHP_INT_MIN, PHP_INT_MAX))));
+			$this->id = (string)($data["id"] ?? "");
+			$this->created = (int)($data["created"] ?? time());
+			$this->modified = (int)($data["modified"] ?? time());
+			$this->options = (array)($data["options"] ?? array());
 		}
-		
+
 		public function toDatabaseObject() : array {
 			$props = array();
-			foreach ($this as $k => $v) $props[$k] = $v;
+			foreach ($this as $k => $v) {
+				if ($k != "uid" && $k != "className")
+					$props[$k] = $v;
+			}
 			return $props;
 		}
-		
+
 		public static function parentLoop(string $table, string $id = null) : bool {
 			global $app;
 			if (!$id) return false;
@@ -52,14 +57,14 @@
 
 			return false;
 		}
-		
+
 		public static function nestingLevel(string $table, string $id = null) : int {
 			global $app;
 			if (!$id) return -1;
-			
+
 			$count = 0;
 			@$parent = $app($table)->get($id)->parent;
-			
+
 			while (true) {
 				if (!$parent) return $count;
 				$count++;

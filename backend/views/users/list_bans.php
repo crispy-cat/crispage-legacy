@@ -8,7 +8,7 @@
 	*/
 
 	defined("CRISPAGE") or die("Application must be started from index.php!");
-	require_once Config::APPROOT . "/backend/header.php";
+	require_once \Config::APPROOT . "/backend/header.php";
 
 	if (!isset($app->request->query["user_id"]))
 		$app->redirectWithMessages("/backend/users/list", array("type" => "error", "content" => $app("i18n")->getString("no_id_given")));
@@ -19,11 +19,11 @@
 
 	$app->page->setTitle($app("i18n")->getString("bans"));
 
-	Paginator::paginationQuery($app->vars);
+	\Crispage\Helpers\Paginator::paginationQuery($app->vars);
 
 	$bans = $app("bans")->getAllArr(array("user" => $app->request->query["user_id"]), "expires", true);
 
-	Paginator::paginateNum($app->vars, $bans, "bans");
+	\Crispage\Helpers\Paginator::paginateNum($app->vars, $bans, "bans");
 
 	$app->page->setContent(function($app) {
 ?>
@@ -54,7 +54,7 @@
 						</div>
 						<?php
 							$baseurl = "/backend/users/list_bans?show=" . (($app->vars["show"]) ? $app->vars["show"] : "all") . "&page=";
-							RenderHelper::renderPagination($baseurl, $app->vars["npages"], $app->vars["page"] ?? 1);
+							\Crispage\Helpers\RenderHelper::renderPagination($baseurl, $app->vars["npages"], $app->vars["page"] ?? 1);
 						?>
 					</div>
 				</div>

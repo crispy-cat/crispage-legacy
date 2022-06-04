@@ -8,7 +8,7 @@
 	*/
 
 	defined("CRISPAGE") or die("Application must be started from index.php!");
-	require_once Config::APPROOT . "/backend/header.php";
+	require_once \Config::APPROOT . "/backend/header.php";
 
 	$app->page->setTitle($app("i18n")->getString("dashboard"));
 
@@ -30,7 +30,7 @@
 									<td><?php $app("i18n")("version"); ?></td>
 									<td>
 										<?php echo CRISPAGE; ?>
-										<a class="btn btn-success btn-sm d-block" href="<?php echo Config::WEBROOT; ?>/backend/about"><?php $app("i18n")("check_for_updates"); ?></a>
+										<a class="btn btn-success btn-sm d-block" href="<?php echo \Config::WEBROOT; ?>/backend/about"><?php $app("i18n")("check_for_updates"); ?></a>
 									</td>
 								</tr>
 								<tr>
@@ -102,9 +102,9 @@
 										(time() - $session["modified"]) <= $app->getSetting("users.session_max")
 									) $online[] = $session["user"];
 								}
-								
+
 								echo count($online) . " &ndash; " . implode(", ", $online);
-							?>	
+							?>
 						</div>
 					</div>
 				</div>

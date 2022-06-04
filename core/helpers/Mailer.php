@@ -7,14 +7,16 @@
 		Since: 0.0.1
 	*/
 
+	namespace Crispage\Helpers;
+
 	use PHPMailer\PHPMailer\PHPMailer;
 	use PHPMailer\PHPMailer\SMTP;
 	use PHPMailer\PHPMailer\Exception;
 
 	defined("CRISPAGE") or die("Application must be started from index.php!");
-	require_once Config::APPROOT . "/lib/PHPMailer/PHPMailer.php";
-	require_once Config::APPROOT . "/lib/PHPMailer/SMTP.php";
-	require_once Config::APPROOT . "/lib/PHPMailer/Exception.php";
+	require_once \Config::APPROOT . "/lib/PHPMailer/PHPMailer.php";
+	require_once \Config::APPROOT . "/lib/PHPMailer/SMTP.php";
+	require_once \Config::APPROOT . "/lib/PHPMailer/Exception.php";
 
 	class Mailer {
 		public static function sendMail(array $to, string $subject, string $body, array $options = array()) {

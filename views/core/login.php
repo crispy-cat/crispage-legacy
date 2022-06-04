@@ -8,11 +8,11 @@
 	*/
 
 	defined("CRISPAGE") or die("Application must be started from index.php!");
-	require_once Config::APPROOT . "/header.php";
+	require_once \Config::APPROOT . "/header.php";
 
 	$ploc = preg_replace("/\/\//", "/", "/" . ($app->request->query["ploc"] ?? "/"));
 
-	$session = Session::getCurrentSession();
+	$session = \Crispage\Assets\Session::getCurrentSession();
 	if ($session)
 		$app->redirectWithMessages($ploc, array("type" => "error", "content" => $app("i18n")->getString("active_session")));
 
@@ -28,7 +28,7 @@
 		if (!$user->activated)
 			$app->redirectWithMessages("/login?ploc=" . ($app->request->query["ploc"] ?? ""), array("type" => "error", "content" => $app("i18n")->getString("user_not_activated")));
 
-		if (!User::userHasPermissions($user->id, UserPermissions::LOGIN))
+		if (!\Crispage\Assets\User::userHasPermissions($user->id, \Crispage\Users\UserPermissions::LOGIN))
 			$app->redirectWithMessages("/login?ploc=" . ($app->request->query["ploc"] ?? ""), array("type" => "error", "content" => $app("i18n")->getString("no_permission_login")));
 
 		if (!$app->auth->authenticateUser($id, $password))
@@ -39,7 +39,7 @@
 		foreach ($app->vars["bans"] as $ban) if ($ban->expires > time()) $app->vars["banned"] = true;
 
 		if (!$app->vars["banned"]) {
-			Session::startSession($id);
+			\Crispage\Assets\Session::startSession($id);
 			$user->loggedin = time();
 			$app("users")->set($id, $user);
 			$app->events->trigger("users.log_in", $id);
@@ -75,8 +75,8 @@
 				<input type="password" class="form-control" name="user_password" required />
 
 				<button type="submit" class="btn btn-primary mt-3"><?php $app("i18n")("log_in"); ?></button>
-				<a class="btn btn-link mt-3" href="<?php echo Config::WEBROOT; ?>/reset_password"><?php $app("i18n")("reset_password"); ?></a>
-				<a class="btn btn-link mt-3" href="<?php echo Config::WEBROOT; ?>/register"><?php $app("i18n")("register"); ?></a>
+				<a class="btn btn-link mt-3" href="<?php echo \Config::WEBROOT; ?>/reset_password"><?php $app("i18n")("reset_password"); ?></a>
+				<a class="btn btn-link mt-3" href="<?php echo \Config::WEBROOT; ?>/register"><?php $app("i18n")("register"); ?></a>
 			</form>
 		</div>
 <?php

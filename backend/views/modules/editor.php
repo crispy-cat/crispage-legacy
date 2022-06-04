@@ -8,23 +8,23 @@
 	*/
 
 	defined("CRISPAGE") or die("Application must be started from index.php!");
-	require_once Config::APPROOT . "/backend/header.php";
+	require_once \Config::APPROOT . "/backend/header.php";
 
-	$currentUser = Session::getCurrentSession()->user;
-	$formFilled = FormHelper::formFieldsFilled(
+	$currentUser = \Crispage\Assets\Session::getCurrentSession()->user;
+	$formFilled = \Crispage\Helpers\FormHelper::formFieldsFilled(
 		"module_title", "module_id", "module_options", "module_pos",
 		"module_ord"
 	) && is_array($app->request->query["module_options"]);
 
-	$app->vars["module"] = new Module(array());
+	$app->vars["module"] = new \Crispage\Assets\Module(array());
 
-	if (!User::userHasPermissions($currentUser, UserPermissions::MODIFY_MODULES))
+	if (!\Crispage\Assets\User::userHasPermissions($currentUser, \Crispage\Users\UserPermissions::MODIFY_MODULES))
 		$app->redirectWithMessages("/backend/modules/list", array("type" => "error", "content" => $app("i18n")->getString("no_permission_modules")));
 
 	if (!isset($app->request->query["class"]))
 		$app->redirectWithMessages("/backend/modules/select", array("type" => "info", "content" => $app("i18n")->getString("please_select_module")));
 
-	$app->vars["module_info"] = ExtensionHelper::getModuleInfo($app->request->query["class"]);
+	$app->vars["module_info"] = \Crispage\Helpers\ExtensionHelper::getModuleInfo($app->request->query["class"]);
 
 	if (!$app->vars["module_info"])
 		$app->redirectWithMessages("/backend/modules/list", array("type" => "error", "content" => $app("i18n")->getString("invalid_module_type")));
@@ -126,7 +126,7 @@
 						<?php
 							foreach ($app->vars["module_info"]["options"] as $option) {
 								echo "<label for=\"module_options[{$option["name"]}]\">{$option["label"]}:</label>";
-								RenderHelper::renderField("module_options[{$option["name"]}]", $option["type"], $app->vars["module"]->options[$option["name"]] ?? null);
+								\Crispage\Helpers\RenderHelper::renderField("module_options[{$option["name"]}]", $option["type"], $app->vars["module"]->options[$option["name"]] ?? null);
 							}
 						?>
 					</div>

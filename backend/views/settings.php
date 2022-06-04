@@ -8,10 +8,10 @@
 	*/
 
 	defined("CRISPAGE") or die("Application must be started from index.php!");
-	require_once Config::APPROOT . "/backend/header.php";
+	require_once \Config::APPROOT . "/backend/header.php";
 
 	if (isset($app->request->query["settings"]) && is_array($app->request->query["settings"])) {
-		if (!User::userHasPermissions(Session::getCurrentSession()->user, UserPermissions::MODIFY_SETTINGS))
+		if (!\Crispage\Assets\User::userHasPermissions(\Crispage\Assets\Session::getCurrentSession()->user, \Crispage\Users\UserPermissions::MODIFY_SETTINGS))
 			$app->redirectWithMessages("/backend/settings", array("type" => "error", "content" => $app("i18n")->getString("no_permission_settings")));
 
 		foreach ($app->request->query["settings"] as $setting => $value)
@@ -210,7 +210,7 @@
 									<div class="col-md-6 col-lg-4">
 										<h2>Users</h2>
 										<label for="settings[users.default_group]">Default group:</label>
-										<?php RenderHelper::renderUserGroupPicker("settings[users.default_group]", $app->getSetting("users.default_group", "member")); ?>
+										<?php \Crispage\Helpers\RenderHelper::renderUserGroupPicker("settings[users.default_group]", $app->getSetting("users.default_group", "member")); ?>
 										<label for="settings[users.password_min]">Minimum Password Length:</label>
 										<input type="number" class="form-control" name="settings[users.password_min]" value="<?php echo htmlentities($app->getSetting("users.password_min", "8")); ?>" />
 										<label for="settings[users.password_min_letters]">Minimum Letters in Password:</label>

@@ -7,6 +7,8 @@
 		Since: 0.4.0
 	*/
 
+	namespace Crispage\Helpers;
+
 	defined("CRISPAGE") or die("Application must be started from index.php");
 
 	class FileHelper {
@@ -37,11 +39,11 @@
 			if (pathinfo($file, PATHINFO_EXTENSION) == "zip") {
 				$fzip = $file;
 			} else {
-				$phar = new PharData($file, RecursiveDirectoryIterator::SKIP_DOTS);
-				$phar->convertToData(Phar::ZIP);
+				$phar = new \PharData($file, \RecursiveDirectoryIterator::SKIP_DOTS);
+				$phar->convertToData(\Phar::ZIP);
 				$fzip = preg_replace("/(?:\.tar)?\.[^\.]+$/", ".zip", $file);
 			}
-			$zip = new ZipArchive();
+			$zip = new \ZipArchive();
 			if ($zip->open($fzip) === true) {
 				$zip->extractTo($dest);
 				$zip->close();

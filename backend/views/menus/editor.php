@@ -8,16 +8,16 @@
 	*/
 
 	defined("CRISPAGE") or die("Application must be started from index.php!");
-	require_once Config::APPROOT . "/backend/header.php";
+	require_once \Config::APPROOT . "/backend/header.php";
 
-	$currentUser = Session::getCurrentSession()->user;
-	$formFilled = FormHelper::formFieldsFilled(
+	$currentUser = \Crispage\Assets\Session::getCurrentSession()->user;
+	$formFilled = \Crispage\Helpers\FormHelper::formFieldsFilled(
 		"menu_title", "menu_id"
 	);
 
-	$app->vars["menu"] = new Menu(array());
+	$app->vars["menu"] = new \Crispage\Assets\Menu(array());
 
-	if (!User::userHasPermissions($currentUser, UserPermissions::MODIFY_MENUS))
+	if (!\Crispage\Assets\User::userHasPermissions($currentUser, \Crispage\Users\UserPermissions::MODIFY_MENUS))
 		$app->redirectWithMessages("/backend/menus/list", array("type" => "error", "content" => $app("i18n")->getString("no_permission_menus")));
 
 	if (isset($app->request->query["edit_id"])) {
@@ -69,7 +69,7 @@
 			$app->vars["menu"]->id = $app->nameToId($app->vars["menu"]->id);
 
 			$app->vars["menu"]->title =		$app->request->query["menu_title"];
-			$app->vars["menu"]->create =	time();
+			$app->vars["menu"]->created =	time();
 			$app->vars["menu"]->modified =	time();
 
 			$app("menus")->set($app->vars["menu"]->id, $app->vars["menu"]);

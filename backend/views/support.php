@@ -8,7 +8,7 @@
 	*/
 
 	defined("CRISPAGE") or die("Application must be started from index.php!");
-	require_once Config::APPROOT . "/backend/header.php";
+	require_once \Config::APPROOT . "/backend/header.php";
 
 	$app->page->setTitle("Crispage Support");
 
@@ -48,9 +48,11 @@
 
 #     Database Type:            <?php echo Config::DB_TYPE; ?>
 
-#     JSON Database Location:   <?php echo Config::DB_JSON_LOC; ?>
+#     Database Location:        <?php echo Config::DB_LOC; ?>
 
-#     JSON Database Name:       <?php echo Config::DB_JSON_NAME; ?>
+#     Database Name:            <?php echo Config::DB_NAME; ?>
+
+#     Database Username:        <?php echo Config::DB_OPTIONS["USERNAME"]; ?>
 </pre>
 	</div>
 <?php

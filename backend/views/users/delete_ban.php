@@ -8,7 +8,7 @@
 	*/
 
 	defined("CRISPAGE") or die("Application must be started from index.php!");
-	require_once Config::APPROOT . "/backend/header.php";
+	require_once \Config::APPROOT . "/backend/header.php";
 
 	if (!isset($app->request->query["delete_id"]))
 		$app->redirectWithMessages("/backend/users/list", array("type" => "error", "content" => $app("i18n")->getString("no_id_given")));
@@ -18,10 +18,10 @@
 
 	$ban = $app("bans")->get($app->request->query["delete_id"]);
 
-	if (!User::userHasPermissions(Session::getCurrentSession()->user, UserPermissions::BAN_USERS))
+	if (!\Crispage\Assets\User::userHasPermissions(\Crispage\Assets\Session::getCurrentSession()->user, \Crispage\Users\UserPermissions::BAN_USERS))
 		$app->redirectWithMessages("/backend/users/list_bans?user_id={$ban->user}", array("type" => "error", "content" => $app("i18n")->getString("no_permission_bans"));
 
-	if (User::compareUserRank(Session::getCurrentSession()->user, $ban->user) !== 1)
+	if (\Crispage\Assets\User::compareUserRank(\Crispage\Assets\Session::getCurrentSession()->user, $ban->user) !== 1)
 		$app->redirectWithMessages("/backend/users/list_bans?user_id={$user->id}", array("type" => "error", "content" => $app("i18n")->getString("rank_less_than_own")));
 
 	if (isset($app->request->query["confirm"]) && $app->request->query["confirm"]) {

@@ -9,9 +9,9 @@
 
 
 	defined("CRISPAGE") or die("Application must be started from index.php!");
-	require_once Config::APPROOT . "/header.php";
+	require_once \Config::APPROOT . "/header.php";
 
-	$session = Session::getCurrentSession();
+	$session = \Crispage\Assets\Session::getCurrentSession();
 	if (!$session)
 		$app->redirectWithMessages("/", array("type" => "error", "content" => $app("i18n")->getString("not_logged_in")));
 	$user = $app("users")->get($session->user);

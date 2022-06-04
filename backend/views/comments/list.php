@@ -8,16 +8,16 @@
 	*/
 
 	defined("CRISPAGE") or die("Application must be started from index.php!");
-	require_once Config::APPROOT . "/backend/header.php";
+	require_once \Config::APPROOT . "/backend/header.php";
 
 	$app->page->setTitle($app("i18n")->getString("comments"));
 
 	$app->vars["art"] = $app->request->query["art"] ?? null;
-	Paginator::paginationQuery($app->vars);
+	\Crispage\Helpers\Paginator::paginationQuery($app->vars);
 
 	$comments = $app("comments")->getAllArr(($app->vars["art"]) ? array("article" => $app->vars["art"]) : null, "modified", true);
 
-	Paginator::paginateNum($app->vars, $comments, "comments");
+	\Crispage\Helpers\Paginator::paginateNum($app->vars, $comments, "comments");
 
 	$app->page->setContent(function($app) {
 ?>
@@ -27,7 +27,7 @@
 					<h1><?php $app("i18n")("comments"); ?></h1>
 					<span><?php $app("i18n")("show_c"); ?></span>
 					<form class="d-flex">
-						<?php RenderHelper::renderArticlePicker("art", null, array("title" => $app("i18n")->getString("all_articles"), "value" => "")); ?>
+						<?php \Crispage\Helpers\RenderHelper::renderArticlePicker("art", null, array("title" => $app("i18n")->getString("all_articles"), "value" => "")); ?>
 						<select class="form-select ms-2" name="show">
 							<option value="15">15</option>
 							<option value="30">30</option>
@@ -44,7 +44,7 @@
 					<div style="float: right;">
 						<?php
 							$baseurl = Config::WEBROOT . "/backend/comments/list?art=" . (($app->vars["art"]) ? $app->vars["art"] : "") . "&show=" . (($app->vars["show"]) ? $app->vars["show"] : "all") . "&page=";
-							RenderHelper::renderPagination($baseurl, $app->vars["npages"], $app->vars["page"] ?? 1);
+							\Crispage\Helpers\RenderHelper::renderPagination($baseurl, $app->vars["npages"], $app->vars["page"] ?? 1);
 						?>
 					</div>
 				</div>

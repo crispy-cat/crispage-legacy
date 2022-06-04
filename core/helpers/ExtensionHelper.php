@@ -7,20 +7,22 @@
 		Since: 0.9.0
 	*/
 
+	namespace Crispage\Helpers;
+
 	defined("CRISPAGE") or die("Application must be started from index.php!");
 
 	class ExtensionHelper {
-		public static function loadClass(string $file) : ?string {
+		public static function loadClass(string $file, string $prefix) : ?string {
 			if (!file_exists($file)) return null;
 			include_once $file;
-			@$name = array_pop(explode("/", basename($file, ".php")));
+			@$name = $prefix . array_pop(explode("/", basename($file, ".php")));
 			if (!class_exists($name)) return null;
 			return $name;
 		}
 
 		public static function getModuleInfo(string $class = null) : ?array {
 			if ($class == null) return null;
-			$infile = Config::APPROOT . "/modules/$class.json";
+			$infile = \Config::APPROOT . "/modules/$class.json";
 			if (!file_exists($infile)) return null;
 			$df = fopen($infile, "r");
 			@$fd = fread($df, filesize($infile));
@@ -30,7 +32,7 @@
 
 		public static function getPluginInfo(string $class = null) : ?array {
 			if ($class == null) return null;
-			$infile = Config::APPROOT . "/plugins/$class.json";
+			$infile = \Config::APPROOT . "/plugins/$class.json";
 			if (!file_exists($infile)) return null;
 			$df = fopen($infile, "r");
 			@$fd = fread($df, filesize($infile));
@@ -65,11 +67,11 @@
 
 		public static function getExtensionPackInfo(string $dir) : array {
 			$infile = $dir . "/modules/package.json";
-			if (!file_exists($infile)) throw new Exception("Extension pack at $dir does not have a package.json file");;
+			if (!file_exists($infile)) throw new \Exception("Extension pack at $dir does not have a package.json file");;
 			$df = fopen($infile, "r");
 			@$fd = fread($df, filesize($infile));
 			fclose($df);
-			if ($fd !== false) throw new Exception("Extension pack at $dir is corrupt");
+			if ($fd !== false) throw new \Exception("Extension pack at $dir is corrupt");
 			return json_decode($fd, true);
 		}
 
@@ -96,15 +98,15 @@
 		public static function getLocation(string $class, string $type, string $scope = "frontend") : ?string {
 			switch ($type) {
 				case "view":
-					return Config::APPROOT . (($scope == "backend") ? "/backend" : "/") . "views/" . $class;
+					return \Config::APPROOT . (($scope == "backend") ? "/backend" : "/") . "views/" . $class;
 				case "template":
-					return Config::APPROOT . "/templates/" . $class;
+					return \Config::APPROOT . "/templates/" . $class;
 				case "module":
-					return Config::APPROOT . "/modules/" . $class;
+					return \Config::APPROOT . "/modules/" . $class;
 				case "plugin":
-					return Config::APPROOT . "/plugins/" . $class;
+					return \Config::APPROOT . "/plugins/" . $class;
 				case "language":
-					return Config::APPROOT . "/languages/" . $class;
+					return \Config::APPROOT . "/languages/" . $class;
 				default:
 					return null;
 			}
