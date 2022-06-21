@@ -102,7 +102,7 @@
 			if (in_array($column, $data["Columns"])) return false;
 			array_splice($data["Columns"], array_search($column, $data["Columns"]), 1);
 			unset($data["ColumnTypes"][$column]);
-			$app->events->trigger("database.column_add", $table, $column, $type);
+			$app->events->trigger("database.column_remove", $table, $column);
 			return true;
 		}
 

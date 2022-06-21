@@ -38,13 +38,16 @@
 			$this->events->trigger("app.languages.pre_load");
 			$this->loadLanguages();
 			$this->events->trigger("app.languages.post_load");
+			$this->events->trigger("page.pre_render");
 			try {
 				$app = $this;
 				if (file_exists(\Config::APPROOT . "/installer/views/$request->slug.php"))
 					include_once \Config::APPROOT . "/installer/views/$request->slug.php";
 				else
 					throw new \Exception("No view '$request->slug' exists!");
+				$this->events->trigger("page.post_render");
 			} catch (\Throwable $e) {
+				$this->events->trigger("page.error_render", $e);
 				throw new \Crispage\ApplicationException(500, "An error occurred", "A server error has occurred and the page you requested is not available. Please try again later.", null, $e, false);
 			}
 		}

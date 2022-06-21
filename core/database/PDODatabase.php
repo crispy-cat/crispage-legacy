@@ -76,6 +76,7 @@
 		}
 
 		public function createTable(string $table, array $cols) : bool {
+			global $app;
 			$cols["id"] = "id";
 			$qcols = array();
 			foreach ($cols as $col => $type) {
@@ -83,26 +84,33 @@
 				$qcols[] = "`$col` " . self::SQL_COLUMN_TYPES[$type] . " DEFAULT '" . self::COLUMN_INIT[$type] . "'";
 			}
 			$query = sprintf($this->query["create_table"], $table, implode(", ", $qcols));
+			$app->events->trigger("database.table_create", $table);
 			return $this->tryExec($query) !== false;
 		}
 
 		public function dropTable(string $table) : bool {
 			$query = sprintf($this->query["drop_table"], $table);
+			$app->events->trigger("database.table_drop", $table);
 			return $this->tryExec($query) !== false;
 		}
 
 		public function purgeTable(string $table) : bool {
-			$query = sprintf($this->query["drop_table"], $table);
+			$query = sprintf($this->query["purge_table"], $table);
+			$app->events->trigger("database.table_purge", $table);
 			return $this->tryExec($query) !== false;
 		}
 
 		public function addColumn(string $table, string $column, string $type = "string") : bool {
+			global $app;
 			$query = sprintf($this->query["add_column"], $table, $column, self::SQL_COLUMN_TYPES[$type]);
+			$app->events->trigger("database.column_add", $table, $column, $type);
 			return $this->tryExec($query) !== false;
 		}
 
 		public function removeColumn(string $table, string $column) : bool {
+			global $app;
 			$query = sprintf($this->query["remove_column"], $table, $column);
+			$app->events->trigger("database.column_remove", $table, $column);
 			return $this->tryExec($query) !== false;
 		}
 
@@ -119,6 +127,7 @@
 		}
 
 		public function writeRow(string $table, string $id, array $vals) : bool {
+			global $app;
 			$vals["id"] = $id;
 			foreach ($vals as $key => $val) if ($val === null || $val === array()) unset($vals[$key]);
 			$qcols = array_keys($vals);
@@ -128,12 +137,15 @@
 			}, array_values($vals)));
 			$query = sprintf($this->query["write_row"], $table, "`" . implode("`, `", $qcols) . "`", implode(", ", $qvals));
 			$result = $this->tryExec($query);
+			$app->events->trigger("database.row_write", $table, $id, $vals);
 			return $result != false;
 		}
 
 		public function deleteRow(string $table, string $id) : bool {
+			global $app;
 			$query = sprintf($this->query["delete_row"], $table, $this->pdo->quote($id));
 			$result = $this->tryExec($query);
+			$app->events->trigger("database.row_delete", $table, $id);
 			return $result !== false;
 		}
 
@@ -179,6 +191,8 @@
 		}
 
 		public function writeChanges() {
+			global $app;
+			$app->events->trigger("database.write_changes");
 			if ($this->unwritten) {
 				$this->unwritten = false;
 				$this->pdo->commit();

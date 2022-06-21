@@ -34,13 +34,16 @@
 			$this->events->trigger("app.modules.pre_load");
 			$this->page->loadModules();
 			$this->events->trigger("app.modules.post_load");
+			$this->events->trigger("page.pre_render");
 			try {
 				$app = $this;
 				if (file_exists(\Config::APPROOT . "/views/{$request->route["view"]}.php"))
 					include_once \Config::APPROOT . "/views/{$request->route["view"]}.php";
 				else
 					$this->error(new \Crispage\ApplicationException(500, "View nonexistent", "No view '{$request->route["view"]}' exists!"));
+				$this->events->trigger("page.post_render");
 			} catch (\Throwable $e) {
+				$this->events->trigger("page.error_render", $e);
 				throw new \Crispage\ApplicationException(500, "An error occurred", "A server error has occurred and the page you requested is not available. Please try again later.", null, $e);
 			}
 		}

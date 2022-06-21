@@ -1,3 +1,7 @@
+# 0.12.1 alpha
+- Added new events
+- Bug fixes
+
 # 0.12.0 alpha
 - Added new PDO-based databases MySQL and SQLite3
 - Other database-related improvements

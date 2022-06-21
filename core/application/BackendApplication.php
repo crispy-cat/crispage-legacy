@@ -34,13 +34,16 @@
 			$this->loadPlugins();
 			$this->executePlugins();
 			$this->events->trigger("app.plugins.post_load");
+			$this->events->trigger("page.pre_render");
 			try {
 				$app = $this;
 				if (file_exists(\Config::APPROOT . "/backend/views/$request->slug.php"))
 					include_once \Config::APPROOT . "/backend/views/$request->slug.php";
 				else
 					throw new \Exception("No view '$request->slug' exists!");
+				$this->events->trigger("page.post_render");
 			} catch (\Throwable $e) {
+				$this->events->trigger("page.error_render", $e);
 				throw new \Crispage\ApplicationException(500, "An error occurred", "A server error has occurred and the page you requested is not available. Please try again later.", 1010, $e);
 			}
 		}

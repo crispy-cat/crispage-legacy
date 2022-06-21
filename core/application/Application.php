@@ -91,7 +91,7 @@
 			if (!($this instanceof \Crispage\Application\InstallerApplication)) $this->initDatabase(\Config::DB_TYPE, \Config::DB_LOC, \Config::DB_NAME, \Config::DB_OPTIONS);
 		}
 
-		public function __invoke(string $name) {
+		public function &__invoke(string $name) {
 			if (isset($this->$name)) return $this->$name;
 			$am = ($this->assets)($name);
 			if ($am) return $am;
@@ -174,6 +174,7 @@
 				));
 				$this->events->trigger("app.plugins.post_load", $plugin);
 			} catch (\Throwable $e) {
+				$this->events->trigger("app.plugins.error_load", $plugin, $e);
 				throw new \Crispage\ApplicationException(500, $this("i18n")->getString("plugin_error"), $this("i18n")->getString("plugin_error_ex", null, $plugin->id), null, $e, false);
 			}
 		}
@@ -192,9 +193,12 @@
 			if ($this->pluginsExecd) return;
 			$this->pluginsExecd = true;
 			foreach ($this->loadedPlugins as $plugin) {
+				$this->events->trigger("app.plugins.pre_exec", $plugin);
 				try {
 					$plugin->execute();
+					$this->events->trigger("app.plugins.post_exec", $plugin);
 				} catch (\Throwable $e) {
+					$this->events->trigger("app.plugins.error_exec", $plugin, $e);
 					throw new \Crispage\ApplicationException(500, $this("i18n")->getString("plugin_error"), $this("i18n")->getString("plugin_error_ex2", null, $plugin->id), null, $e, false);
 				}
 			}
@@ -254,6 +258,7 @@
 
 			$this->page->setContent($content);
 			$this->renderPage();
+			$this->events->trigger("app.error.post_render", $e);
 			die();
 		}
 
@@ -271,11 +276,11 @@
 			ob_clean();
 			if (isset($messages["type"]) && isset($messages["content"])) {
 				$this->events->trigger("message", $messages);
-				$this->page->setCookie("msg_" . $messages["type"], $messages["content"]);
+				$this->page->setCookie("msg_" . $messages["type"], $messages["content"], time() + 1);
 			} else {
 				foreach ($messages as $message) {
 					$this->events->trigger("message", $message);
-					$this->page->setCookie("msg_" . ($message["type"] ?? "info"), $message["content"] ?? "");
+					$this->page->setCookie("msg_" . ($message["type"] ?? "info"), $message["content"] ?? "", time() + 1);
 				}
 			}
 			http_response_code(302);
@@ -288,10 +293,11 @@
 			try {
 				ob_clean();
 				$this->template->render();
+				$this->events->trigger("app.page.post_render");
 			} catch (\Throwable $e) {
+				$this->events->trigger("app.page.error_render", $e);
 				throw new \Crispage\ApplicationException(500, $this("i18n")->getString("render_error"), $this("i18n")->getString("render_error_ex3"), null, $e, false);
 			}
-			$this->events->trigger("app.page.post_render");
 		}
 
 		public function getSetting(string $key, string $default = null) : ?string {
