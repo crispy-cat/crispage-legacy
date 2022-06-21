@@ -27,7 +27,7 @@
 
 		public static function deleteRecurs(string $file) {
 			if (is_dir($file)) {
-				array_map("FileHelper::deleteRecurs", glob($file . "/*"));
+				array_map("\Crispage\Helpers\FileHelper::deleteRecurs", glob($file . "/*"));
 				rmdir($file);
 			} else {
 				@unlink($file);
