@@ -23,8 +23,7 @@
 			$comments = $app("comments")->getAllArr(array("article" =>$app->request->route["item_id"]));
 
 			usort($comments, function($a, $b) {
-				if ($a->created == $b->created) return 0;
-				return ($a->created < $b->created) ? 1 : -1;
+				return ($b->created - $a->created) <=> 0;
 			});
 ?>
 			<div class="module CommentsModule module-<?php echo $this->id . " " . $this->options["classes"]; ?>">
