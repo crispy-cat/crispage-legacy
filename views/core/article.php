@@ -13,7 +13,7 @@
 	$app->vars["article"] = $app("articles")->get($app->request->route["item_id"] ?? "");
 
 	$session = \Crispage\Assets\Session::getCurrentSession();
-	if (!$app->vars["article"] || ($app->vars["article"]->state != "published" && (!$session || !User::userHasPermissions($session->user, \Crispage\Assets\UserPermissions::VIEW_UNPUBLISHED))))
+	if (!$app->vars["article"] || ($app->vars["article"]->state != "published" && (!$session || !User::userHasPermissions($session->user, \Crispage\Users\UserPermissions::VIEW_UNPUBLISHED))))
 		$app->error(new \Crispage\ApplicationException(404, $app("i18n")->getString("page_not_found"), $app("i18n")->getString("page_not_found_ex")));
 
 	$app->page->options["show_title"] = $app->vars["article"]->options["show_title"] ?? $app->getSetting("articles.show_title", "yes");

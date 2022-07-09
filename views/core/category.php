@@ -13,7 +13,7 @@
 	$app->vars["category"] = $app("categories")->get($app->request->route["item_id"]);
 
 	$session = \Crispage\Assets\Session::getCurrentSession();
-	if (!$app->vars["category"] || ($app->vars["category"]->state != "published" && (!$session || !\Crispage\Assets\User::userHasPermissions($session->user, \Crispage\Assets\UserPermissions::VIEW_UNPUBLISHED))))
+	if (!$app->vars["category"] || ($app->vars["category"]->state != "published" && (!$session || !\Crispage\Assets\User::userHasPermissions($session->user, \Crispage\Users\UserPermissions::VIEW_UNPUBLISHED))))
 		$app->error(new \Crispage\ApplicationException(404, $app("i18n")->getString("page_not_found"), $app("i18n")->getString("page_not_found_ex")));
 
 	$app->vars["articles"] = $app("articles")->getAllArr(array("category" => $app->request->route["item_id"]), "modified");
