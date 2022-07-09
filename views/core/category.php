@@ -19,7 +19,7 @@
 	$app->vars["articles"] = $app("articles")->getAllArr(array("category" => $app->request->route["item_id"]), "modified");
 	$app->vars["subcategories"] = $app("categories")->getAllArr(array("parent" => $app->request->route["item_id"]), "title");
 
-	if (!$session || !\Crispage\Assets\User::userHasPermissions($session->user, \Crispage\Assets\Session::VIEW_UNPUBLISHED)) {
+	if (!$session || !\Crispage\Assets\User::userHasPermissions($session->user, \Crispage\Users\UserPermissions::VIEW_UNPUBLISHED)) {
 		foreach ($app->vars["articles"] as $key => $article)
 			if ($article->state != "published")
 				array_splice($app->vars["articles"], $key, 1);
