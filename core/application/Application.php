@@ -184,7 +184,7 @@
 			foreach ($this("plugins")->getAll(array("scope" => $scope)) as $plugin)
 				$this->loadPlugin($plugin);
 			usort($this->loadedPlugins, function($a, $b) {
-				return ($b->priority - $a->priority) <=> 0;;
+				return ($a->priority - $b->priority) <=> 0;;
 			});
 		}
 

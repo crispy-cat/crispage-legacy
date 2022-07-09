@@ -139,7 +139,7 @@
 			}
 			foreach (array_keys($this->modules) as $pos) {
 				usort($this->modules[$pos], function($a, $b) {
-					return ($b->ord - $a->ord) <=> 0;
+					return ($a->ord - $b->ord) <=> 0;
 				});
 			}
 		}

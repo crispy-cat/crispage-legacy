@@ -26,7 +26,7 @@
 		public function registerAction(EventAction $ea) {
 			array_push($this->eas, $ea);
 			usort($this->eas, function($a, $b) {
-				return ($b->priority - $a->priority) <=> 0;
+				return ($a->priority - $b->priority) <=> 0;
 			});
 		}
 

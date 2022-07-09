@@ -23,7 +23,7 @@
 					array_splice($articles, $key, 1);
 
 			usort($articles, function($a, $b) {
-				return ($b->hits - $a->hits) <=> 0;
+				return ($a->hits - $b->hits) <=> 0;
 			});
 
 			echo "<ul class=\"module PopularArticlesModule module-$this->id {$this->options["classes"]}\">\n";

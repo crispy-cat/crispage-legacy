@@ -13,7 +13,7 @@
 	<?php
 		$menuitems = $app->getBackendMenuItems();
 		usort($menuitems, function($a, $b) {
-			return ($b->ord - $a->ord) <=> 0;
+			return ($a->ord - $b->ord) <=> 0;
 		});
 
 		foreach ($menuitems as $item) {
