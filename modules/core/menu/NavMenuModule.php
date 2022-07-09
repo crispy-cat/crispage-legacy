@@ -19,8 +19,7 @@
 
 			$menuitems = $app("menu_items")->getAllArr(array("menu" => $this->options["menu"]));
 			usort($menuitems, function($a, $b) {
-				if ($a->ord == $b->ord) return 0;
-				return ($a->ord < $b->ord) ? -1 : 1;
+				return ($b->ord - $a->ord) <=> 0;
 			});
 
 			foreach ($menuitems as $item) {

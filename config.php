@@ -2,7 +2,7 @@
 	define("STARTTIME", microtime(true));
 
 	class Config {
-		public const CONFIG_VERSION = "0.12.1";
+		public const CONFIG_VERSION = "0.12.0";
 		// Should not be changed unless you know what you're doing!
 		public const APPROOT = __DIR__;
 		// Should be changed to the request URI of this directory, e.g. if your
@@ -42,7 +42,7 @@
 
 	// == Do not edit below this line ==
 
-	define("CRISPAGE", "0.12.0 alpha");
+	define("CRISPAGE", "0.12.2 alpha");
 
 	ini_set("display_errors", "1");
 	ini_set("display_startup_errors", "1");

@@ -23,8 +23,7 @@
 					array_splice($articles, $key, 1);
 
 			usort($articles, function($a, $b) {
-				if ($a->modified == $b->modified) return 0;
-				return ($a->modified < $b->modified) ? 1 : -1;
+				return ($b->modified - $a->modified) <=> 0;
 			});
 
 			echo "<ul class=\"module LatestArticlesModule module-$this->id {$this->options["classes"]}\">\n";

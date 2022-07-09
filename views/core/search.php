@@ -61,8 +61,7 @@
 		}
 
 		usort($app->vars["results"], function($a, $b) {
-			if ($a["nkeys"] == $b["nkeys"]) return 0;
-			return ($a["nkeys"] < $b["nkeys"]) ? -1 : 1;
+			return ($b["nkeys"] - $a["nkeys"]) <=> 0;;
 		});
 
 		$app->vars["npages"] = \Crispage\Helpers\Paginator::numPages($app->vars["results"], $app->vars["show"]);
