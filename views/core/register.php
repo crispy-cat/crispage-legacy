@@ -55,10 +55,10 @@
 		if (preg_match_all("/[^a-z0-9]/i", $password) < $password_min_special)
 			$app->redirectWithMessages("/register", array("type" => "error", "content" => $app("i18n")->getString("password_min_special", null, $password_min_special)));
 
-		$token = Randomizer::randomString(64, 36);
+		$token = \Crispage\Helpers\Randomizer::randomString(64, 36);
 		$url = (($_SERVER["HTTPS"]) ? "https://" : "http://") . $_SERVER["SERVER_NAME"] . \Config::WEBROOT . "/activate_account?user_id=$id&token=$token";
 
-		$sent = Mailer::sendMail(
+		$sent = \Crispage\Helpers\Mailer::sendMail(
 			array($email),
 			$app("i18n")->getString("mail_register_subject", null, $app->getSetting("sitename")),
 			$app("i18n")->getString("mail_register_body", null, $app->getSetting("sitename"), $url)
@@ -67,7 +67,7 @@
 		if ($sent === true) {
 			$app->database->writeRow("activation", $id, array("token" => $token));
 
-			$app("users")->set($id, new User(array(
+			$app("users")->set($id, new \Crispage\Assets\User(array(
 				"id"	=> $id,
 				"name"	=> $name,
 				"email" => $email,
